@@ -5,6 +5,7 @@ using System.Runtime.CompilerServices;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Animations;
+using UnityEngine.UI;
 
 public class Player : MonoBehaviour
 {
@@ -18,12 +19,16 @@ public class Player : MonoBehaviour
     Transform ShotPointer;
     [SerializeField]
     Transform target;
+    [SerializeField]
+    Image[] skillCool;
+    [SerializeField]
+    Text[] coolText;
 
     Rigidbody rb;
     Animator animator;
 
 
-
+    public int shotCount;
 
 
     bool isWalk;
@@ -33,8 +38,8 @@ public class Player : MonoBehaviour
     public bool isAim;
 
     // 스킬 쿨타임 체크용
-    bool cool1;
-    bool cool2;
+   public bool[] cool;
+    bool isSkill;
 
     public PlayerState playerState;
 
@@ -50,6 +55,7 @@ public class Player : MonoBehaviour
     }
     void Start()
     {
+        shotCount = 1;
     }
 
     void Update()
@@ -68,11 +74,12 @@ public class Player : MonoBehaviour
         {
             LockOnTarget();  // LockOn 상태일 때 타겟을 바라보는 함수
             LockOnCamera();  // LockOn 상태일 때 움직이는 함수
+            ArrowShot();
 
         }
 
         Skill();
-        ArrowShot();
+        
 
     }
 
@@ -173,75 +180,124 @@ public class Player : MonoBehaviour
     public void Skill()
     {
 
-        if (Input.GetKeyDown(KeyCode.Alpha1))
+        if (isLockOn == false && isSkill == false && cool[0] == false && Input.GetKeyDown(KeyCode.Alpha1))
         {
-            skillArrow[0].gameObject.SetActive(true);
+            
+            //버프
+            isSkill = true;
+            StartCoroutine(SkillCool(20,0,4));
+            skillArrow[4].gameObject.SetActive(true);
             skillComand = 0;
 
         }
-        if (cool1 == false && Input.GetKeyDown(KeyCode.Alpha2))
+       else if (isLockOn == false && isSkill == false && cool[1] == false && Input.GetKeyDown(KeyCode.Alpha2))
         {
-            StartCoroutine(SkillCool1());
+            //불화살
+            isSkill = true;
+            StartCoroutine(SkillCool(6,1,1));
             skillArrow[1].gameObject.SetActive(true);
             skillComand = 1;
         }
-        if (cool2 == false && Input.GetKeyDown(KeyCode.Alpha3))
+       else if (isLockOn == false && isSkill == false &&  cool[2] == false && Input.GetKeyDown(KeyCode.Alpha3))
         {
-            StartCoroutine(SkillCool2());
+            //독화살
+            isSkill = true;
+            StartCoroutine(SkillCool(5,2,2));
             skillArrow[2].gameObject.SetActive(true);
+
             skillComand = 2;
         }
-
-    }
-    IEnumerator SkillCool1()
-    {
-        cool1 = true;
-        yield return new WaitForSeconds(5f);
-        cool1 = false;
-    }
-    IEnumerator SkillCool2()
-    {
-        cool2 = true;
-        yield return new WaitForSeconds(3f);
-        cool2 = false;
-    }
-    void ArrowShot()
-    {
-        if (Input.GetMouseButtonDown(0) && isLockOn == true)
+       else if (isLockOn == false && isSkill == false && cool[3] == false && Input.GetKeyDown(KeyCode.Alpha4))
         {
-            isLockOn = false; // 화살 발사 후 에임기능을 다시 하기 위한 체크
-
-            Vector3 directionToTarget = (target.position - ShotPointer.transform.position).normalized;
-
-            // 타겟 방향을 바라보는 기본 회전
-            Quaternion baseRotation = Quaternion.LookRotation(directionToTarget);
-
-            // 추가적인 X축 90도 회전
-            Quaternion additionalRotation = Quaternion.Euler(90, 0, 0);
-
-            // 최종 회전 계산
-            Quaternion finalRotation = baseRotation * additionalRotation;
-
-            // 화살 인스턴스 생성 시 최종 회전 적용
-            GameObject arrowInstance = Instantiate(skillArrow[skillComand], ShotPointer.transform.position, finalRotation);
-
-            Rigidbody arrowRb = arrowInstance.AddComponent<Rigidbody>(); // Rigidbody 컴포넌트 동적 추가
-            arrowRb.useGravity = false;
-            ArrowPhysics(arrowRb, directionToTarget);
+            //금화살
+            isSkill = true;
+            StartCoroutine(SkillCool(10,3,3));
+            skillArrow[3].gameObject.SetActive(true);
+            skillComand = 3;
+        }
+       else if (isLockOn == false && isSkill == false && Input.GetKeyDown(KeyCode.Alpha5))
+        {
+            //기본화살            
+            skillComand = 0;
 
         }
 
     }
-    public void ArrowPhysics(Rigidbody arrowRb, Vector3 directionToTarget) // 화살의 물리력과 방향
+    IEnumerator SkillCool(int coolTime,int skillCoolIndex,int skillArrowIndex)
     {
-        arrowRb.AddForce(directionToTarget * 10f, ForceMode.Impulse);
+        cool[skillCoolIndex] = true;
+        skillCool[skillCoolIndex].fillAmount = 0;
+        float time = 0;
+        while (time < coolTime)
+        {
+            
+            time += Time.deltaTime;
+            skillCool[skillCoolIndex].fillAmount = time / coolTime;
+            int remainingTime = Mathf.CeilToInt(coolTime - time);  // 남은 시간을 정수로 반올림
+            coolText[skillCoolIndex].text = remainingTime + "s";   // 남은 시간 업데이트
+
+            yield return null;            
+        }
+        coolText[skillCoolIndex].text = "";
+        skillCool[skillCoolIndex].fillAmount = 1;
+        cool[skillCoolIndex] = false;
+
+    }
+    
+    void ArrowShot()
+    {
+        if (shotCount > 0)
+        {
+            if (Input.GetMouseButtonDown(0) && isLockOn == true)
+            {
+                isSkill = false; // 스킬화살 장전시엔 다른 스킬 사용 불가용
+
+                isLockOn = false; // 화살 발사 후 에임기능을 다시 하기 위한 체크
+             
+                Vector3 directionToTarget = (target.position - ShotPointer.transform.position).normalized;
+
+                // 타겟 방향을 바라보는 기본 회전
+                Quaternion baseRotation = Quaternion.LookRotation(directionToTarget);
+
+                // 추가적인 X축 90도 회전
+                Quaternion additionalRotation = Quaternion.Euler(90, 0, 0);
+
+                // 최종 회전 계산
+                Quaternion finalRotation = baseRotation * additionalRotation;
+
+                // 화살 인스턴스 생성 시 최종 회전 적용
+                GameObject arrowInstance = Instantiate(skillArrow[skillComand], ShotPointer.transform.position, finalRotation);
+                Destroy(arrowInstance, 6f); // 6초뒤 화살 사라짐
+                Rigidbody arrowRb = arrowInstance.AddComponent<Rigidbody>(); // Rigidbody 컴포넌트 동적 추가
+                arrowRb.useGravity = false;
+                ArrowPhysics(arrowRb, directionToTarget);
+                while (shotCount > 0)
+                {
+                    shotCount--;
+                }
+
+            }
+        }
+        else
+        {
+            StartCoroutine(ShotDelay());
+        }
+        
+
+    }
+    // 화살의 물리력과 방향
+    public void ArrowPhysics(Rigidbody arrowRb, Vector3 directionToTarget) 
+    {
+        arrowRb.AddForce(directionToTarget * 30f, ForceMode.Impulse);
     }
     void LockOnTarget()
     {
+        isAim = false;
         Vector3 directionToTarget = (target.position - character.position + ShotPointer.position).normalized;  // 타겟 방향 계산
         Quaternion targetRotation = Quaternion.LookRotation(directionToTarget);  // 방향을 기반으로 회전 생성
         character.rotation = Quaternion.Slerp(character.rotation, targetRotation, Time.deltaTime * 10);  // 부드럽게 회전
         character.transform.rotation = Quaternion.identity;
+     
     }
 
     void LockOnCamera()
@@ -285,5 +341,15 @@ public class Player : MonoBehaviour
         animator.SetFloat("X", smoothedValueX);
         animator.SetFloat("Y", smoothedValueY);
     }
+    IEnumerator ShotDelay()
+    {
+        yield return new WaitForSeconds(0.7f);
+        if(shotCount == 0 )
+        {
+            shotCount += 1;
+        }
+        
+    }
+
 }
 
