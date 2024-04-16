@@ -40,7 +40,8 @@ public class ArrownDamage : MonoBehaviour
                 Debug.Log("´ê¾Ò´Ù");
                 monster.TakeDamage(damage);
                 Debug.Log("Arrow hit monster with trigger.");
-                
+
+                Debug.Log(other.transform.position);
             }
         }
     }
