@@ -16,3 +16,4 @@ MonoBehaviour:
   damagePerSecond: 2
   duration: 3
   effectType: '"Poison"'
+  particleEffect: {fileID: 7832807635120261130, guid: 4488bd6286ed90c47ac5fd986320e0f8, type: 3}

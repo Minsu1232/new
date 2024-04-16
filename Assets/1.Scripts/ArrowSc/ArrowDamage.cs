@@ -6,7 +6,8 @@ using static UnityEngine.GraphicsBuffer;
 public class ArrownDamage : MonoBehaviour
 {
     [SerializeField]
-    ArrowDamageScriptable damageScriptable;    
+    ArrowDamageScriptable damageScriptable;
+    
     
 
 
@@ -51,11 +52,18 @@ public class ArrownDamage : MonoBehaviour
         // Rigidbody를 비활성화하여 물리적 움직임을 멈춥니다.
         rb.isKinematic = true;
 
-        // 화살의 부모를 몬스터로 설정하여 화살이 몬스터와 함께 움직이게 합니다.
+        // 파티클 시스템의 인스턴스를 생성하고, 부모를 몬스터로 설정합니다.
+        ParticleSystem particleInstance = Instantiate(damageScriptable.particleEffect, transform.position, Quaternion.identity, collision.transform);
+        particleInstance.Play();
+        
+        
+        // 화살도 몬스터의 자식으로 설정
         transform.SetParent(collision.transform);
 
         // 화살이 지정된 시간 후에 사라지도록 합니다.
         Destroy(gameObject, 2.0f); // 2초 후에 화살 객체를 제거
+        float particleDuration = particleInstance.main.duration + particleInstance.main.startLifetime.constantMax;
+        Destroy(particleInstance.gameObject, particleDuration);
     }
 
 }

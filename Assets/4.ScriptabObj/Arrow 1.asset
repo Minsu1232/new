@@ -16,3 +16,4 @@ MonoBehaviour:
   damagePerSecond: 2
   duration: 3
   effectType: '"Fire"'
+  particleEffect: {fileID: 1652740280692903995, guid: d76f61d4ee31dd24c9ff74a9b6751756, type: 3}

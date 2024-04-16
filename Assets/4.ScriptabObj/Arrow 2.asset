@@ -16,3 +16,4 @@ MonoBehaviour:
   damagePerSecond: 0
   duration: 0
   effectType: '"Gold"'
+  particleEffect: {fileID: 5665623732858392265, guid: 843563750d0d49d43a87a37357c85b9d, type: 3}
