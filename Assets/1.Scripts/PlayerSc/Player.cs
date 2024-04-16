@@ -27,8 +27,12 @@ public class Player : MonoBehaviour
     Rigidbody rb;
     Animator animator;
 
-
+    // 연속 화살 발살을 막기위한 카운트
     public int shotCount;
+    // 손에든 화살과 날라가는 화살의 동기화용 숫자;
+    public int skillComand;
+    // 버프지속시간
+    public float buffDuration;
 
 
     bool isWalk;
@@ -43,7 +47,7 @@ public class Player : MonoBehaviour
 
     public PlayerState playerState;
 
-    public int skillComand;
+    
     private void OnEnable()
     {
         skillComand = 0;
@@ -61,8 +65,11 @@ public class Player : MonoBehaviour
     void Update()
     {
         if (Input.GetMouseButtonDown(1))  // 마우스 우클릭을 감지
-        {
-            isLockOn = !isLockOn;  // 토글 방식
+        {if(target != null)
+            {
+                isLockOn = !isLockOn;  // 토글 방식
+            }
+            
         }
 
         if (!isLockOn)
@@ -183,11 +190,20 @@ public class Player : MonoBehaviour
         if (isLockOn == false && isSkill == false && cool[0] == false && Input.GetKeyDown(KeyCode.Alpha1))
         {
             
+            buffDuration += Time.deltaTime;
             //버프
             isSkill = true;
             StartCoroutine(SkillCool(20,0,4));
             skillArrow[4].gameObject.SetActive(true);
             skillComand = 0;
+            while (buffDuration < 8)
+            {
+                playerState.str += 3;
+            }
+            
+            buffDuration = 0;
+            
+            
 
         }
        else if (isLockOn == false && isSkill == false && cool[1] == false && Input.GetKeyDown(KeyCode.Alpha2))
@@ -293,53 +309,61 @@ public class Player : MonoBehaviour
     void LockOnTarget()
     {
         isAim = false;
-        Vector3 directionToTarget = (target.position - character.position + ShotPointer.position).normalized;  // 타겟 방향 계산
-        Quaternion targetRotation = Quaternion.LookRotation(directionToTarget);  // 방향을 기반으로 회전 생성
-        character.rotation = Quaternion.Slerp(character.rotation, targetRotation, Time.deltaTime * 10);  // 부드럽게 회전
-        character.transform.rotation = Quaternion.identity;
+        if(target != null)
+        {
+            Vector3 directionToTarget = (target.position - character.position + ShotPointer.position).normalized;  // 타겟 방향 계산
+            Quaternion targetRotation = Quaternion.LookRotation(directionToTarget);  // 방향을 기반으로 회전 생성
+            character.rotation = Quaternion.Slerp(character.rotation, targetRotation, Time.deltaTime * 10);  // 부드럽게 회전
+            character.transform.rotation = Quaternion.identity;
+        }
+       
      
     }
 
     void LockOnCamera()
     {
-        Vector3 directionToTarget = (target.position - cameraArm.position).normalized;  // 타겟 방향 계산
-        Quaternion targetRotation = Quaternion.LookRotation(directionToTarget);  // 방향을 기반으로 회전 생성
-        cameraArm.rotation = Quaternion.Slerp(cameraArm.rotation, targetRotation, Time.deltaTime * 10);  // 부드럽게 회전
-
-        animator.SetBool("IsWalking", false);
-        // 입력값을 vector2로 저장
-        Vector2 moveInput = new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"));
-        Vector3 moveDir;
-
-
-        Vector3 lookForward = new Vector3(cameraArm.forward.x, 0f, cameraArm.forward.z).normalized;
-        Vector3 lookRight = new Vector3(cameraArm.right.x, 0f, cameraArm.right.z).normalized;
-        moveDir = lookForward * moveInput.y + lookRight * moveInput.x;
-
-        character.forward = lookForward;
-
-        // 카메라 회전에 따른 
-
-        // 전진 속도
-
+        if(target != null)
         {
+            Vector3 directionToTarget = (target.position - cameraArm.position).normalized;  // 타겟 방향 계산
+            Quaternion targetRotation = Quaternion.LookRotation(directionToTarget);  // 방향을 기반으로 회전 생성
+            cameraArm.rotation = Quaternion.Slerp(cameraArm.rotation, targetRotation, Time.deltaTime * 10);  // 부드럽게 회전
+
             animator.SetBool("IsWalking", false);
-            transform.position += moveDir * Time.deltaTime * playerState.walkSpeed;
+            // 입력값을 vector2로 저장
+            Vector2 moveInput = new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"));
+            Vector3 moveDir;
+
+
+            Vector3 lookForward = new Vector3(cameraArm.forward.x, 0f, cameraArm.forward.z).normalized;
+            Vector3 lookRight = new Vector3(cameraArm.right.x, 0f, cameraArm.right.z).normalized;
+            moveDir = lookForward * moveInput.y + lookRight * moveInput.x;
+
+            character.forward = lookForward;
+
+            // 카메라 회전에 따른 
+
+            // 전진 속도
+
+            {
+                animator.SetBool("IsWalking", false);
+                transform.position += moveDir * Time.deltaTime * playerState.walkSpeed;
 
 
 
+            }
+            //// 후진 속도
+            //transform.position += moveDir * Time.deltaTime * 4f;
+
+
+            // 블렌트 트리 애니메이션 움직임의 자연스러움을 위해
+            float smoothedValueX = Mathf.Lerp(animator.GetFloat("X"), moveInput.x, 5f * Time.deltaTime);
+            float smoothedValueY = Mathf.Lerp(animator.GetFloat("Y"), moveInput.y, 5f * Time.deltaTime);
+
+            // 블렌드 트리 애니메이션
+            animator.SetFloat("X", smoothedValueX);
+            animator.SetFloat("Y", smoothedValueY);
         }
-        //// 후진 속도
-        //transform.position += moveDir * Time.deltaTime * 4f;
-
-
-        // 블렌트 트리 애니메이션 움직임의 자연스러움을 위해
-        float smoothedValueX = Mathf.Lerp(animator.GetFloat("X"), moveInput.x, 5f * Time.deltaTime);
-        float smoothedValueY = Mathf.Lerp(animator.GetFloat("Y"), moveInput.y, 5f * Time.deltaTime);
-
-        // 블렌드 트리 애니메이션
-        animator.SetFloat("X", smoothedValueX);
-        animator.SetFloat("Y", smoothedValueY);
+       
     }
     IEnumerator ShotDelay()
     {

@@ -10,6 +10,7 @@ public class ArrowDamageScriptable : ScriptableObject
     public float duration;
     public string effectType;
     public ParticleSystem particleEffect;
+    public int stamina;
     // Start is called before the first frame update
     void Start()
     {

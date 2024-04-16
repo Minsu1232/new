@@ -21,7 +21,7 @@ public class NormalMonster : MonoBehaviour
         damage = normalMonsterObj.damage;
         walkSpeed = normalMonsterObj.walkSpeed;
         runSpeed = normalMonsterObj.runSpeed;
-        Debug.Log(health);
+        
     }
     
 

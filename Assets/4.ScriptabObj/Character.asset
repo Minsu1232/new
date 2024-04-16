@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   characterName: "\uC720\uB2E4\uD76C"
   hp: 100
-  str: 3
+  str: 2
   dex: 5
   walkSpeed: 3
   runSpeed: 5
