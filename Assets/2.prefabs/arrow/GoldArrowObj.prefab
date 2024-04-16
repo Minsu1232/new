@@ -152,8 +152,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   damageScriptable: {fileID: 11400000, guid: ee1c9b966b8da4741a362b64e059d36e, type: 2}
-  playerState: {fileID: 11400000, guid: 75a377af7ff3d3c4ba4ddaaf7a0911c5, type: 2}
-  damage: 20
+  player: {fileID: 0}
   ShotPointer: {fileID: 0}
   target: {fileID: 0}
 --- !u!65 &7767146775403360462

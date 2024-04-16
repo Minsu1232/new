@@ -12,8 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 375cdd46ee21eaa40b44c0cfbbb44912, type: 3}
   m_Name: Arrow 2
   m_EditorClassIdentifier: 
-  initialDamage: 18
+  initialDamage: 15
   damagePerSecond: 0
   duration: 0
   effectType: '"Gold"'
   particleEffect: {fileID: 5665623732858392265, guid: 843563750d0d49d43a87a37357c85b9d, type: 3}
+  stamina: 10

@@ -18,3 +18,4 @@ MonoBehaviour:
   dex: 5
   walkSpeed: 3
   runSpeed: 5
+  mp: 70

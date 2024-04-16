@@ -31,8 +31,16 @@ public class Player : MonoBehaviour
     public int shotCount;
     // 손에든 화살과 날라가는 화살의 동기화용 숫자;
     public int skillComand;
-    // 버프지속시간
-    public float buffDuration;
+    // 체력과 마나 자동 회복 시간
+    public float recovery;
+
+    public int hp = 100;
+    public int str = 2;
+    public int dex = 5;
+    public float walkSpeed = 5f;
+    public float runSpeed = 7f;
+    public int mp = 70;
+    public int maxMp = 70;
 
 
     bool isWalk;
@@ -50,6 +58,15 @@ public class Player : MonoBehaviour
     
     private void OnEnable()
     {
+        StopAllCoroutines();
+        // 스크립터블 초기화
+        hp = playerState.hp;
+        str = playerState.str;
+        dex = playerState.dex;
+        walkSpeed = playerState.walkSpeed;
+        runSpeed = playerState.runSpeed;
+        mp = playerState.mp;
+        maxMp = playerState.mp;
         skillComand = 0;
         isDie = false;
         isWalk = true;
@@ -64,6 +81,9 @@ public class Player : MonoBehaviour
 
     void Update()
     {
+
+       
+        
         if (Input.GetMouseButtonDown(1))  // 마우스 우클릭을 감지
         {if(target != null)
             {
@@ -85,8 +105,11 @@ public class Player : MonoBehaviour
 
         }
 
-        Skill();
-        
+        Skill(); // 스킬 관련 매서드
+        Recovery(); // 자연 회복 매서드
+
+
+
 
     }
 
@@ -187,45 +210,42 @@ public class Player : MonoBehaviour
     public void Skill()
     {
 
-        if (isLockOn == false && isSkill == false && cool[0] == false && Input.GetKeyDown(KeyCode.Alpha1))
+        if (mp >= 15 && isLockOn == false && isSkill == false && cool[0] == false && Input.GetKeyDown(KeyCode.Alpha1))
         {
-            
-            buffDuration += Time.deltaTime;
-            //버프
+            //버프 (10초간 힘 3 증가)
+            mp -= 15;
             isSkill = true;
+            GameManager.Instance.PlayerStamina();
             StartCoroutine(SkillCool(20,0,4));
             skillArrow[4].gameObject.SetActive(true);
             skillComand = 0;
-            while (buffDuration < 8)
-            {
-                playerState.str += 3;
-            }
-            
-            buffDuration = 0;
-            
-            
+            StartCoroutine(BuffTime());
 
         }
-       else if (isLockOn == false && isSkill == false && cool[1] == false && Input.GetKeyDown(KeyCode.Alpha2))
+       else if (mp >= 8 && isLockOn == false && isSkill == false && cool[1] == false && Input.GetKeyDown(KeyCode.Alpha2))
         {
             //불화살
+            mp -= 8;
             isSkill = true;
             StartCoroutine(SkillCool(6,1,1));
             skillArrow[1].gameObject.SetActive(true);
             skillComand = 1;
+            
         }
-       else if (isLockOn == false && isSkill == false &&  cool[2] == false && Input.GetKeyDown(KeyCode.Alpha3))
+       else if (mp >= 6 &&isLockOn == false && isSkill == false &&  cool[2] == false && Input.GetKeyDown(KeyCode.Alpha3))
         {
             //독화살
+            mp -= 6;
             isSkill = true;
             StartCoroutine(SkillCool(5,2,2));
             skillArrow[2].gameObject.SetActive(true);
 
             skillComand = 2;
         }
-       else if (isLockOn == false && isSkill == false && cool[3] == false && Input.GetKeyDown(KeyCode.Alpha4))
+       else if (mp >= 12 && isLockOn == false && isSkill == false && cool[3] == false && Input.GetKeyDown(KeyCode.Alpha4))
         {
             //금화살
+            mp -= 12;
             isSkill = true;
             StartCoroutine(SkillCool(10,3,3));
             skillArrow[3].gameObject.SetActive(true);
@@ -365,6 +385,7 @@ public class Player : MonoBehaviour
         }
        
     }
+    // 샷의 딜레이를 추가해 연속샷 방지
     IEnumerator ShotDelay()
     {
         yield return new WaitForSeconds(0.7f);
@@ -374,6 +395,23 @@ public class Player : MonoBehaviour
         }
         
     }
-
+    //버프시간동안 힘 3 증가
+    IEnumerator BuffTime()
+    {
+        str += 3;
+        Debug.Log("버프시작"+str);
+        yield return new WaitForSeconds(10f);
+        str -= 3;
+        Debug.Log("버프끝"+str);
+    }
+    void Recovery()
+    {
+        recovery += Time.deltaTime;
+        if (recovery > 1 &&  mp < 50)
+        {            
+            mp += 1;
+            recovery = 0;
+        }
+    }
 }
 

@@ -6,7 +6,7 @@ using UnityEngine;
 public class ArrowDamageScriptable : ScriptableObject
 {
     public int initialDamage;
-    public float damagePerSecond;
+    public int damagePerSecond;
     public float duration;
     public string effectType;
     public ParticleSystem particleEffect;
