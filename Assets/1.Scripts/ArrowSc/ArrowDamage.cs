@@ -41,9 +41,21 @@ public class ArrownDamage : MonoBehaviour
                 monster.TakeDamage(damage);
                 Debug.Log("Arrow hit monster with trigger.");
 
-                Debug.Log(other.transform.position);
+                StickArrow(other);
+                
             }
         }
     }
-        
+    void StickArrow(Collider collision)
+    {
+        // Rigidbody를 비활성화하여 물리적 움직임을 멈춥니다.
+        rb.isKinematic = true;
+
+        // 화살의 부모를 몬스터로 설정하여 화살이 몬스터와 함께 움직이게 합니다.
+        transform.SetParent(collision.transform);
+
+        // 화살이 지정된 시간 후에 사라지도록 합니다.
+        Destroy(gameObject, 2.0f); // 2초 후에 화살 객체를 제거
+    }
+
 }
