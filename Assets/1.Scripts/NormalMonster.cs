@@ -23,14 +23,15 @@ public class NormalMonster : MonoBehaviour
 
     public Player player;
     public int initialHealth;
-    public int health;
+    public int remainHealth;
     
-    int damage;
+   public int damage;
     int walkSpeed;
     int runSpeed;
 
     public bool isAttack;
     public bool isDie;
+    public bool isKill;
 
 
 
@@ -48,7 +49,7 @@ public class NormalMonster : MonoBehaviour
         damage = normalMonsterObj.damage;
         walkSpeed = normalMonsterObj.walkSpeed;
         runSpeed = normalMonsterObj.runSpeed;
-        health = initialHealth;
+        remainHealth = initialHealth;
         
     }
 
@@ -60,51 +61,64 @@ public class NormalMonster : MonoBehaviour
         navMeshAgent.speed = walkSpeed;
         //시작 ui
         hp.text = $"{initialHealth}/{initialHealth}";
-        hpBar.fillAmount = health / initialHealth;
+        hpBar.fillAmount = remainHealth / initialHealth;
     }
 
     // Update is called once per frame
     void Update()
     {
-        MonsterMove();
-        Attack(); 
+        if (!isDie)
+        {
+            MonsterMove();
+            Attack();
+        }
+        
         
     }
  
-   
+   /// <summary>
+   /// 몬스터의 피격 함수 ArrowDamage에서 호출해서 피격
+   /// </summary>
+   /// <param name="damage"></param>
     public void TakeDamage(int damage)
     {
         
-        if(health > 0)
+        if(remainHealth > 0)
         {
-            health -= damage;
+            remainHealth -= damage;
         }
         // health값이 음수가 되지 않게 제어
-        health = Mathf.Clamp(health, 0, initialHealth);
-        hp.text = $"{initialHealth}/{health}";
-        hpBar.fillAmount = (float)health / initialHealth;
+        remainHealth = Mathf.Clamp(remainHealth, 0, initialHealth);
+        hp.text = $"{remainHealth}/{initialHealth}";
+        hpBar.fillAmount = (float)remainHealth / initialHealth;
         StartCoroutine(Gethit());
-        if (health <= 0 && !isDie)
+        if (remainHealth <= 0)
         {               
             Die();
         }
     }
 
-  
+
     // 몬스터가 죽는 함수
     void Die()
     {
-        Debug.Log("Monster died.");
-        animator.SetTrigger("Die");
-        isDie = true;
-        
-        Destroy(gameObject,3f);  // 게임 오브젝트 제거
+        if (!isDie)
+        {
+            Debug.Log("Monster died.");
+            animator.SetTrigger("Die");
+            isDie = true;
+            navMeshAgent.enabled = false;
+            Destroy(gameObject, 3f);
+        }
+
     }
-   void MonsterMove()
+    //navmesh 이동 함수
+    void MonsterMove()
     {
-        if(isAttack == false || !isDie)
+        if(isAttack == false || !isDie && player != null)
         {            
             navMeshAgent.enabled = true;
+            
             navMeshAgent.SetDestination(player.transform.position);
             animator.SetBool("Move", true);
             animator.SetBool("Attack", false);            
@@ -112,27 +126,52 @@ public class NormalMonster : MonoBehaviour
         
        
     }
+    // 몬스터의 공격함수
     void Attack()
     {
         // 플레이어와의 거리 계산
         float distance = Vector3.Distance(gameObject.transform.position, player.transform.position);
 
-        // 거리가 5f 이하일 경우 Attack 메서드 호출
-        if (distance <= 3f)
+        // 거리가 3f 이하일 경우 Attack 메서드 호출
+        if (distance <= 3f && player.remainHealth > 0)
         {
-            animator.SetBool("Attack", true);
-            animator.SetBool("Move", false);
-            isAttack = true;
-            navMeshAgent.enabled = false;
+            // 플레이어를 공격
+            if (!isKill)
+            {
+                animator.SetBool("Attack", true);
+                animator.SetBool("Move", false);
+                isAttack = true;
+                navMeshAgent.enabled = false;
+            }
+           
+
+        }
+        else if (player.remainHealth <= 0)
+        {
+            // player가 죽었을때의 행동
+            if(!isKill)
+            {
+                animator.SetTrigger("Kill");
+                isKill = true;
+            }            
+            
         }
         else
         {
+            // 거리가 멀어지면 다시 이동
             isAttack = false;           
             animator.SetBool("Move", true);
             animator.SetBool("Attack", false);
 
         }
         
+    }
+    // 애니메이션 이벤트용 매서드
+    void Hit()
+    {
+        player.TakeDamage(damage);
+
+
     }
     IEnumerator Gethit()
     {
@@ -142,6 +181,7 @@ public class NormalMonster : MonoBehaviour
         navMeshAgent.speed = walkSpeed;
         animator.SetBool("Gethit", false);
     }
+ 
 
 
 

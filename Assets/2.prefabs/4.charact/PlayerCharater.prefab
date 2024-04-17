@@ -1481,17 +1481,20 @@ MonoBehaviour:
   shotCount: 0
   skillComand: 0
   recovery: 0
-  hp: 100
+  initialHealth: 100
+  remainHealth: 0
   str: 2
   dex: 5
   walkSpeed: 5
   runSpeed: 7
   mp: 70
   maxMp: 70
+  hpBar: {fileID: 0}
   isLockOn: 0
   isAim: 0
   cool: 00000000
   playerState: {fileID: 11400000, guid: 75a377af7ff3d3c4ba4ddaaf7a0911c5, type: 2}
+  hp: {fileID: 0}
 --- !u!95 &8714254913157372658
 Animator:
   serializedVersion: 5
@@ -1535,6 +1538,7 @@ MonoBehaviour:
   - {fileID: 8218996368549533295}
   - {fileID: 6704460454493475910}
   - {fileID: 1964360063246795040}
+  player: {fileID: 0}
   isCharging: 0
   shotReady: 0
 --- !u!1 &2043661803155327575

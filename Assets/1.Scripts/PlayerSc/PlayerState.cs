@@ -6,7 +6,7 @@ using UnityEngine;
 public class PlayerState : ScriptableObject
 {
    public string characterName = "πÃ¡§";
-    public int hp = 100;
+    public int health = 100;
     public int str = 2;
     public int dex = 5;
     public float walkSpeed = 5f;
