@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEngine.Animations;
 using UnityEngine;
 
 public class BowAnimation : MonoBehaviour
@@ -16,7 +17,8 @@ public class BowAnimation : MonoBehaviour
     public GameObject[] arrow; // 사용할 화살 변수
 
     Animator animator;
-    Player player;
+
+    public Player player;
 
     public bool isCharging = false;
     public bool shotReady;
@@ -39,7 +41,6 @@ public class BowAnimation : MonoBehaviour
     void Start()
     {
 
-
     }
 
     // Update is called once per frame
@@ -48,8 +49,6 @@ public class BowAnimation : MonoBehaviour
         Aiming(); // 조준 및 취소 애니메이션
         ArrowShot(); // 화살 발사 애니메이션
         player.Skill();
-
-
 
     }
 
@@ -60,12 +59,12 @@ public class BowAnimation : MonoBehaviour
         {
             arrow[player.skillComand].SetActive(false);
             StopCoroutine(StringDelay());
-            
-            player.skillComand = 0;
+
+            //player.skillComand = 0;
             animator.SetBool("IsShot", true);
             animator.SetBool("IsShoted", true);
 
-            isCharging = false;            
+            isCharging = false;
             animator.SetBool("IsCharging", false);
             // 애니메이션 조건   IsShot, true
             //                   IsCharging, false
@@ -94,10 +93,11 @@ public class BowAnimation : MonoBehaviour
                 bowString.transform.parent = bow.transform;  // 활 줄을 원래 위치로
                 bowString.transform.localPosition = bowStringOriginOffset;
                 arrow[player.skillComand].SetActive(false);  // 화살 비활성화
-               
+
             }
-            else if(isCharging && player.isLockOn)
+            else if (isCharging)
             {
+                Debug.Log("e들어옴");
                 // 에이밍 시작
                 shotReady = false;
                 animator.SetBool("IsCharging", true);
@@ -125,7 +125,7 @@ public class BowAnimation : MonoBehaviour
     // 코루틴 초기화 매서드
     void ResetCoroutineState()
     {
-        
+
         // 화살과 활 줄을 초기 상태로 설정
         foreach (GameObject arr in arrow)
         {

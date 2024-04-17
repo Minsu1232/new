@@ -153,8 +153,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   damageScriptable: {fileID: 11400000, guid: ee1c9b966b8da4741a362b64e059d36e, type: 2}
   player: {fileID: 0}
-  ShotPointer: {fileID: 0}
-  target: {fileID: 0}
 --- !u!65 &7767146775403360462
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -252,9 +250,7 @@ PrefabInstance:
       propertyPath: m_IsTrigger
       value: 0
       objectReference: {fileID: 0}
-    m_RemovedComponents:
-    - {fileID: -5338760858294944753, guid: b52092a4990f256488631b8990ebc2c6, type: 3}
-    - {fileID: 3163311130253937763, guid: b52092a4990f256488631b8990ebc2c6, type: 3}
+    m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []

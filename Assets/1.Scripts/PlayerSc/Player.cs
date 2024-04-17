@@ -1,14 +1,11 @@
-using System;
+
 using System.Collections;
-using System.Collections.Generic;
-using System.Runtime.CompilerServices;
-using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.Animations;
+
 using UnityEngine.UI;
 
 public class Player : MonoBehaviour
-{
+{ 
     [SerializeField]
     Transform character;
     [SerializeField]
@@ -50,14 +47,15 @@ public class Player : MonoBehaviour
     public bool isAim;
 
     // 스킬 쿨타임 체크용
-   public bool[] cool;
+    public bool[] cool;
     bool isSkill;
 
     public PlayerState playerState;
 
-    
+
     private void OnEnable()
     {
+
         StopAllCoroutines();
         // 스크립터블 초기화
         hp = playerState.hp;
@@ -82,14 +80,15 @@ public class Player : MonoBehaviour
     void Update()
     {
 
-       
-        
+
+         
         if (Input.GetMouseButtonDown(1))  // 마우스 우클릭을 감지
-        {if(target != null)
+        {
+            if (target != null)
             {
                 isLockOn = !isLockOn;  // 토글 방식
             }
-            
+
         }
 
         if (!isLockOn)
@@ -214,44 +213,45 @@ public class Player : MonoBehaviour
         {
             //버프 (10초간 힘 3 증가)
             mp -= 15;
-            isSkill = true;
-            GameManager.Instance.PlayerStamina();
-            StartCoroutine(SkillCool(20,0,4));
+            isSkill = true;           
+
+            StartCoroutine(SkillCool(20, 0, 4));
             skillArrow[4].gameObject.SetActive(true);
             skillComand = 0;
             StartCoroutine(BuffTime());
 
         }
-       else if (mp >= 8 && isLockOn == false && isSkill == false && cool[1] == false && Input.GetKeyDown(KeyCode.Alpha2))
+        else if (mp >= 8 && isLockOn == false && isSkill == false && cool[1] == false && Input.GetKeyDown(KeyCode.Alpha2))
         {
             //불화살
+            Debug.Log("fire");
             mp -= 8;
             isSkill = true;
-            StartCoroutine(SkillCool(6,1,1));
+            StartCoroutine(SkillCool(6, 1, 1));
             skillArrow[1].gameObject.SetActive(true);
             skillComand = 1;
-            
+
         }
-       else if (mp >= 6 &&isLockOn == false && isSkill == false &&  cool[2] == false && Input.GetKeyDown(KeyCode.Alpha3))
+        else if (mp >= 6 && isLockOn == false && isSkill == false && cool[2] == false && Input.GetKeyDown(KeyCode.Alpha3))
         {
             //독화살
             mp -= 6;
             isSkill = true;
-            StartCoroutine(SkillCool(5,2,2));
+            StartCoroutine(SkillCool(5, 2, 2));
             skillArrow[2].gameObject.SetActive(true);
 
             skillComand = 2;
         }
-       else if (mp >= 12 && isLockOn == false && isSkill == false && cool[3] == false && Input.GetKeyDown(KeyCode.Alpha4))
+        else if (mp >= 12 && isLockOn == false && isSkill == false && cool[3] == false && Input.GetKeyDown(KeyCode.Alpha4))
         {
             //금화살
             mp -= 12;
             isSkill = true;
-            StartCoroutine(SkillCool(10,3,3));
+            StartCoroutine(SkillCool(10, 3, 3));
             skillArrow[3].gameObject.SetActive(true);
             skillComand = 3;
         }
-       else if (isLockOn == false && isSkill == false && Input.GetKeyDown(KeyCode.Alpha5))
+        else if (isLockOn == false && isSkill == false && Input.GetKeyDown(KeyCode.Alpha5))
         {
             //기본화살            
             skillComand = 0;
@@ -259,27 +259,27 @@ public class Player : MonoBehaviour
         }
 
     }
-    IEnumerator SkillCool(int coolTime,int skillCoolIndex,int skillArrowIndex)
+    IEnumerator SkillCool(int coolTime, int skillCoolIndex, int skillArrowIndex)
     {
         cool[skillCoolIndex] = true;
         skillCool[skillCoolIndex].fillAmount = 0;
         float time = 0;
         while (time < coolTime)
         {
-            
+
             time += Time.deltaTime;
             skillCool[skillCoolIndex].fillAmount = time / coolTime;
             int remainingTime = Mathf.CeilToInt(coolTime - time);  // 남은 시간을 정수로 반올림
             coolText[skillCoolIndex].text = remainingTime + "s";   // 남은 시간 업데이트
 
-            yield return null;            
+            yield return null;
         }
         coolText[skillCoolIndex].text = "";
         skillCool[skillCoolIndex].fillAmount = 1;
         cool[skillCoolIndex] = false;
 
     }
-    
+
     void ArrowShot()
     {
         if (shotCount > 0)
@@ -289,7 +289,7 @@ public class Player : MonoBehaviour
                 isSkill = false; // 스킬화살 장전시엔 다른 스킬 사용 불가용
 
                 isLockOn = false; // 화살 발사 후 에임기능을 다시 하기 위한 체크
-             
+
                 Vector3 directionToTarget = (target.position - ShotPointer.transform.position).normalized;
 
                 // 타겟 방향을 바라보는 기본 회전
@@ -303,6 +303,7 @@ public class Player : MonoBehaviour
 
                 // 화살 인스턴스 생성 시 최종 회전 적용
                 GameObject arrowInstance = Instantiate(skillArrow[skillComand], ShotPointer.transform.position, finalRotation);
+               
                 Destroy(arrowInstance, 6f); // 6초뒤 화살 사라짐
                 Rigidbody arrowRb = arrowInstance.AddComponent<Rigidbody>(); // Rigidbody 컴포넌트 동적 추가
                 arrowRb.useGravity = false;
@@ -311,38 +312,38 @@ public class Player : MonoBehaviour
                 {
                     shotCount--;
                 }
-
+                skillComand = 0;
             }
         }
         else
         {
             StartCoroutine(ShotDelay());
         }
-        
+
 
     }
     // 화살의 물리력과 방향
-    public void ArrowPhysics(Rigidbody arrowRb, Vector3 directionToTarget) 
+    public void ArrowPhysics(Rigidbody arrowRb, Vector3 directionToTarget)
     {
         arrowRb.AddForce(directionToTarget * 30f, ForceMode.Impulse);
     }
     void LockOnTarget()
     {
         isAim = false;
-        if(target != null)
+        if (target != null)
         {
             Vector3 directionToTarget = (target.position - character.position + ShotPointer.position).normalized;  // 타겟 방향 계산
             Quaternion targetRotation = Quaternion.LookRotation(directionToTarget);  // 방향을 기반으로 회전 생성
             character.rotation = Quaternion.Slerp(character.rotation, targetRotation, Time.deltaTime * 10);  // 부드럽게 회전
             character.transform.rotation = Quaternion.identity;
         }
-       
-     
+
+
     }
 
     void LockOnCamera()
     {
-        if(target != null)
+        if (target != null)
         {
             Vector3 directionToTarget = (target.position - cameraArm.position).normalized;  // 타겟 방향 계산
             Quaternion targetRotation = Quaternion.LookRotation(directionToTarget);  // 방향을 기반으로 회전 생성
@@ -383,32 +384,32 @@ public class Player : MonoBehaviour
             animator.SetFloat("X", smoothedValueX);
             animator.SetFloat("Y", smoothedValueY);
         }
-       
+
     }
     // 샷의 딜레이를 추가해 연속샷 방지
     IEnumerator ShotDelay()
     {
         yield return new WaitForSeconds(0.7f);
-        if(shotCount == 0 )
+        if (shotCount == 0)
         {
             shotCount += 1;
         }
-        
+
     }
     //버프시간동안 힘 3 증가
     IEnumerator BuffTime()
     {
         str += 3;
-        Debug.Log("버프시작"+str);
+        Debug.Log("버프시작" + str);
         yield return new WaitForSeconds(10f);
         str -= 3;
-        Debug.Log("버프끝"+str);
+        Debug.Log("버프끝" + str);
     }
     void Recovery()
     {
         recovery += Time.deltaTime;
-        if (recovery > 1 &&  mp < 50)
-        {            
+        if (recovery > 1 && mp < 50)
+        {
             mp += 1;
             recovery = 0;
         }

@@ -260,8 +260,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   damageScriptable: {fileID: 11400000, guid: 4453ca84e7bb8b24fa9e1d0f0f6e213b, type: 2}
   player: {fileID: 0}
-  ShotPointer: {fileID: 0}
-  target: {fileID: 0}
+  collider: {fileID: 3589562622215126276}
 --- !u!1001 &3116468081502277494
 PrefabInstance:
   m_ObjectHideFlags: 0

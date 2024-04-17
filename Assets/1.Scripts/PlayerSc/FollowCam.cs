@@ -11,6 +11,8 @@ public class FollowCam : MonoBehaviour
 
     void FixedUpdate()
     {
+
+
         // 마우스의 X 축 입력 값을 받아 플레이어 주위를 회전시킴
         float mouseX = Input.GetAxis("Mouse X");
         Quaternion camTurnAngle = Quaternion.Euler(0f, mouseX * rotationSpeed, 0f);
