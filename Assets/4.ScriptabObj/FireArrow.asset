@@ -10,11 +10,12 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 375cdd46ee21eaa40b44c0cfbbb44912, type: 3}
-  m_Name: Arrow 3
+  m_Name: FireArrow
   m_EditorClassIdentifier: 
-  initialDamage: 4
+  initialDamage: 5
   damagePerSecond: 2
   duration: 2
-  effectType: '"Poison"'
-  particleEffect: {fileID: 7832807635120261130, guid: 4488bd6286ed90c47ac5fd986320e0f8, type: 3}
-  stamina: 5
+  effectType: '"Fire"'
+  particleEffect: {fileID: 685090368539115530, guid: c848cb3d55640964ba057c9c1a09e55e, type: 3}
+  stamina: 6
+  neutralize: 4

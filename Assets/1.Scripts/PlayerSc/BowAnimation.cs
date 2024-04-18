@@ -6,26 +6,23 @@ using UnityEngine;
 
 public class BowAnimation : MonoBehaviour
 {
-
-    public GameObject playerTransform;
-
-
-
+    [Header("Bow Transform")]   
     public GameObject bow; // 사용할 활의 위치
     public GameObject bowString; // 사용할 활의 줄 위치
     public GameObject bowShotpotion; // 에이밍 기술시 bowString의 부모가 될 오브젝트
     public GameObject[] arrow; // 사용할 화살 변수
 
+    
+    Player player;
+
+
     Animator animator;
 
-    public Player player;
-
-    public bool isCharging = false;
-    public bool shotReady;
+    bool isCharging = false;
+    bool shotReady;
 
     Vector3 bowStringOriginOffset; // bowString의 초기 위치를 잡기 위한 변수
-
-    int skillComand;
+    
 
     // Start is called before the first frame update
     private void OnEnable()

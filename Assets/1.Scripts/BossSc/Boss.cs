@@ -1,59 +1,59 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.UI;
 
-public class NormalMonster : MonoBehaviour
+public class Boss : MonoBehaviour
 {
+    [Header("Boss Info")]
     [SerializeField]
-    NormalMonsterScriptable normalMonsterObj;
+    BossScriptable bossScriptable;
+    public int initialHealth; // 시작 체력
+    public int remainHealth; // 남은 체력
+    public int damage;
+    public int neutralizeValue; // 시작 무력화    
+    public int destructionValue; // 시작 파괴 수치    
+    public int walkSpeed;
 
-    [SerializeField]
-    ArrownDamage[] arrowDamage;
-
-    [SerializeField]
-    Image hpBar;
-
+    [Header("Boss Attributes")]
     [SerializeField]
     NavMeshAgent navMeshAgent;
+    
+
+    [Header("Monster UI")]
+    public Text hp;       
+    public Image hpBar;
+    public Image neutralizeBar;
+    public Image destructionBar;
+    [Header("Player Attributes")]
+    public Player player;
+
+    [Header("Check Attributes")]
+    public bool isgimmick;
+    public bool isAttack;
+    public bool isKill;
+    public bool isDie;
 
     Animator animator;
 
-
-    public Player player;
-    public int initialHealth;
-    public int remainHealth;
-    
-   public int damage;
-    int walkSpeed;
-    int runSpeed;
-
-    public bool isAttack;
-    public bool isDie;
-    public bool isKill;
-
-
-
-    public Text hp;
     // Start is called before the first frame update
 
-    private void Awake()
-    {
-        isAttack = false;
-    }
     private void OnEnable()
     {
-        
-        initialHealth = normalMonsterObj.health;        
-        damage = normalMonsterObj.damage;
-        walkSpeed = normalMonsterObj.walkSpeed;
-        runSpeed = normalMonsterObj.runSpeed;
+
+        initialHealth = bossScriptable.health;
+        damage = bossScriptable.damage;
+        walkSpeed = bossScriptable.walkSpeed;
+        neutralizeValue = bossScriptable.neutralizeValue;
+        destructionValue = bossScriptable.destructionValue;
+
+        // 남은 value 체크용
         remainHealth = initialHealth;
         
     }
-
-    private void Start()
+    void Start()
     {
         isDie = false;
         animator = GetComponent<Animator>();
@@ -62,6 +62,7 @@ public class NormalMonster : MonoBehaviour
         //시작 ui
         hp.text = $"{initialHealth}/{initialHealth}";
         hpBar.fillAmount = remainHealth / initialHealth;
+
     }
 
     // Update is called once per frame
@@ -72,18 +73,14 @@ public class NormalMonster : MonoBehaviour
             MonsterMove();
             Attack();
         }
-        
-        
+
+
     }
- 
-   /// <summary>
-   /// 몬스터의 피격 함수 ArrowDamage에서 호출해서 피격
-   /// </summary>
-   /// <param name="damage"></param>
+
     public void TakeDamage(int damage)
     {
-        
-        if(remainHealth > 0)
+
+        if (remainHealth > 0)
         {
             remainHealth -= damage;
         }
@@ -93,38 +90,22 @@ public class NormalMonster : MonoBehaviour
         hpBar.fillAmount = (float)remainHealth / initialHealth;
         StartCoroutine(Gethit());
         if (remainHealth <= 0)
-        {               
+        {
             Die();
         }
     }
-
-
-    // 몬스터가 죽는 함수
-    void Die()
-    {
-        if (!isDie)
-        {
-            Debug.Log("Monster died.");
-            animator.SetTrigger("Die");
-            isDie = true;
-            navMeshAgent.enabled = false;
-            Destroy(gameObject, 3f);
-        }
-
-    }
-    //navmesh 이동 함수
     void MonsterMove()
     {
-        if(isAttack == false || !isDie && player != null)
-        {            
+        if (isAttack == false || !isDie && player != null)
+        {
             navMeshAgent.enabled = true;
-            
+
             navMeshAgent.SetDestination(player.transform.position);
             animator.SetBool("Move", true);
-            animator.SetBool("Attack", false);            
+            animator.SetBool("Attack", false);
         }
-        
-       
+
+
     }
     // 몬스터의 공격함수
     void Attack()
@@ -143,36 +124,41 @@ public class NormalMonster : MonoBehaviour
                 isAttack = true;
                 navMeshAgent.enabled = false;
             }
-           
+
 
         }
         else if (player.remainHealth <= 0)
         {
             // player가 죽었을때의 행동
-            if(!isKill)
+            if (!isKill)
             {
                 animator.SetTrigger("Kill");
                 isKill = true;
-            }            
-            
+            }
+
         }
         else
         {
             // 거리가 멀어지면 다시 이동
-            isAttack = false;           
+            isAttack = false;
             animator.SetBool("Move", true);
             animator.SetBool("Attack", false);
 
         }
-        
+
     }
-    // 애니메이션 이벤트용 매서드
-    void Hit()
+    private void Die()
     {
-        player.TakeDamage(damage);
-
-
+        if (!isDie)
+        {
+            Debug.Log("Monster died.");
+            animator.SetTrigger("Die");
+            isDie = true;
+            navMeshAgent.enabled = false;
+            Destroy(gameObject, 3f);
+        }
     }
+
     IEnumerator Gethit()
     {
         animator.SetBool("Gethit", true);
@@ -181,9 +167,9 @@ public class NormalMonster : MonoBehaviour
         navMeshAgent.speed = walkSpeed;
         animator.SetBool("Gethit", false);
     }
- 
+    void Hit()
+    {
+        player.TakeDamage(damage);
 
-
-
-
+    }
 }

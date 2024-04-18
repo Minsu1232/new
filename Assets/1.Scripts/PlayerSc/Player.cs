@@ -1,61 +1,72 @@
 
 using System.Collections;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
 
 public class Player : MonoBehaviour
 {
-    [SerializeField]
-    Transform character;
-    [SerializeField]
-    Transform cameraArm;
-    [SerializeField]
-    GameObject[] skillArrow;
-    [SerializeField]
-    Transform ShotPointer;
-    [SerializeField]
-    Transform target;
-    [SerializeField]
-    Image[] skillCool;
-    [SerializeField]
-    Text[] coolText;
-
-    Rigidbody rb;
-    Animator animator;
-
-    // 연속 화살 발살을 막기위한 카운트
-    public int shotCount;
-    // 손에든 화살과 날라가는 화살의 동기화용 숫자;
-    public int skillComand;
-    // 체력과 마나 자동 회복 시간
-    public float recovery;
-
+    [Header("Player Info")]
+    public PlayerState playerState;
+    // 캐릭터의 정보
     public int initialHealth = 100;
     public int remainHealth;
     public int str = 2;
     public int dex = 5;
     public float walkSpeed = 5f;
     public float runSpeed = 7f;
-    public int mp = 70;
     public int maxMp = 70;
+    public int mp;    
+    public float recovery; // 캐릭터 마나 회복 시간
 
+    [Header("Player Attributes")]
+    [SerializeField]
+    Transform character;
+    [SerializeField]
+    Transform cameraArm;
+    [SerializeField]
+    Transform target;
     public Image hpBar;
+    public Text hp;
 
+    [Header("Arrow Attributes")]
+    [SerializeField]
+    GameObject[] skillArrow;
+    [SerializeField]
+    Transform ShotPointer;
+
+    [Header("Skill Attributes")]
+    [SerializeField]
+    Image[] skillCool;
+    public bool[] cool;
+    [SerializeField]
+    Text[] coolText;
+    public int skillComand;
+
+
+    // 컴포넌트
+    Rigidbody rb;
+    Animator animator;
+    CharacterController controller;
+
+    // 캐릭터컨트롤러 관리용 변수
+    private Vector3 playerVelocity;
+    private bool isGrounded;
+    float gravity = -4f;
+
+    // 연속샷 방지
+    int shotCount;
 
     bool isWalk;
     bool isDie;
 
-    public bool isLockOn;
-    public bool isAim;
+    bool isLockOn;
+    bool isAim;
 
     // 스킬 쿨타임 체크용
-    public bool[] cool;
+
     bool isSkill;
-
-    public PlayerState playerState;
-
-    public Text hp;
 
 
     private void OnEnable()
@@ -71,6 +82,7 @@ public class Player : MonoBehaviour
         mp = playerState.mp;
         maxMp = playerState.mp;
         remainHealth = initialHealth;
+        mp = maxMp;
         skillComand = 0;
         isDie = false;
         isWalk = true;
@@ -80,8 +92,9 @@ public class Player : MonoBehaviour
     }
     void Start()
     {
+        controller = gameObject.GetComponent<CharacterController>(); // 지형에 맞는 움직임을 자연스럽게 하기위해 사용
         shotCount = 1;
-        hp.text = $"{initialHealth}/{initialHealth}";
+        hp.text = $"{remainHealth}/{initialHealth}";
         hpBar.fillAmount = remainHealth / initialHealth;
 
     }
@@ -114,41 +127,8 @@ public class Player : MonoBehaviour
         Skill(); // 스킬 관련 매서드
         Recovery(); // 자연 회복 매서드
 
-
-
-
     }
-    void Move()
-    {
-        Vector2 moveInput = new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"));
-        bool isMove = moveInput.magnitude != 0;
-        if(isMove)
-        {
-            Vector3 lookForward = new Vector3(cameraArm.forward.x, 0f, cameraArm.forward.z).normalized;
-            Vector3 lookRight = new Vector3(cameraArm.right.x, 0f, cameraArm.right.z).normalized;
-            Vector3 moveDir = lookForward * moveInput.y + lookRight * moveInput.x;
 
-            character.forward = lookForward;
-            //달리기
-            if (Input.GetKey(KeyCode.LeftShift) && isLockOn == false)
-            {
-                if (Input.GetAxisRaw("Vertical") > 0.5)
-                    animator.SetBool("IsWalking", true);
-                transform.position += moveDir * Time.deltaTime * playerState.runSpeed;
-
-            }
-            //걷기
-            else
-            {
-                animator.SetBool("IsWalking", false);
-                transform.position += moveDir * Time.deltaTime * playerState.walkSpeed;
-
-            }
-
-
-        }
-
-    }
 
     void MoveAndCamera()
     {
@@ -165,10 +145,19 @@ public class Player : MonoBehaviour
                 Vector3 lookForward = new Vector3(cameraArm.forward.x, 0f, cameraArm.forward.z).normalized;
                 Vector3 lookRight = new Vector3(cameraArm.right.x, 0f, cameraArm.right.z).normalized;
                 moveDir = lookForward * moveInput.y + lookRight * moveInput.x;
-
                 character.forward = lookForward;
+                //중력 적용 if문
+                if (controller.isGrounded && playerVelocity.y < 0)
+                {
+                    playerVelocity.y = 0f;
+                }
+                playerVelocity.y += gravity * Time.deltaTime;
 
-                // 카메라 회전에 따른 
+
+
+                controller.Move(playerVelocity * Time.deltaTime);  // // 중력에 의한 수직 이동 적용
+
+
 
                 // 전진 속도
 
@@ -178,14 +167,14 @@ public class Player : MonoBehaviour
                     {
                         if (Input.GetAxisRaw("Vertical") > 0.5)
                             animator.SetBool("IsWalking", true);
-                        transform.position += moveDir * Time.deltaTime * playerState.runSpeed;
+                        controller.Move(moveDir * runSpeed * Time.deltaTime);
 
                     }
                     //걷기
                     else
                     {
                         animator.SetBool("IsWalking", false);
-                        transform.position += moveDir * Time.deltaTime * playerState.walkSpeed;
+                        controller.Move(moveDir * walkSpeed * Time.deltaTime);
 
                     }
 
@@ -252,19 +241,24 @@ public class Player : MonoBehaviour
             Vector3 lookRight = new Vector3(cameraArm.right.x, 0f, cameraArm.right.z).normalized;
             moveDir = lookForward * moveInput.y + lookRight * moveInput.x;
 
+            //중력 적용 if문
+            if (controller.isGrounded && playerVelocity.y < 0)
+            {
+                playerVelocity.y = 0f;
+            }
+            playerVelocity.y += gravity * Time.deltaTime;
+
+            controller.Move(playerVelocity * Time.deltaTime);  // 중력에 의한 수직 이동 적용, 자연스러운 중력을 위해 캐릭터 컨트롤러 사용
             character.forward = lookForward;
 
             // 카메라 회전에 따른 
 
             // 전진 속도
 
-            {
-                animator.SetBool("IsWalking", false);
-                transform.position += moveDir * Time.deltaTime * playerState.walkSpeed;
+            animator.SetBool("IsWalking", false);
+            controller.Move(moveDir * walkSpeed * Time.deltaTime);
 
 
-
-            }
             //// 후진 속도
             //transform.position += moveDir * Time.deltaTime * 4f;
 
@@ -416,7 +410,7 @@ public class Player : MonoBehaviour
 
     }
 
-   
+
     // 샷의 딜레이를 추가해 연속샷 방지
     IEnumerator ShotDelay()
     {
@@ -445,7 +439,7 @@ public class Player : MonoBehaviour
             recovery = 0;
         }
     }
-    
+
     /// <summary>
     /// 플레이어의 피격 함수, NormalMounster에서 호출해서 피격
     /// </summary>

@@ -8,10 +8,14 @@ public class GameManager : MonoBehaviour
 {
 
     public static GameManager Instance { get; private set; }  // 싱글턴 인스턴스
+
+    [Header("Player UI")]
     public Player player;
-    public Image[] image;
-    public GameObject menu;
+    public Image[] image;    
     public Text mana;
+
+    [Header("Game UI")]
+    public GameObject menu;
 
     private void Awake()
     {

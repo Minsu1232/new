@@ -6,14 +6,12 @@ using UnityEngine;
 
 public class ArrownDamage : MonoBehaviour
 {
+
+    [Header("Arrow")]
     [SerializeField]
     ArrowDamageScriptable damageScriptable;
-    [SerializeField]
+    
     Player player;
-
-
-
-
     int damage;
 
     Rigidbody rb;
@@ -29,7 +27,7 @@ public class ArrownDamage : MonoBehaviour
 
         damage = 0;
         rb = GetComponent<Rigidbody>();
-        //꺼진 콜라이더 다시 킴
+        //꺼진 콜라이더 다시 킴 화살 박힐때 데미지 들어가는거 방지
         collider = GetComponent<Collider>();
         collider.enabled = true;
 
