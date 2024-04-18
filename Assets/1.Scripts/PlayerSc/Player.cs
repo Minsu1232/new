@@ -28,7 +28,9 @@ public class Player : MonoBehaviour
     [SerializeField]
     Transform target;
     public Image hpBar;
+    public Image mpBar;
     public Text hp;
+    public Text mana;
 
     [Header("Arrow Attributes")]
     [SerializeField]
@@ -101,31 +103,35 @@ public class Player : MonoBehaviour
 
     void Update()
     {
-
-        if (Input.GetMouseButtonDown(1))  // 마우스 우클릭을 감지
+        if (!isDie)
         {
-            if (target != null)
+            if (Input.GetMouseButtonDown(1))  // 마우스 우클릭을 감지
             {
-                isLockOn = !isLockOn;  // 토글 방식
+                if (target != null)
+                {
+                    isLockOn = !isLockOn;  // 토글 방식
+                }
+
             }
 
-        }
+            if (!isLockOn)
+            {
+                LookAround();
+                MoveAndCamera();
+            }
+            else
+            {
+                LockOnTarget();  // LockOn 상태일 때 타겟을 바라보는 함수
+                LockOnCamera();  // LockOn 상태일 때 움직이는 함수
+                ArrowShot();
 
-        if (!isLockOn)
-        {
-            LookAround();
-            MoveAndCamera();
-        }
-        else
-        {
-            LockOnTarget();  // LockOn 상태일 때 타겟을 바라보는 함수
-            LockOnCamera();  // LockOn 상태일 때 움직이는 함수
-            ArrowShot();
+            }
 
+            Skill(); // 스킬 관련 매서드
+            Recovery(); // 자연 회복 매서드
+            Stamina();
         }
-
-        Skill(); // 스킬 관련 매서드
-        Recovery(); // 자연 회복 매서드
+      
 
     }
 
@@ -449,7 +455,8 @@ public class Player : MonoBehaviour
         remainHealth -= damage; // 피해량을 먼저 적용
         remainHealth = Mathf.Clamp(remainHealth, 0, initialHealth); // 체력이 음수가 되지 않도록 제어
 
-        // UI 업데이트
+        // Hpbar 감소ui
+
         hp.text = $"{remainHealth}/{initialHealth}";
         hpBar.fillAmount = (float)remainHealth / initialHealth;
 
@@ -474,6 +481,20 @@ public class Player : MonoBehaviour
         }
 
     }
+    // mpBar 감소 UI
+    void Stamina()
+    {
+        mana.text = $"{mp}/{maxMp}";
+        if (maxMp > 0)  // 최대 MP가 0보다 클 때만 계산
+        {
+            mpBar.fillAmount = (float)mp / maxMp;
+        }
+        else
+        {
+            mpBar.fillAmount = 0;  // 최대 MP가 0이면 바를 0으로 설정
+        }
+    }
+    
 
 }
 

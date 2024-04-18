@@ -45,21 +45,14 @@ public class ArrownDamage : MonoBehaviour
     //Update is called once per frame
     void OnTriggerEnter(Collider other)
     {
-        if (other.CompareTag("NormalMon"))  // "NormalMon" 태그가 있는지 확인
+        IDamageable damageable = other.GetComponent<IDamageable>();
+        if (damageable != null)
         {
-
             damage = damageScriptable.initialDamage + player.str;
-            NormalMonster monster = other.GetComponent<NormalMonster>();
-            if (monster != null)
-            {
-                Debug.Log("닿았다");
-                monster.TakeDamage(damage);
-               
-                // 도트데미지
-                StartCoroutine(DotDamage(monster, damageScriptable.duration, damageScriptable.damagePerSecond));
-                StickArrow(other);
-
-            }
+            Debug.Log("닿았다");
+            damageable.TakeDamage(damage);
+            StartCoroutine(DotDamage(damageable, damageScriptable.duration, damageScriptable.damagePerSecond));
+            StickArrow(other);
         }
     }
     void StickArrow(Collider collision)
@@ -82,7 +75,9 @@ public class ArrownDamage : MonoBehaviour
         float particleDuration = particleInstance.main.duration + particleInstance.main.startLifetime.constantMax;
         Destroy(particleInstance.gameObject, particleDuration);
     }
-    IEnumerator DotDamage(NormalMonster monster, float duration, int damagePerSecond)
+
+    // 도트데미지 구현 매서드
+    IEnumerator DotDamage(IDamageable monster, float duration, int damagePerSecond)
     {
         float remainingTime = duration;
 

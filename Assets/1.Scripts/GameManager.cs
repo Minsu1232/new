@@ -38,7 +38,7 @@ public class GameManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        PlayerStamina();
+       
 
 
     }
@@ -54,16 +54,5 @@ public class GameManager : MonoBehaviour
         }
         
     }
-    public void PlayerStamina()
-    {
-        mana.text = $"{player.maxMp}/{player.mp}";
-        if (player.maxMp > 0)  // 최대 MP가 0보다 클 때만 계산
-        {
-            image[1].fillAmount = (float)player.mp / player.maxMp;
-        }
-        else
-        {
-            image[1].fillAmount = 0;  // 최대 MP가 0이면 바를 0으로 설정
-        }
-    }
+   
 }

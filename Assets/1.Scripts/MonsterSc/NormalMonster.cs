@@ -4,7 +4,8 @@ using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.UI;
 
-public class NormalMonster : MonoBehaviour
+// 인터페이스 사용해 피격 판정
+public class NormalMonster : MonoBehaviour, IDamageable
 {
     [Header("Monster Attributes")]
     [SerializeField]
