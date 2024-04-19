@@ -35,6 +35,7 @@ public class NormalMonster : MonoBehaviour, IDamageable
     bool isAttack;
     bool isDie;
     bool isKill;
+    bool isGettingHit; 
 
 
 
@@ -80,10 +81,10 @@ public class NormalMonster : MonoBehaviour, IDamageable
     }
 
     /// <summary>
-    /// 몬스터의 피격 함수 ArrowDamage에서 호출해서 피격
+    /// 몬스터의 피격 함수 ArrowDamage에서 호출.
     /// </summary>
     /// <param name="damage"></param>
-    public void TakeDamage(int damage)
+    public void TakeDamage(int damage, int neutralizeValu)
     {
 
         if (remainHealth > 0)
@@ -177,11 +178,18 @@ public class NormalMonster : MonoBehaviour, IDamageable
     }
     IEnumerator Gethit()
     {
+        if (isGettingHit)  // 이미 피격 상태인 경우 더 이상 진행하지 않음
+            yield break;
+
+        isGettingHit = true;
         animator.SetBool("Gethit", true);
-        navMeshAgent.speed = 0;
-        yield return new WaitForSeconds(1.3f);
-        navMeshAgent.speed = walkSpeed;
+        navMeshAgent.speed = 0;  // 속도를 0으로 설정
+
+        yield return new WaitForSeconds(1.3f);  // 피격 애니메이션 재생 시간 동안 대기
+
+        navMeshAgent.speed = walkSpeed;  // 속도 복원
         animator.SetBool("Gethit", false);
+        isGettingHit = false;  // 피격 상태 해제
     }
 
 

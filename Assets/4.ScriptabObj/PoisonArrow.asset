@@ -18,4 +18,5 @@ MonoBehaviour:
   effectType: '"Poison"'
   particleEffect: {fileID: 7832807635120261130, guid: 4488bd6286ed90c47ac5fd986320e0f8, type: 3}
   stamina: 5
-  neutralize: 2
+  neutralizeValue: 3
+  destructionValue: 0

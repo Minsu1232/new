@@ -13,6 +13,7 @@ public class ArrownDamage : MonoBehaviour
     
     Player player;
     int damage;
+    int neutralizeValu;
 
     Rigidbody rb;
     Collider collider;
@@ -24,8 +25,6 @@ public class ArrownDamage : MonoBehaviour
 
         // 시작전 미리 할당하여 바뀐 스탯값에 데미지+ 적용
         player = FindObjectOfType<Player>();
-
-        damage = 0;
         rb = GetComponent<Rigidbody>();
         //꺼진 콜라이더 다시 킴 화살 박힐때 데미지 들어가는거 방지
         collider = GetComponent<Collider>();
@@ -45,14 +44,36 @@ public class ArrownDamage : MonoBehaviour
     //Update is called once per frame
     void OnTriggerEnter(Collider other)
     {
+        // 인터페이스를 사용해 스크립트 동기화
         IDamageable damageable = other.GetComponent<IDamageable>();
         if (damageable != null)
         {
             damage = damageScriptable.initialDamage + player.str;
+            neutralizeValu = damageScriptable.neutralizeValue;
             Debug.Log("닿았다");
-            damageable.TakeDamage(damage);
+            damageable.TakeDamage(damage,neutralizeValu);
+            
             StartCoroutine(DotDamage(damageable, damageScriptable.duration, damageScriptable.damagePerSecond));
             StickArrow(other);
+        }
+    }
+    // 도트데미지 구현 매서드
+    IEnumerator DotDamage(IDamageable monster, float duration, int damagePerSecond)
+    {
+        float remainingTime = duration;
+
+        yield return new WaitForSeconds(0.5f); // 첫 번째 피해 적용 전에 1초 대기
+        while (remainingTime > 0)
+        {
+            if (monster == null)  // 몬스터가 null이거나 살아있지 않은 경우
+            {
+                yield break;  // 코루틴 종료
+            }
+            
+            monster.TakeDamage(damagePerSecond, neutralizeValu);
+            yield return new WaitForSeconds(0.5f);
+            remainingTime -= 1f;
+
         }
     }
     void StickArrow(Collider collision)
@@ -76,24 +97,7 @@ public class ArrownDamage : MonoBehaviour
         Destroy(particleInstance.gameObject, particleDuration);
     }
 
-    // 도트데미지 구현 매서드
-    IEnumerator DotDamage(IDamageable monster, float duration, int damagePerSecond)
-    {
-        float remainingTime = duration;
-
-        yield return new WaitForSeconds(1f); // 첫 번째 피해 적용 전에 1초 대기
-        while (remainingTime > 0)
-        {
-            if (monster == null)  // 몬스터가 null이거나 살아있지 않은 경우
-            {
-                yield break;  // 코루틴 종료
-            }
-
-            monster.TakeDamage(damagePerSecond);
-            yield return new WaitForSeconds(1f);
-            remainingTime -= 1f;
-
-        }
-    }
+    
+   
 
 }

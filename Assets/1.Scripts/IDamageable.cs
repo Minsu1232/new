@@ -2,8 +2,13 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-    public interface IDamageable
+public interface IDamageable
+{
+    void TakeDamage(int damage, int aneutralizeValu)
     {
-        void TakeDamage(int damage);
+
     }
+
+}
+
 

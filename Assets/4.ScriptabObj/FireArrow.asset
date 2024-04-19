@@ -18,5 +18,5 @@ MonoBehaviour:
   effectType: '"Fire"'
   particleEffect: {fileID: 685090368539115530, guid: c848cb3d55640964ba057c9c1a09e55e, type: 3}
   stamina: 6
-  neutralizeValue: 0
+  neutralizeValue: 4
   destructionValue: 0

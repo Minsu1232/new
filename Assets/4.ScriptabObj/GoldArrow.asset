@@ -18,4 +18,5 @@ MonoBehaviour:
   effectType: '"Gold"'
   particleEffect: {fileID: 5665623732858392265, guid: 843563750d0d49d43a87a37357c85b9d, type: 3}
   stamina: 10
-  neutralize: 7
+  neutralizeValue: 13
+  destructionValue: 0

@@ -1,6 +1,6 @@
 
 using System.Collections;
-using Unity.VisualScripting;
+using System.Diagnostics;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -51,23 +51,28 @@ public class Player : MonoBehaviour
     Rigidbody rb;
     Animator animator;
     CharacterController controller;
+    Boss boss;
 
     // 캐릭터컨트롤러 관리용 변수
-    private Vector3 playerVelocity;
+    private Vector3 playerVelocity; //캐릭터의 y값 체크용
     private bool isGrounded;
-    float gravity = -4f;
+    float gravity = -8f; //받을 중력값
 
     // 연속샷 방지
     int shotCount;
 
+    // 애니메이션 및 상태 체크용
     bool isWalk;
     bool isDie;
-
     bool isLockOn;
     bool isAim;
-
+    public bool isRoll;
+    public bool isRolling;
+    public bool isInvincible = false;
+   
+    
+    
     // 스킬 쿨타임 체크용
-
     bool isSkill;
 
 
@@ -94,6 +99,7 @@ public class Player : MonoBehaviour
     }
     void Start()
     {
+        boss = GetComponent<Boss>();
         controller = gameObject.GetComponent<CharacterController>(); // 지형에 맞는 움직임을 자연스럽게 하기위해 사용
         shotCount = 1;
         hp.text = $"{remainHealth}/{initialHealth}";
@@ -105,6 +111,11 @@ public class Player : MonoBehaviour
     {
         if (!isDie)
         {
+            if (isRoll)
+            {
+                HandleInput();
+            }
+           
             if (Input.GetMouseButtonDown(1))  // 마우스 우클릭을 감지
             {
                 if (target != null)
@@ -147,7 +158,15 @@ public class Player : MonoBehaviour
                 Vector2 moveInput = new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"));
                 Vector3 moveDir;
 
-
+                // 입력값이 뒤일경우엔 구르기 기능 사용 불가
+                if (moveInput.y <= 0)
+                {
+                    isRoll = false;
+                }
+                else
+                {
+                    isRoll = true;
+                }
                 Vector3 lookForward = new Vector3(cameraArm.forward.x, 0f, cameraArm.forward.z).normalized;
                 Vector3 lookRight = new Vector3(cameraArm.right.x, 0f, cameraArm.right.z).normalized;
                 moveDir = lookForward * moveInput.y + lookRight * moveInput.x;
@@ -299,7 +318,7 @@ public class Player : MonoBehaviour
         else if (mp >= 8 && isLockOn == false && isSkill == false && cool[1] == false && Input.GetKeyDown(KeyCode.Alpha2))
         {
             //불화살
-            Debug.Log("fire");
+            
             mp -= 8;
             isSkill = true;
             StartCoroutine(SkillCool(6, 1, 1));
@@ -431,10 +450,10 @@ public class Player : MonoBehaviour
     IEnumerator BuffTime()
     {
         str += 3;
-        Debug.Log("버프시작" + str);
+      
         yield return new WaitForSeconds(10f);
         str -= 3;
-        Debug.Log("버프끝" + str);
+       
     }
     void Recovery()
     {
@@ -452,6 +471,7 @@ public class Player : MonoBehaviour
     /// <param name="damage"></param>
     public void TakeDamage(int damage)
     {
+        if (isInvincible) return; // 무적 상태일 때는 피해를 받지 않음
         remainHealth -= damage; // 피해량을 먼저 적용
         remainHealth = Mathf.Clamp(remainHealth, 0, initialHealth); // 체력이 음수가 되지 않도록 제어
 
@@ -460,15 +480,20 @@ public class Player : MonoBehaviour
         hp.text = $"{remainHealth}/{initialHealth}";
         hpBar.fillAmount = (float)remainHealth / initialHealth;
 
-        if (remainHealth > 0)
+        if (!isRolling)
         {
-            animator.SetBool("Hit", true); // 피격 애니메이션 재생
+            if (remainHealth > 0)
+            {
+                animator.SetBool("Hit", true); // 피격 애니메이션 재생
+            }
+       
         }
-        else
+        if(remainHealth <= 0)
         {
             Die(); // 체력이 0 이하면 사망 처리
-            Debug.Log("DIE");
+
         }
+
 
     }
     void Die()
@@ -494,7 +519,65 @@ public class Player : MonoBehaviour
             mpBar.fillAmount = 0;  // 최대 MP가 0이면 바를 0으로 설정
         }
     }
-    
+    void HandleInput()
+    {
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            Roll();
+        }
+    }
+    void Roll()
+    {
+        // 구르기 애니메이션 재생
+        animator.SetBool("Roll",true);
+        isRolling = true;
+        // 구르기 동안 이동할 거리 설정
+        float rollDistance = 5f;
+
+        // 구르기 방향 (현재 캐릭터가 바라보고 있는 방향)
+        Vector3 rollDirection = character.forward;
+
+        // 구르기 이동 실행
+        StartCoroutine(PerformRoll(rollDirection, rollDistance));
+    }
+   
+
+    IEnumerator PerformRoll(Vector3 direction, float distance)
+    {
+        float remainingDistance = distance;
+        while (remainingDistance > 0)
+        {
+            // 한 프레임 당 이동할 거리 계산
+            float moveDistance = 6f * Time.deltaTime;
+
+            // 이동할 거리가 남은 거리보다 많다면 조정
+            moveDistance = Mathf.Min(moveDistance, remainingDistance);
+
+            // 캐릭터 컨트롤러를 사용하여 이동
+            controller.Move(direction * moveDistance);
+
+            // 남은 거리 갱신
+            remainingDistance -= moveDistance;
+            
+
+            yield return null;
+        }
+    }
+    //애니메이션 이벤트
+    public void RollFalse()
+    {
+        animator.SetBool("Roll", false);
+    }
+    // 애니메이션 이벤트
+    public void RollInvincibility(int status)
+    {
+        isInvincible = (status != 0);
+    }
+    // 애니메이션 이벤트
+    public void IsRolling()
+    {
+        isRolling = false;
+    }
 
 }
 
