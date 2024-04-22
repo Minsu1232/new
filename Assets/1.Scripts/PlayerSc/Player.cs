@@ -68,6 +68,7 @@ public class Player : MonoBehaviour
     bool isAim;
     public bool isRoll;
     public bool isRolling;
+    public int roll;
     public bool isInvincible = false;
    
     
@@ -78,7 +79,7 @@ public class Player : MonoBehaviour
 
     private void OnEnable()
     {
-
+        roll = 1;
         StopAllCoroutines();
         // 스크립터블 초기화
         initialHealth = playerState.health;
@@ -523,7 +524,14 @@ public class Player : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.Space))
         {
-            Roll();
+            if (mp > 5 && roll == 1)
+            {
+                // 쿨타임은 3초
+                StartCoroutine(RollingCool());
+                mp -= 5;
+                Roll();
+            }            
+            
         }
     }
     void Roll()
@@ -563,6 +571,12 @@ public class Player : MonoBehaviour
             yield return null;
         }
     }
+    IEnumerator RollingCool()
+    {
+        roll = 0;
+    yield return new WaitForSeconds(3f);
+        roll = 1;
+    }
     //애니메이션 이벤트
     public void RollFalse()
     {
@@ -571,7 +585,7 @@ public class Player : MonoBehaviour
     // 애니메이션 이벤트
     public void RollInvincibility(int status)
     {
-        isInvincible = (status != 0);
+        isInvincible = (status != 0); // 구르기시 12프레임간 무적
     }
     // 애니메이션 이벤트
     public void IsRolling()

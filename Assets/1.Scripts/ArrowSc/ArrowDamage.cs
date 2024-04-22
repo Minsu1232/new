@@ -17,9 +17,11 @@ public class ArrownDamage : MonoBehaviour
 
     Rigidbody rb;
     Collider collider;
+
+    bool shouldPlayAnimation = true;
     // Start is called before the first frame update
 
-  
+
     private void OnEnable()
     {
 
@@ -38,12 +40,13 @@ public class ArrownDamage : MonoBehaviour
     }
     private void Update()
     {
-        Debug.Log(damageScriptable);
+        
     }
 
     //Update is called once per frame
     void OnTriggerEnter(Collider other)
     {
+        shouldPlayAnimation = true;
         // 인터페이스를 사용해 스크립트 동기화
         IDamageable damageable = other.GetComponent<IDamageable>();
         if (damageable != null)
@@ -51,7 +54,17 @@ public class ArrownDamage : MonoBehaviour
             damage = damageScriptable.initialDamage + player.str;
             neutralizeValu = damageScriptable.neutralizeValue;
             Debug.Log("닿았다");
-            damageable.TakeDamage(damage,neutralizeValu);
+            // 일반 화살일땐 넉백 모션이 없음
+            if(damageScriptable.name == "Arrow")
+            {
+                damageable.TakeDamage(damage, neutralizeValu, false);
+            }
+            // 그 외 화살은 있음
+            else
+            {
+                damageable.TakeDamage(damage, neutralizeValu, true);
+            }
+            
             
             StartCoroutine(DotDamage(damageable, damageScriptable.duration, damageScriptable.damagePerSecond));
             StickArrow(other);
@@ -62,16 +75,18 @@ public class ArrownDamage : MonoBehaviour
     {
         float remainingTime = duration;
 
-        yield return new WaitForSeconds(0.5f); // 첫 번째 피해 적용 전에 1초 대기
+        shouldPlayAnimation = false;
+
+        yield return new WaitForSeconds(1f); // 첫 번째 피해 적용 전에 1초 대기
         while (remainingTime > 0)
         {
             if (monster == null)  // 몬스터가 null이거나 살아있지 않은 경우
             {
                 yield break;  // 코루틴 종료
             }
-            
-            monster.TakeDamage(damagePerSecond, neutralizeValu);
-            yield return new WaitForSeconds(0.5f);
+            // 도트데미지는 넉백모션 없음
+            monster.TakeDamage(damagePerSecond, neutralizeValu,false);
+            yield return new WaitForSeconds(1f);
             remainingTime -= 1f;
 
         }

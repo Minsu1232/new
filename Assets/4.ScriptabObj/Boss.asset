@@ -15,7 +15,7 @@ MonoBehaviour:
   MonsterName: "\"\uBD88\uAC00\uC0B4\""
   health: 300
   damage: 30
-  walkSpeed: 5
-  runSpeed: 6
+  walkSpeed: 6
+  runSpeed: 9
   neutralizeValue: 100
   destructionValue: 4

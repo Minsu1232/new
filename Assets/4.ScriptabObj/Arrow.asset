@@ -19,4 +19,4 @@ MonoBehaviour:
   particleEffect: {fileID: 5665623732858392265, guid: 843563750d0d49d43a87a37357c85b9d, type: 3}
   stamina: 0
   neutralizeValue: 2
-  destructionValue: 0
+  destructionValue: 1
