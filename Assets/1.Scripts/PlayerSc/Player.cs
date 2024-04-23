@@ -31,6 +31,7 @@ public class Player : MonoBehaviour
     public Image mpBar;
     public Text hp;
     public Text mana;
+    public ParticleSystem counterSkill;
 
     [Header("Arrow Attributes")]
     [SerializeField]
@@ -51,7 +52,7 @@ public class Player : MonoBehaviour
     Rigidbody rb;
     Animator animator;
     CharacterController controller;
-    Boss boss;
+   public Boss boss;
 
     // 캐릭터컨트롤러 관리용 변수
     private Vector3 playerVelocity; //캐릭터의 y값 체크용
@@ -60,6 +61,7 @@ public class Player : MonoBehaviour
 
     // 연속샷 방지
     int shotCount;
+    
 
     // 애니메이션 및 상태 체크용
     bool isWalk;
@@ -68,7 +70,7 @@ public class Player : MonoBehaviour
     bool isAim;
     public bool isRoll;
     public bool isRolling;
-    public int roll;
+    public int roll; // 구르기 쿨타임용 변수
     public bool isInvincible = false;
    
     
@@ -79,6 +81,7 @@ public class Player : MonoBehaviour
 
     private void OnEnable()
     {
+        
         roll = 1;
         StopAllCoroutines();
         // 스크립터블 초기화
@@ -100,7 +103,7 @@ public class Player : MonoBehaviour
     }
     void Start()
     {
-        boss = GetComponent<Boss>();
+       
         controller = gameObject.GetComponent<CharacterController>(); // 지형에 맞는 움직임을 자연스럽게 하기위해 사용
         shotCount = 1;
         hp.text = $"{remainHealth}/{initialHealth}";
@@ -110,6 +113,7 @@ public class Player : MonoBehaviour
 
     void Update()
     {
+
         if (!isDie)
         {
             if (isRoll)
@@ -352,8 +356,33 @@ public class Player : MonoBehaviour
             skillComand = 0;
 
         }
+        else if (mp >= 3 && isLockOn == false && cool[4] == false && Input.GetKeyDown(KeyCode.F))
+        {
+            // 카운터패턴사용때 스킬 사용시 일시적인 경직
+            mp -= 3;
+            StartCoroutine(SkillCool(2, 4, 0));
+            counterSkill.Play();
+            if (boss.animator.GetInteger("AttackInt") == 2)
+            {
+                boss.animator.SetTrigger("Groggy");
+            }
+        }
+        else if (mp >= 5 && isLockOn == false && cool[5] == false && Input.GetKeyDown(KeyCode.Space))
+        {
+            if (Input.GetKeyDown(KeyCode.Space))
+            {
+               
+                    // 쿨타임은 3초
+                    StartCoroutine(SkillCool(3,5,0));
+                    mp -= 5;
+                    Roll();
+                
+
+            }
+        }
 
     }
+
     IEnumerator SkillCool(int coolTime, int skillCoolIndex, int skillArrowIndex)
     {
         cool[skillCoolIndex] = true;

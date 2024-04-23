@@ -21,7 +21,7 @@ public class ArrownDamage : MonoBehaviour
     bool shouldPlayAnimation = true;
     // Start is called before the first frame update
 
-
+    
     private void OnEnable()
     {
 
@@ -63,6 +63,7 @@ public class ArrownDamage : MonoBehaviour
             else
             {
                 damageable.TakeDamage(damage, neutralizeValu, true);
+                
             }
             
             
@@ -71,6 +72,7 @@ public class ArrownDamage : MonoBehaviour
         }
     }
     // 도트데미지 구현 매서드
+
     IEnumerator DotDamage(IDamageable monster, float duration, int damagePerSecond)
     {
         float remainingTime = duration;

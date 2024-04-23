@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.UI;
@@ -18,6 +19,7 @@ public class Boss : MonoBehaviour, IDamageable
     public int remainNeutralizeVlaue; // 남은 무력화 
     public int destructionValue; // 시작 파괴 수치    
     public int walkSpeed;
+    public int runSpeed;
 
     [Header("Boss Attributes")]
     [SerializeField]
@@ -25,12 +27,13 @@ public class Boss : MonoBehaviour, IDamageable
     public GameObject[] gimmickWalls;
     public Transform gimmickStartPosition;
     public int gimmickCount; // 0이 되면 파훼
+    public ParticleSystem[] secondpahseParticle;
 
 
 
 
     [Header("Monster UI")]
-    public Text hp;       
+    public Text hp;
     public Image hpBar;
     public Image neutralizeBar;
     public Image destructionBar;
@@ -44,9 +47,13 @@ public class Boss : MonoBehaviour, IDamageable
     public bool isKill;
     public bool isDie;
     public bool isGroggy;
+    public bool isSecondPhase;
+    public bool isSecondPhaseStart;
+    public bool isGettingHit;  // 새로운 상태 변수 추가
+    public bool isGimmickEnd;
 
-    Animator animator;
-    bool isGettingHit;  // 새로운 상태 변수 추가
+    public Animator animator;
+
 
     private Coroutine damageCoroutine; //기믹의 달리기 데미지 주기를 위한 변수
 
@@ -60,7 +67,7 @@ public class Boss : MonoBehaviour, IDamageable
         walkSpeed = bossScriptable.walkSpeed;
         neutralizeValue = bossScriptable.neutralizeValue;
         destructionValue = bossScriptable.destructionValue;
-
+        runSpeed = bossScriptable.runSpeed;
         // 남은 value 체크용
         remainHealth = initialHealth;
         remainNeutralizeVlaue = neutralizeValue;
@@ -69,14 +76,15 @@ public class Boss : MonoBehaviour, IDamageable
     }
     void Start()
     {
-
+        isSecondPhaseStart = false;
+        isSecondPhase = false;
         isGettingHit = false;
         isDie = false;
         isGroggy = false;
+        isGimmickEnd = false;
         gimmickCount = 4;
 
         animator = GetComponent<Animator>();
-        navMeshAgent = GetComponent<NavMeshAgent>();
         navMeshAgent.speed = walkSpeed;
         //시작 ui
         hp.text = $"{initialHealth}/{initialHealth}";
@@ -89,24 +97,49 @@ public class Boss : MonoBehaviour, IDamageable
     {
         if (!isDie)
         {
-            if (!isgimmick)
+            if (!isgimmick && !isSecondPhase)
             {
                 Groggy();
                 MonsterMove();
                 Attack();
                 neutralizeBar.fillAmount = (float)remainNeutralizeVlaue / neutralizeValue;
                 Gimmick();
+
             }
+            // 이부분 고쳐야함
+            if (remainHealth <= 90)
+            {
+                SecondPhaseStart();
+            }
+            if (isSecondPhaseStart)
+            {
+               if (isSecondPhaseStart)
+               {
+                   {
+                     isSecondPhase = true;
+                     secondpahseParticle[0].gameObject.SetActive(true);
+                     StartCoroutine(SecondPhase());
+                     
+                   }
+               }
+
+              
+            }
+
             GimmicDamage();
             GimmicEnd();
 
 
-        }       
+
+
+
+
+        }
 
     }
     /// <summary>
     /// 몬스터의 피격 함수 ArrowDamage에서 호출.
-    /// </summary>
+    ///F </summary>
     /// <param name="damage"></param>
     public void TakeDamage(int damage, int neutralizeValu, bool shouldTriggerHitAnimation = true)
     {
@@ -120,7 +153,7 @@ public class Boss : MonoBehaviour, IDamageable
         {
             remainNeutralizeVlaue -= neutralizeValu;
         }
-       
+
         // health값이 음수가 되지 않게 제어
         remainHealth = Mathf.Clamp(remainHealth, 0, initialHealth);
         hp.text = $"{remainHealth}/{initialHealth}";
@@ -212,7 +245,7 @@ public class Boss : MonoBehaviour, IDamageable
         isGettingHit = true;
         animator.SetBool("Gethit", true);
         navMeshAgent.speed = 0;  // 속도를 0으로 설정
-
+        Debug.Log("GetHit");
         yield return new WaitForSeconds(1.3f);  // 피격 애니메이션 재생 시간 동안 대기
 
         navMeshAgent.speed = walkSpeed;  // 속도 복원
@@ -222,26 +255,27 @@ public class Boss : MonoBehaviour, IDamageable
     // 애니메이션 이벤트 (플레이어 데미지)
     void Hit()
     {
-        player.TakeDamage(damage);        
+        player.TakeDamage(damage);
     }
+
 
     // 그로기 관련 매서드
     void Groggy()
     {
-        if(remainNeutralizeVlaue <= 0)
+        if (remainNeutralizeVlaue <= 0)
         {
             StartCoroutine(GroggyTime());
         }
     }
     IEnumerator GroggyTime()
     {
-    
-        if(!isGroggy)
+
+        if (!isGroggy)
         {
             animator.SetTrigger("Groggy");
             animator.SetBool("IsGroggy", true);
         }
-        isGroggy = true;               
+        isGroggy = true;
         navMeshAgent.speed = 0;  // 속도를 0으로 설정
 
         yield return new WaitForSeconds(4f);  // 피격 애니메이션 재생 시간 동안 대기
@@ -249,8 +283,8 @@ public class Boss : MonoBehaviour, IDamageable
         navMeshAgent.speed = walkSpeed;  // 속도 복원        
         isGroggy = false;  // 피격 상태 해제
         remainNeutralizeVlaue = neutralizeValue;
-        
-     
+
+
 
     }
 
@@ -264,13 +298,13 @@ public class Boss : MonoBehaviour, IDamageable
             {
                 navMeshAgent.enabled = false;
                 animator.SetTrigger("Rage");
-                isgimmick = true; 
+                isgimmick = true;
                 // 각 pillar에 대해 MovePillar 코루틴 시작
                 foreach (GameObject gimmickWall in gimmickWalls)
                 {
                     StartCoroutine(MovePillar(gimmickWall, 8f, 1f)); // 1초 동안 8로 이동
                 }
-                isGimmicked = true; 
+                isGimmicked = true;
                 StartCoroutine(Gimmicking());
             }
 
@@ -299,15 +333,38 @@ public class Boss : MonoBehaviour, IDamageable
     // 기믹 파훼 매서드
     void GimmicEnd()
     {
-        if(gimmickCount == 0)
+        if (gimmickCount == 0)
         {
-            animator.SetBool("GimmickRun", false);
-            animator.SetBool("IsGroggy", true);
-            StartCoroutine(GimmickEndCorutine());
+            if (!isGimmickEnd)
+            {
+                isGimmickEnd = true;
+                StartCoroutine(GimmickEndCorutine());
+            }
+
         }
     }
 
-    // 하울링 후 기믹시작지점으로 이동 하는 코루틴
+    void SecondPhaseStart()
+    {
+        if (!isSecondPhaseStart)
+        {
+            isSecondPhaseStart = true;
+        }
+
+    }
+    IEnumerator SecondPhase()
+    {
+        isSecondPhase = true;
+        walkSpeed = 0;
+        animator.SetBool("Move", false);
+        animator.SetTrigger("Rage");
+        yield return new WaitForSeconds(2.02f);
+        animator.SetBool("Move", true);
+        walkSpeed = runSpeed;
+        isSecondPhase = false;
+
+    }
+    // 첫 기믹 하울링 후 기믹시작지점으로 이동 하는 코루틴
     IEnumerator Gimmicking()
     {
         yield return new WaitForSeconds(2f); // 포효 후 이동 위한 시간제약
@@ -330,12 +387,12 @@ public class Boss : MonoBehaviour, IDamageable
             {
                 Debug.Log("도착");
                 animator.SetBool("GimmickRun", false);
-                animator.SetTrigger("Observ"); // 2초간 두리번 거린 후
+                animator.SetTrigger("Observ"); // 애니메이션 시간만큼 두리번 거린 후
                 yield return new WaitForSeconds(3.12f);
                 walkSpeed = bossScriptable.runSpeed; // 기믹 시작시 스피드 증가
-                animator.SetBool("GimmickRun", true); // 플레이어를 향해 달려옴
+                animator.SetBool("GimmickRun", true); // 플레이어를 향해 달려오는 애니메이션
                 isgimmick = false;
-                              
+
                 break; // 목표에 도달하면 루프 종료
             }
 
@@ -345,7 +402,7 @@ public class Boss : MonoBehaviour, IDamageable
         // 최종 위치 및 방향 설정
         transform.position = endPosition;
         transform.rotation = Quaternion.LookRotation((endPosition - startPosition).normalized);
-        
+
     }
 
     //체력 50퍼시 기둥이 떨어지는 코루틴
@@ -376,14 +433,16 @@ public class Boss : MonoBehaviour, IDamageable
     IEnumerator GimmickEndCorutine()
     {
         navMeshAgent.speed = 0;
+        animator.SetBool("GimmickRun", false);
+        animator.SetBool("IsGroggy", true);
         yield return new WaitForSeconds(5f);
-        navMeshAgent.speed = bossScriptable.walkSpeed; // 다시 원래 속도로 돌아감 현잰 왜인지 모르겠으나 안돌아감
+        navMeshAgent.speed = walkSpeed; // 다시 원래 속도로 돌아감 현잰 왜인지 모르겠으나 안돌아감
         animator.SetBool("IsGroggy", false);
     }
     private void OnTriggerEnter(Collider other)
     {
         // 기믹 시작 할때부터 부셔짐
-        if(other.gameObject.tag == "GimmickWalls" && !isgimmick)
+        if (other.gameObject.tag == "GimmickWalls" && !isgimmick)
         {
             Destroy(other.gameObject);
             gimmickCount--;
