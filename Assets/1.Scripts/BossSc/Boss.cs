@@ -5,6 +5,7 @@ using UnityEditor;
 using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.UI;
+using Vitals;
 
 // 인터페이스 사용해 피격 판정
 public class Boss : MonoBehaviour, IDamageable
@@ -106,24 +107,10 @@ public class Boss : MonoBehaviour, IDamageable
                 Gimmick();
 
             }
-            // 이부분 고쳐야함
-            if (remainHealth <= 90)
+            // 체력이 30% 이하이고 두 번째 단계가 아직 시작되지 않았다면,
+            if (remainHealth <= 90 && !isSecondPhaseStart)
             {
                 SecondPhaseStart();
-            }
-            if (isSecondPhaseStart)
-            {
-               if (isSecondPhaseStart)
-               {
-                   {
-                     isSecondPhase = true;
-                     secondpahseParticle[0].gameObject.SetActive(true);
-                     StartCoroutine(SecondPhase());
-                     
-                   }
-               }
-
-              
             }
 
             GimmicDamage();
@@ -343,26 +330,26 @@ public class Boss : MonoBehaviour, IDamageable
 
         }
     }
-
+    // 2페이즈 스타트
     void SecondPhaseStart()
     {
-        if (!isSecondPhaseStart)
-        {
-            isSecondPhaseStart = true;
-        }
-
+        secondpahseParticle[0].gameObject.SetActive(true);
+        secondpahseParticle[1].gameObject.SetActive(true);
+        isSecondPhaseStart = true; // 두 번째 단계 시작 플래그를 true로 설정
+        StartCoroutine(SecondPhase());
     }
+    // 2페이즈 스타트
     IEnumerator SecondPhase()
     {
+        // 두 번째 단계 로직을 실행합니다.
         isSecondPhase = true;
-        walkSpeed = 0;
+        navMeshAgent.enabled = false;
         animator.SetBool("Move", false);
         animator.SetTrigger("Rage");
         yield return new WaitForSeconds(2.02f);
         animator.SetBool("Move", true);
         walkSpeed = runSpeed;
         isSecondPhase = false;
-
     }
     // 첫 기믹 하울링 후 기믹시작지점으로 이동 하는 코루틴
     IEnumerator Gimmicking()
