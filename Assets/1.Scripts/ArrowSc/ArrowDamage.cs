@@ -47,6 +47,16 @@ public class ArrownDamage : MonoBehaviour
     void OnTriggerEnter(Collider other)
     {
         shouldPlayAnimation = true;
+        
+        
+        //if (other.gameObject.tag == "PouderKeg")
+        //{
+        //    Destroy(other.gameObject);
+        //}
+        if (other.gameObject.tag == "BossRoom")
+        {
+            StickArrow(other);
+        }
         // 인터페이스를 사용해 스크립트 동기화
         IDamageable damageable = other.GetComponent<IDamageable>();
         if (damageable != null)
@@ -58,18 +68,18 @@ public class ArrownDamage : MonoBehaviour
             if(damageScriptable.name == "Arrow")
             {
                 damageable.TakeDamage(damage, neutralizeValu, false);
-            }
+            }           
             // 그 외 화살은 있음
             else
             {
                 damageable.TakeDamage(damage, neutralizeValu, true);
                 
-            }
-            
+            }            
             
             StartCoroutine(DotDamage(damageable, damageScriptable.duration, damageScriptable.damagePerSecond));
             StickArrow(other);
         }
+        
     }
     // 도트데미지 구현 매서드
 

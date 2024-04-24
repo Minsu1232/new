@@ -16,6 +16,6 @@ MonoBehaviour:
   health: 300
   damage: 30
   walkSpeed: 6
-  runSpeed: 9
+  runSpeed: 8
   neutralizeValue: 100
   destructionValue: 4

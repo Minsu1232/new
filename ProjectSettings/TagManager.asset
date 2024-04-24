@@ -9,6 +9,8 @@ TagManager:
   - NomalMon
   - BossRoom
   - GimmickWalls
+  - PouderKeg
+  - Terrian
   layers:
   - Default
   - TransparentFX
@@ -16,9 +18,9 @@ TagManager:
   - 
   - Water
   - UI
-  - 
-  - 
-  - 
+  - Boss
+  - HitTransform
+  - PowderKeg
   - 
   - 
   - 

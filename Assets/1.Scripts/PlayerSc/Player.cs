@@ -1,6 +1,7 @@
 
 using System.Collections;
 using System.Diagnostics;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -17,7 +18,7 @@ public class Player : MonoBehaviour
     public float walkSpeed = 5f;
     public float runSpeed = 7f;
     public int maxMp = 70;
-    public int mp;    
+    public int mp;
     public float recovery; // 캐릭터 마나 회복 시간
 
     [Header("Player Attributes")]
@@ -32,6 +33,7 @@ public class Player : MonoBehaviour
     public Text hp;
     public Text mana;
     public ParticleSystem counterSkill;
+    public AudioClip charging;
 
     [Header("Arrow Attributes")]
     [SerializeField]
@@ -52,7 +54,7 @@ public class Player : MonoBehaviour
     Rigidbody rb;
     Animator animator;
     CharacterController controller;
-   public Boss boss;
+    public Boss boss;
 
     // 캐릭터컨트롤러 관리용 변수
     private Vector3 playerVelocity; //캐릭터의 y값 체크용
@@ -61,7 +63,7 @@ public class Player : MonoBehaviour
 
     // 연속샷 방지
     int shotCount;
-    
+
 
     // 애니메이션 및 상태 체크용
     bool isWalk;
@@ -72,16 +74,18 @@ public class Player : MonoBehaviour
     public bool isRolling;
     public int roll; // 구르기 쿨타임용 변수
     public bool isInvincible = false;
-   
-    
-    
+
+
+
     // 스킬 쿨타임 체크용
     bool isSkill;
 
+    AudioSource audioSource;
+    bool isSound;
 
     private void OnEnable()
     {
-        
+
         roll = 1;
         StopAllCoroutines();
         // 스크립터블 초기화
@@ -103,11 +107,12 @@ public class Player : MonoBehaviour
     }
     void Start()
     {
-       
+        isSound = false;
         controller = gameObject.GetComponent<CharacterController>(); // 지형에 맞는 움직임을 자연스럽게 하기위해 사용
         shotCount = 1;
         hp.text = $"{remainHealth}/{initialHealth}";
         hpBar.fillAmount = remainHealth / initialHealth;
+        audioSource = GetComponent<AudioSource>();
 
     }
 
@@ -120,13 +125,35 @@ public class Player : MonoBehaviour
             {
                 HandleInput();
             }
-           
+
             if (Input.GetMouseButtonDown(1))  // 마우스 우클릭을 감지
             {
-                if (target != null)
+
+                // target 변수 참조용 (없으면 에이밍 실패, 가까운 콜라이더 검출, 클릭순간 가까운 콜라이더)
+                Collider[] colliders = Physics.OverlapSphere(gameObject.transform.position, 100f);
+                Collider closestCollider = null;
+                float closestDistance = Mathf.Infinity;
+
+                foreach (Collider collider in colliders)
                 {
-                    isLockOn = !isLockOn;  // 토글 방식
+                    if (collider.gameObject.layer == LayerMask.NameToLayer("HitTransform") || collider.gameObject.layer == LayerMask.NameToLayer("PowderKeg"))
+                    {
+                        float distanceToCollider = Vector3.Distance(gameObject.transform.position, collider.transform.position);
+                        if (distanceToCollider < closestDistance)
+                        {
+                            closestCollider = collider;
+                            closestDistance = distanceToCollider;
+                        }
+                    }
                 }
+
+                if (closestCollider != null)
+                {
+                    UnityEngine.Debug.Log("Closest target found");
+                    target = closestCollider.transform;
+                }
+                isLockOn = !isLockOn;  // 토글 방식
+
 
             }
 
@@ -147,14 +174,14 @@ public class Player : MonoBehaviour
             Recovery(); // 자연 회복 매서드
             Stamina();
         }
-      
+
 
     }
 
 
     void MoveAndCamera()
     {
-
+        isSound = false;
         {
             if (isWalk == true)
             {
@@ -323,7 +350,7 @@ public class Player : MonoBehaviour
         else if (mp >= 8 && isLockOn == false && isSkill == false && cool[1] == false && Input.GetKeyDown(KeyCode.Alpha2))
         {
             //불화살
-            
+
             mp -= 8;
             isSkill = true;
             StartCoroutine(SkillCool(6, 1, 1));
@@ -371,12 +398,12 @@ public class Player : MonoBehaviour
         {
             if (Input.GetKeyDown(KeyCode.Space))
             {
-               
-                    // 쿨타임은 3초
-                    StartCoroutine(SkillCool(3,5,0));
-                    mp -= 5;
-                    Roll();
-                
+
+                // 쿨타임은 3초
+                StartCoroutine(SkillCool(3, 5, 0));
+                mp -= 5;
+                Roll();
+
 
             }
         }
@@ -454,12 +481,20 @@ public class Player : MonoBehaviour
     void LockOnTarget()
     {
         isAim = false;
+        if (!isSound)
+        {
+            isSound = true;
+            UnityEngine.Debug.Log("?SOUND");
+            audioSource.PlayOneShot(charging);
+        }
+       
         if (target != null)
         {
             Vector3 directionToTarget = (target.position - character.position + ShotPointer.position).normalized;  // 타겟 방향 계산
             Quaternion targetRotation = Quaternion.LookRotation(directionToTarget);  // 방향을 기반으로 회전 생성
             character.rotation = Quaternion.Slerp(character.rotation, targetRotation, Time.deltaTime * 10);  // 부드럽게 회전
             character.transform.rotation = Quaternion.identity;
+
         }
 
 
@@ -480,10 +515,10 @@ public class Player : MonoBehaviour
     IEnumerator BuffTime()
     {
         str += 3;
-      
+
         yield return new WaitForSeconds(10f);
         str -= 3;
-       
+
     }
     void Recovery()
     {
@@ -516,9 +551,9 @@ public class Player : MonoBehaviour
             {
                 animator.SetBool("Hit", true); // 피격 애니메이션 재생
             }
-       
+
         }
-        if(remainHealth <= 0)
+        if (remainHealth <= 0)
         {
             Die(); // 체력이 0 이하면 사망 처리
 
@@ -559,14 +594,14 @@ public class Player : MonoBehaviour
                 StartCoroutine(RollingCool());
                 mp -= 5;
                 Roll();
-            }            
-            
+            }
+
         }
     }
     void Roll()
     {
         // 구르기 애니메이션 재생
-        animator.SetBool("Roll",true);
+        animator.SetBool("Roll", true);
         isRolling = true;
         // 구르기 동안 이동할 거리 설정
         float rollDistance = 5f;
@@ -577,7 +612,7 @@ public class Player : MonoBehaviour
         // 구르기 이동 실행
         StartCoroutine(PerformRoll(rollDirection, rollDistance));
     }
-   
+
 
     IEnumerator PerformRoll(Vector3 direction, float distance)
     {
@@ -595,7 +630,7 @@ public class Player : MonoBehaviour
 
             // 남은 거리 갱신
             remainingDistance -= moveDistance;
-            
+
 
             yield return null;
         }
@@ -603,7 +638,7 @@ public class Player : MonoBehaviour
     IEnumerator RollingCool()
     {
         roll = 0;
-    yield return new WaitForSeconds(3f);
+        yield return new WaitForSeconds(3f);
         roll = 1;
     }
     //애니메이션 이벤트

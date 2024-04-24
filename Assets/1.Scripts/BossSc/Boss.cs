@@ -111,6 +111,7 @@ public class Boss : MonoBehaviour, IDamageable
             if (remainHealth <= 90 && !isSecondPhaseStart)
             {
                 SecondPhaseStart();
+                // 2페이즈엔 데미지가 +10, 속도는 Run
             }
 
             GimmicDamage();
@@ -157,12 +158,13 @@ public class Boss : MonoBehaviour, IDamageable
     }
     void MonsterMove()
     {
-        if (isAttack == false || !isDie && player != null && !isgimmick)
+        // 애니메이션 진행중일땐 움직임 x
+        if (!animator.GetCurrentAnimatorStateInfo(0).IsName("Attack") && !animator.GetCurrentAnimatorStateInfo(0).IsName("SecondAttack") && !animator.GetCurrentAnimatorStateInfo(0).IsName("CounterAttack") && isAttack == false && !isDie && player != null && !isgimmick)
         {
             navMeshAgent.enabled = true;
             navMeshAgent.SetDestination(player.transform.position);
             animator.SetBool("Move", true);
-            animator.SetBool("Attack", false);
+            
         }
 
 
@@ -242,7 +244,15 @@ public class Boss : MonoBehaviour, IDamageable
     // 애니메이션 이벤트 (플레이어 데미지)
     void Hit()
     {
-        player.TakeDamage(damage);
+        
+        if (!isSecondPhaseStart)
+        {
+            player.TakeDamage(damage);
+        }
+        else
+        {// 2페이즈엔 데미지가 +10
+            player.TakeDamage(damage + 10);
+        }
     }
 
 
