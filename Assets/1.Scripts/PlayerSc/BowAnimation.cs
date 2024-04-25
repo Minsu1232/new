@@ -11,8 +11,11 @@ public class BowAnimation : MonoBehaviour
     public GameObject bowString; // 사용할 활의 줄 위치
     public GameObject bowShotpotion; // 에이밍 기술시 bowString의 부모가 될 오브젝트
     public GameObject[] arrow; // 사용할 화살 변수
+    public ArrowDamageScriptable[] arrowDamageScriptable;
 
-    
+    public AudioClip[] arrowSoundClip;
+
+    AudioSource audioSource;
     Player player;
 
 
@@ -37,7 +40,7 @@ public class BowAnimation : MonoBehaviour
 
     void Start()
     {
-
+        audioSource = GetComponent<AudioSource>();
     }
 
     // Update is called once per frame
@@ -59,8 +62,7 @@ public class BowAnimation : MonoBehaviour
 
             //player.skillComand = 0;
             animator.SetBool("IsShot", true);
-            animator.SetBool("IsShoted", true);
-
+            animator.SetBool("IsShoted", true);            
             isCharging = false;
             animator.SetBool("IsCharging", false);
             // 애니메이션 조건   IsShot, true
@@ -110,7 +112,7 @@ public class BowAnimation : MonoBehaviour
         ResetCoroutineState();
         if (player.skillComand >= 0)
         {
-            yield return new WaitForSeconds(0.5f);
+            yield return new WaitForSeconds(0.5f);            
             arrow[player.skillComand].SetActive(true);
             shotReady = true;
             yield return new WaitForSeconds(0.5f);
@@ -132,5 +134,28 @@ public class BowAnimation : MonoBehaviour
         bowString.transform.localPosition = bowStringOriginOffset; // 활 줄의 위치를 원래 위치로
         shotReady = false;
 
+    }
+
+    //-------------------------------------
+    // 애니메이션 이벤트
+    public void ChargingSound()
+    {
+        audioSource.PlayOneShot(arrowSoundClip[0],0.5f);
+    }
+    public void ArrowSound()
+    {
+        // 클립별 사운드 제어
+        if (arrowDamageScriptable[player.skillComand].name == "FireArrow")
+        {
+            audioSource.PlayOneShot(arrowDamageScriptable[1].arrowSound, 1f);
+        }
+        else
+        {
+            audioSource.PlayOneShot(arrowDamageScriptable[player.skillComand].arrowSound, 0.1f);
+        }
+    }
+    public void ShotSound()
+    {
+        audioSource.PlayOneShot(arrowSoundClip[1],0.7f);
     }
 }

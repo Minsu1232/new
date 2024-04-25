@@ -3464,7 +3464,14 @@ ModelImporter:
       mirror: 0
       bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
       curves: []
-      events: []
+      events:
+      - time: 0
+        functionName: ShotSound
+        data: 
+        objectReferenceParameter: {fileID: 11500000, guid: f56e594a588f3134fa54f38968585c76, type: 3}
+        floatParameter: 0
+        intParameter: 0
+        messageOptions: 0
       transformMask:
       - path: 
         weight: 1
@@ -9812,7 +9819,21 @@ ModelImporter:
       mirror: 0
       bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
       curves: []
-      events: []
+      events:
+      - time: 0.21397851
+        functionName: ArrowSound
+        data: 
+        objectReferenceParameter: {fileID: 11500000, guid: f56e594a588f3134fa54f38968585c76, type: 3}
+        floatParameter: 0
+        intParameter: 0
+        messageOptions: 0
+      - time: 0.23549488
+        functionName: ChargingSound
+        data: 
+        objectReferenceParameter: {fileID: 11500000, guid: f56e594a588f3134fa54f38968585c76, type: 3}
+        floatParameter: 0
+        intParameter: 0
+        messageOptions: 0
       transformMask:
       - path: 
         weight: 1

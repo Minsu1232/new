@@ -33,7 +33,9 @@ public class Player : MonoBehaviour
     public Text hp;
     public Text mana;
     public ParticleSystem counterSkill;
-    public AudioClip charging;
+    public AudioClip buffSound;
+    public AudioClip rollingSound;
+
 
     [Header("Arrow Attributes")]
     [SerializeField]
@@ -48,6 +50,7 @@ public class Player : MonoBehaviour
     [SerializeField]
     Text[] coolText;
     public int skillComand;
+    
 
 
     // 컴포넌트
@@ -123,7 +126,7 @@ public class Player : MonoBehaviour
         {
             if (isRoll)
             {
-                HandleInput();
+                //HandleInput();
             }
 
             if (Input.GetMouseButtonDown(1))  // 마우스 우클릭을 감지
@@ -341,6 +344,7 @@ public class Player : MonoBehaviour
             mp -= 15;
             isSkill = true;
 
+            audioSource.PlayOneShot(buffSound);
             StartCoroutine(SkillCool(20, 0, 4));
             skillArrow[4].gameObject.SetActive(true);
             skillComand = 0;
@@ -401,6 +405,7 @@ public class Player : MonoBehaviour
 
                 // 쿨타임은 3초
                 StartCoroutine(SkillCool(3, 5, 0));
+                audioSource.PlayOneShot(rollingSound);
                 mp -= 5;
                 Roll();
 
@@ -483,9 +488,7 @@ public class Player : MonoBehaviour
         isAim = false;
         if (!isSound)
         {
-            isSound = true;
-            UnityEngine.Debug.Log("?SOUND");
-            audioSource.PlayOneShot(charging);
+          
         }
        
         if (target != null)
@@ -584,20 +587,20 @@ public class Player : MonoBehaviour
             mpBar.fillAmount = 0;  // 최대 MP가 0이면 바를 0으로 설정
         }
     }
-    void HandleInput()
-    {
-        if (Input.GetKeyDown(KeyCode.Space))
-        {
-            if (mp > 5 && roll == 1)
-            {
-                // 쿨타임은 3초
-                StartCoroutine(RollingCool());
-                mp -= 5;
-                Roll();
-            }
+    //void HandleInput()
+    //{
+    //    if (Input.GetKeyDown(KeyCode.Space))
+    //    {
+    //        if (mp > 5 && roll == 1)
+    //        {
+    //            // 쿨타임은 3초
+    //            StartCoroutine(RollingCool());
+    //            mp -= 5;
+    //            Roll();
+    //        }
 
-        }
-    }
+    //    }
+    //}
     void Roll()
     {
         // 구르기 애니메이션 재생

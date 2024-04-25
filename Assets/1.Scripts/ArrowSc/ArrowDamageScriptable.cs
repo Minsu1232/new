@@ -13,6 +13,8 @@ public class ArrowDamageScriptable : ScriptableObject
     public int stamina;
     public int neutralizeValue;
     public int destructionValue;
+    public AudioClip arrowSound;
+    public AudioClip hitSound;
 
 
     // Start is called before the first frame update

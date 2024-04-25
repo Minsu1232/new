@@ -29,8 +29,11 @@ public class Boss : MonoBehaviour, IDamageable
     public Transform gimmickStartPosition;
     public int gimmickCount; // 0이 되면 파훼
     public ParticleSystem[] secondpahseParticle;
-
-
+    public AudioClip attackSound;
+    public AudioClip razeSound;
+    public AudioClip walkSound;
+    public AudioClip runSound;
+    
 
 
     [Header("Monster UI")]
@@ -54,6 +57,7 @@ public class Boss : MonoBehaviour, IDamageable
     public bool isGimmickEnd;
 
     public Animator animator;
+    AudioSource audioSource;
 
 
     private Coroutine damageCoroutine; //기믹의 달리기 데미지 주기를 위한 변수
@@ -85,6 +89,7 @@ public class Boss : MonoBehaviour, IDamageable
         isGimmickEnd = false;
         gimmickCount = 4;
 
+        audioSource = GetComponent<AudioSource>();
         animator = GetComponent<Animator>();
         navMeshAgent.speed = walkSpeed;
         //시작 ui
@@ -187,6 +192,7 @@ public class Boss : MonoBehaviour, IDamageable
                     {
                         int randomIndex = UnityEngine.Random.Range(0, 3);  // 0, 1, 또는 2
                         animator.SetInteger("AttackInt", randomIndex);
+                        
                     }
 
                     animator.SetBool("Attack", true);
@@ -241,21 +247,7 @@ public class Boss : MonoBehaviour, IDamageable
         animator.SetBool("Gethit", false);
         isGettingHit = false;  // 피격 상태 해제
     }
-    // 애니메이션 이벤트 (플레이어 데미지)
-    void Hit()
-    {
-        
-        if (!isSecondPhaseStart)
-        {
-            player.TakeDamage(damage);
-        }
-        else
-        {// 2페이즈엔 데미지가 +10
-            player.TakeDamage(damage + 10);
-        }
-    }
-
-
+  
     // 그로기 관련 매서드
     void Groggy()
     {
@@ -445,5 +437,31 @@ public class Boss : MonoBehaviour, IDamageable
             gimmickCount--;
         }
     }
-
+    // 애니메이션 이벤트 
+    void Hit()
+    {
+        
+        if (!isSecondPhaseStart)
+        {
+            player.TakeDamage(damage);
+            if (player.isInvincible == false)
+            {// 무적판정 소리 안나게
+                AttackSound();
+            }
+        }
+        else
+        {// 2페이즈엔 데미지가 +10
+            player.TakeDamage(damage + 10);
+        }
+        
+        
+    }
+    void AttackSound()
+    {
+        audioSource.PlayOneShot(attackSound);
+    }
+    void RazeSound()
+    {
+        audioSource.PlayOneShot(razeSound);
+    }
 }

@@ -10,6 +10,7 @@ public class ArrownDamage : MonoBehaviour
     [Header("Arrow")]
     [SerializeField]
     ArrowDamageScriptable damageScriptable;
+    public AudioClip hitSound; 
     
     Player player;
     int damage;
@@ -17,6 +18,8 @@ public class ArrownDamage : MonoBehaviour
 
     Rigidbody rb;
     Collider collider;
+
+    AudioSource audioSource;
 
     bool shouldPlayAnimation = true;
     // Start is called before the first frame update
@@ -36,6 +39,9 @@ public class ArrownDamage : MonoBehaviour
     }
     void Start()
     {
+        
+        hitSound = damageScriptable.hitSound;
+        audioSource = GetComponent<AudioSource>();
         rb = GetComponent<Rigidbody>();
     }
     private void Update()
@@ -68,10 +74,12 @@ public class ArrownDamage : MonoBehaviour
             if(damageScriptable.name == "Arrow")
             {
                 damageable.TakeDamage(damage, neutralizeValu, false);
+                audioSource.PlayOneShot(hitSound, 0.3f);
             }           
             // 그 외 화살은 있음
             else
             {
+                audioSource.PlayOneShot(hitSound, 0.3f);
                 damageable.TakeDamage(damage, neutralizeValu, true);
                 
             }            
@@ -112,8 +120,11 @@ public class ArrownDamage : MonoBehaviour
 
         // 파티클 시스템의 인스턴스를 생성하고, 부모를 몬스터로 설정합니다.
         ParticleSystem particleInstance = Instantiate(damageScriptable.particleEffect, transform.position, Quaternion.identity, collision.transform);
-        particleInstance.Play();        
-
+        particleInstance.Play();
+        if(damageScriptable.name == "FireArrow" || damageScriptable.name == "PoisonArrow")
+        {
+            audioSource.PlayOneShot(hitSound, 0.3f);
+        }        
         // 화살도 몬스터의 자식으로 설정
         transform.SetParent(collision.transform);        
         // 화살이 지정된 시간 후에 사라지도록 합니다.

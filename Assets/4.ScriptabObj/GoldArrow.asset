@@ -20,3 +20,5 @@ MonoBehaviour:
   stamina: 10
   neutralizeValue: 13
   destructionValue: 3
+  arrowSound: {fileID: 8300000, guid: 78a6b5d05f66a4f44959f4a17973d898, type: 3}
+  hitSound: {fileID: 8300000, guid: 59a6b1a6896ced14881d53b53324433b, type: 3}
