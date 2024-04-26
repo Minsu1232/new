@@ -21,4 +21,4 @@ MonoBehaviour:
   neutralizeValue: 3
   destructionValue: 1
   arrowSound: {fileID: 8300000, guid: 78a6b5d05f66a4f44959f4a17973d898, type: 3}
-  hitSound: {fileID: 8300000, guid: 59a6b1a6896ced14881d53b53324433b, type: 3}
+  hitSound: {fileID: 8300000, guid: 0807c6043593af1459ab130f4135ffcf, type: 3}

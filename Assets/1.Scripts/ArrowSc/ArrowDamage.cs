@@ -62,6 +62,14 @@ public class ArrownDamage : MonoBehaviour
         if (other.gameObject.tag == "BossRoom")
         {
             StickArrow(other);
+            if (damageScriptable.name == "PoisonArrow")
+            {
+                audioSource.PlayOneShot(hitSound, 0.5f);
+            }
+            else if (damageScriptable.name == "FireArrow")
+            {
+                audioSource.PlayOneShot(hitSound, 0.1f);
+            }
         }
         // 인터페이스를 사용해 스크립트 동기화
         IDamageable damageable = other.GetComponent<IDamageable>();
@@ -71,15 +79,21 @@ public class ArrownDamage : MonoBehaviour
             neutralizeValu = damageScriptable.neutralizeValue;
             Debug.Log("닿았다");
             // 일반 화살일땐 넉백 모션이 없음
+            // 각 사운드 클립의 소리 조절
             if(damageScriptable.name == "Arrow")
             {
                 damageable.TakeDamage(damage, neutralizeValu, false);
                 audioSource.PlayOneShot(hitSound, 0.3f);
-            }           
-            // 그 외 화살은 있음
-            else
+            }
+            else if(damageScriptable.name == "PoisonArrow")
             {
-                audioSource.PlayOneShot(hitSound, 0.3f);
+                audioSource.PlayOneShot(hitSound, 0.5f);
+                damageable.TakeDamage(damage, neutralizeValu, true);
+            }
+            // 그 외 화살은 있음
+            else if(damageScriptable.name == "FireArrow")
+            {
+                audioSource.PlayOneShot(hitSound, 0.1f);
                 damageable.TakeDamage(damage, neutralizeValu, true);
                 
             }            
@@ -121,10 +135,7 @@ public class ArrownDamage : MonoBehaviour
         // 파티클 시스템의 인스턴스를 생성하고, 부모를 몬스터로 설정합니다.
         ParticleSystem particleInstance = Instantiate(damageScriptable.particleEffect, transform.position, Quaternion.identity, collision.transform);
         particleInstance.Play();
-        if(damageScriptable.name == "FireArrow" || damageScriptable.name == "PoisonArrow")
-        {
-            audioSource.PlayOneShot(hitSound, 0.3f);
-        }        
+      
         // 화살도 몬스터의 자식으로 설정
         transform.SetParent(collision.transform);        
         // 화살이 지정된 시간 후에 사라지도록 합니다.

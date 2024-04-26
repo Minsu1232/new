@@ -35,6 +35,9 @@ public class Player : MonoBehaviour
     public ParticleSystem counterSkill;
     public AudioClip buffSound;
     public AudioClip rollingSound;
+    public AudioClip walkSound;
+    public AudioClip runSound;
+    public AudioClip counterSkillSound;
 
 
     [Header("Arrow Attributes")]
@@ -77,6 +80,7 @@ public class Player : MonoBehaviour
     public bool isRolling;
     public int roll; // 구르기 쿨타임용 변수
     public bool isInvincible = false;
+    public bool isSand;
 
 
 
@@ -132,30 +136,34 @@ public class Player : MonoBehaviour
             if (Input.GetMouseButtonDown(1))  // 마우스 우클릭을 감지
             {
 
-                // target 변수 참조용 (없으면 에이밍 실패, 가까운 콜라이더 검출, 클릭순간 가까운 콜라이더)
-                Collider[] colliders = Physics.OverlapSphere(gameObject.transform.position, 100f);
-                Collider closestCollider = null;
+                Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+                RaycastHit[] hits = Physics.RaycastAll(ray, 100f);
+                RaycastHit closestHit = new RaycastHit();
                 float closestDistance = Mathf.Infinity;
 
-                foreach (Collider collider in colliders)
+                foreach (RaycastHit hit in hits)
                 {
-                    if (collider.gameObject.layer == LayerMask.NameToLayer("HitTransform") || collider.gameObject.layer == LayerMask.NameToLayer("PowderKeg"))
+                    if (hit.collider.gameObject.layer == LayerMask.NameToLayer("HitTransform") || hit.collider.gameObject.layer == LayerMask.NameToLayer("PowderKeg"))
                     {
-                        float distanceToCollider = Vector3.Distance(gameObject.transform.position, collider.transform.position);
-                        if (distanceToCollider < closestDistance)
+                        float distanceToHit = Vector3.Distance(ray.origin, hit.point);
+                        if (distanceToHit < closestDistance)
                         {
-                            closestCollider = collider;
-                            closestDistance = distanceToCollider;
+                            closestHit = hit;
+                            closestDistance = distanceToHit;
                         }
                     }
                 }
 
-                if (closestCollider != null)
+                if (closestHit.collider != null)
                 {
-                    UnityEngine.Debug.Log("Closest target found");
-                    target = closestCollider.transform;
+                    UnityEngine.Debug.Log("Closest target found based on mouse pointer");
+                    target = closestHit.collider.transform;
                 }
-                isLockOn = !isLockOn;  // 토글 방식
+                if(target != null) 
+                {
+                    isLockOn = !isLockOn;  // 토글 방식
+                }
+               
 
 
             }
@@ -659,6 +667,24 @@ public class Player : MonoBehaviour
     {
         isRolling = false;
     }
-
+  
+    // 애니메이션 이벤트
+    public void WalkSound()
+    {
+        if (isSand)
+        {
+          
+        }
+        
+    }
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.gameObject.tag == "BossRoom")
+        {
+            isSand = true;
+            
+        }
+    }
+    
 }
 

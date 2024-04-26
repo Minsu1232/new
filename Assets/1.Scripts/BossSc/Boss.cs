@@ -458,7 +458,7 @@ public class Boss : MonoBehaviour, IDamageable
     }
     void AttackSound()
     {
-        audioSource.PlayOneShot(attackSound);
+        audioSource.PlayOneShot(attackSound, 0.5f);
     }
     void RazeSound()
     {
