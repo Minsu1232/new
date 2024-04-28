@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class PouderKeg : MonoBehaviour
 {
+    public ParticleSystem explosion;
     // Start is called before the first frame update
     void Start()
     {
@@ -21,5 +22,9 @@ public class PouderKeg : MonoBehaviour
         {
             Destroy(gameObject);
         }
+    }
+    private void OnDisable()
+    {
+        explosion.gameObject.SetActive(true);       
     }
 }

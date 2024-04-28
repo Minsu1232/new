@@ -46,9 +46,13 @@ public class BowAnimation : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        Aiming(); // 조준 및 취소 애니메이션
-        ArrowShot(); // 화살 발사 애니메이션
+        if(player.isLockOn)
+        {            
+            ArrowShot(); // 화살 발사 애니메이션            
+        }
         player.Skill();
+
+
 
     }
 
@@ -76,34 +80,36 @@ public class BowAnimation : MonoBehaviour
         }
     }
 
-    private void Aiming()
+    // BowAnimation 스크립트
+    public void HandleLockOn(bool isLockedOn)
     {
-        if (Input.GetMouseButtonDown(1))
+        if (isLockedOn)
         {
-            // isCharging 상태를 토글
-            isCharging = !isCharging;
-
-            if (!isCharging)
-            { // 에이밍 취소
-                ResetCoroutineState();
-                StopCoroutine(StringDelay());  // 코루틴 중지
-                arrow[player.skillComand].SetActive(false);
-                animator.SetBool("IsCharging", false);
-                bowString.transform.parent = bow.transform;  // 활 줄을 원래 위치로
-                bowString.transform.localPosition = bowStringOriginOffset;
-                arrow[player.skillComand].SetActive(false);  // 화살 비활성화
-
-            }
-            else if (isCharging)
-            {
-                Debug.Log("e들어옴");
-                // 에이밍 시작
-                shotReady = false;
-                animator.SetBool("IsCharging", true);
-                animator.SetBool("IsShoted", false);
-                StartCoroutine(StringDelay());  // 코루틴 시작
-            }
+            StartAiming();
         }
+        else
+        {
+            StopAiming();
+        }
+    }
+
+    void StartAiming()
+    {
+        isCharging = true;
+        animator.SetBool("IsCharging", true);
+        animator.SetBool("IsShoted", false);
+        StartCoroutine(StringDelay());
+    }
+
+    void StopAiming()
+    {
+        isCharging = false;
+        ResetCoroutineState();
+        StopCoroutine(StringDelay());
+        arrow[player.skillComand].SetActive(false);
+        animator.SetBool("IsCharging", false);
+        bowString.transform.parent = bow.transform;
+        bowString.transform.localPosition = bowStringOriginOffset;
     }
 
     // bowString의 위치의 자연스러움을 위한 딜레이 

@@ -25,9 +25,8 @@ public class Player : MonoBehaviour
     [SerializeField]
     Transform character;
     [SerializeField]
-    Transform cameraArm;
-    [SerializeField]
-    Transform target;
+    Transform cameraArm;    
+    public Transform target;
     public Image hpBar;
     public Image mpBar;
     public Text hp;
@@ -45,6 +44,8 @@ public class Player : MonoBehaviour
     GameObject[] skillArrow;
     [SerializeField]
     Transform ShotPointer;
+    [SerializeField]
+    BowAnimation bowAnimation;
 
     [Header("Skill Attributes")]
     [SerializeField]
@@ -74,7 +75,7 @@ public class Player : MonoBehaviour
     // 애니메이션 및 상태 체크용
     bool isWalk;
     bool isDie;
-    bool isLockOn;
+    public bool isLockOn;
     bool isAim;
     public bool isRoll;
     public bool isRolling;
@@ -90,6 +91,8 @@ public class Player : MonoBehaviour
     AudioSource audioSource;
     bool isSound;
 
+
+    public float detectionRadius = 5f; // 검색 반경
     private void OnEnable()
     {
 
@@ -136,33 +139,17 @@ public class Player : MonoBehaviour
             if (Input.GetMouseButtonDown(1))  // 마우스 우클릭을 감지
             {
 
-                Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-                RaycastHit[] hits = Physics.RaycastAll(ray, 100f);
-                RaycastHit closestHit = new RaycastHit();
-                float closestDistance = Mathf.Infinity;
-
-                foreach (RaycastHit hit in hits)
-                {
-                    if (hit.collider.gameObject.layer == LayerMask.NameToLayer("HitTransform") || hit.collider.gameObject.layer == LayerMask.NameToLayer("PowderKeg"))
-                    {
-                        float distanceToHit = Vector3.Distance(ray.origin, hit.point);
-                        if (distanceToHit < closestDistance)
-                        {
-                            closestHit = hit;
-                            closestDistance = distanceToHit;
-                        }
-                    }
-                }
-
-                if (closestHit.collider != null)
-                {
-                    UnityEngine.Debug.Log("Closest target found based on mouse pointer");
-                    target = closestHit.collider.transform;
-                }
-                if(target != null) 
-                {
+                DetectObjects();
+                if (target != null) 
+                {                    
                     isLockOn = !isLockOn;  // 토글 방식
+                    bowAnimation.HandleLockOn(isLockOn);
                 }
+                else
+                {
+                    isLockOn = false;
+                }
+            
                
 
 
@@ -189,7 +176,40 @@ public class Player : MonoBehaviour
 
     }
 
+    void DetectObjects()
+    {
+        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        RaycastHit[] hits = Physics.RaycastAll(ray, 100f);
+        RaycastHit closestHit = new RaycastHit();
+        float closestDistance = Mathf.Infinity;
 
+        // 가장 가까운 객체 찾기
+        foreach (RaycastHit hit in hits)
+        {
+            if (hit.collider.gameObject.layer == LayerMask.NameToLayer("HitTransform") || hit.collider.gameObject.layer == LayerMask.NameToLayer("PowderKeg"))
+            {
+                float distanceToHit = Vector3.Distance(ray.origin, hit.point);
+                if (distanceToHit < closestDistance)
+                {
+                    closestHit = hit;
+                    closestDistance = distanceToHit;
+                }
+            }
+        }
+
+        // 가장 가까운 지점 기준으로 주변 객체 감지
+        if (closestHit.collider != null)
+        {
+            UnityEngine.Debug.Log("Closest target found based on mouse pointer: " + closestHit.collider.gameObject.name);
+            target = closestHit.collider.transform;
+
+            Collider[] nearbyObjects = Physics.OverlapSphere(closestHit.point, detectionRadius);
+            foreach (Collider nearbyObject in nearbyObjects)
+            {
+                UnityEngine.Debug.Log("Nearby object detected: " + nearbyObject.gameObject.name);
+            }
+        }
+    }
     void MoveAndCamera()
     {
         isSound = false;
@@ -402,7 +422,7 @@ public class Player : MonoBehaviour
             StartCoroutine(SkillCool(2, 4, 0));
             counterSkill.Play();
             if (boss.animator.GetInteger("AttackInt") == 2)
-            {
+            {            
                 boss.animator.SetTrigger("Groggy");
             }
         }

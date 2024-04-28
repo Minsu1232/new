@@ -4,7 +4,7 @@ using UnityEngine;
 
 public interface IDamageable
 {
-    void TakeDamage(int damage, int aneutralizeValu, bool shouldTriggerHitAnimation = true)
+    void TakeDamage(int damage, int aneutralizeValu,int destruction, bool shouldTriggerHitAnimation = true)
     {
 
     }

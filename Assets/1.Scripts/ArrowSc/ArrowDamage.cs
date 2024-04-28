@@ -15,6 +15,7 @@ public class ArrownDamage : MonoBehaviour
     Player player;
     int damage;
     int neutralizeValu;
+    int destructionValu;
 
     Rigidbody rb;
     Collider collider;
@@ -77,24 +78,25 @@ public class ArrownDamage : MonoBehaviour
         {
             damage = damageScriptable.initialDamage + player.str;
             neutralizeValu = damageScriptable.neutralizeValue;
+            destructionValu = damageScriptable.destructionValue;
             Debug.Log("닿았다");
             // 일반 화살일땐 넉백 모션이 없음
             // 각 사운드 클립의 소리 조절
             if(damageScriptable.name == "Arrow")
             {
-                damageable.TakeDamage(damage, neutralizeValu, false);
+                damageable.TakeDamage(damage, neutralizeValu, destructionValu, false);
                 audioSource.PlayOneShot(hitSound, 0.3f);
             }
             else if(damageScriptable.name == "PoisonArrow")
             {
                 audioSource.PlayOneShot(hitSound, 0.5f);
-                damageable.TakeDamage(damage, neutralizeValu, true);
+                damageable.TakeDamage(damage, neutralizeValu,destructionValu,true);
             }
             // 그 외 화살은 있음
             else if(damageScriptable.name == "FireArrow")
             {
                 audioSource.PlayOneShot(hitSound, 0.1f);
-                damageable.TakeDamage(damage, neutralizeValu, true);
+                damageable.TakeDamage(damage, neutralizeValu, destructionValu, true);
                 
             }            
             
@@ -119,7 +121,7 @@ public class ArrownDamage : MonoBehaviour
                 yield break;  // 코루틴 종료
             }
             // 도트데미지는 넉백모션 없음
-            monster.TakeDamage(damagePerSecond, neutralizeValu,false);
+            monster.TakeDamage(damagePerSecond, neutralizeValu, destructionValu, false);
             yield return new WaitForSeconds(1f);
             remainingTime -= 1f;
 

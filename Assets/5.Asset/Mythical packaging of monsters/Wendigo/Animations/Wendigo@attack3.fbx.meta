@@ -1113,8 +1113,22 @@ ModelImporter:
       bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
       curves: []
       events:
-      - time: 0.34536153
+      - time: 0.06315789
+        functionName: CounterColorRed
+        data: '"Hit"'
+        objectReferenceParameter: {fileID: 11500000, guid: 602fb60cb69064344b08bf2ba688e0e0, type: 3}
+        floatParameter: 0
+        intParameter: 0
+        messageOptions: 0
+      - time: 0.47252917
         functionName: Hit
+        data: '"Hit"'
+        objectReferenceParameter: {fileID: 11500000, guid: 602fb60cb69064344b08bf2ba688e0e0, type: 3}
+        floatParameter: 0
+        intParameter: 0
+        messageOptions: 0
+      - time: 0.82080925
+        functionName: CounterColorEnd
         data: '"Hit"'
         objectReferenceParameter: {fileID: 11500000, guid: 602fb60cb69064344b08bf2ba688e0e0, type: 3}
         floatParameter: 0
