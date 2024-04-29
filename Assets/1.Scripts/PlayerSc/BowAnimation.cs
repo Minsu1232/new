@@ -46,17 +46,17 @@ public class BowAnimation : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if(player.isLockOn)
-        {            
-            ArrowShot(); // 화살 발사 애니메이션            
-        }
+        //if(player.isLockOn)
+        //{            
+        //    ArrowShot(); // 화살 발사 애니메이션            
+        //}
         player.Skill();
 
 
 
     }
 
-    private void ArrowShot()
+    public void ArrowShot()
     {
         // 화살 발사
         if (Input.GetMouseButtonDown(0) && isCharging == true && shotReady == true)

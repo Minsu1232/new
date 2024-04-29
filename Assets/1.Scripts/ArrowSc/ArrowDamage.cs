@@ -22,7 +22,7 @@ public class ArrownDamage : MonoBehaviour
 
     AudioSource audioSource;
 
-    bool shouldPlayAnimation = true;
+    bool shouldPlayAnimation;
     // Start is called before the first frame update
 
     

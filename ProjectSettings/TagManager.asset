@@ -21,9 +21,9 @@ TagManager:
   - Boss
   - HitTransform
   - PowderKeg
-  - 
-  - 
-  - 
+  - Item
+  - BossRoom
+  - PowderKegBundle
   - 
   - 
   - 

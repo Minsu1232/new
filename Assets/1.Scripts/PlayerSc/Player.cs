@@ -138,15 +138,15 @@ public class Player : MonoBehaviour
 
             if (Input.GetMouseButtonDown(1))  // 마우스 우클릭을 감지
             {
-
                 DetectObjects();
+
                 if (target != null) 
-                {                    
+                {                           
                     isLockOn = !isLockOn;  // 토글 방식
                     bowAnimation.HandleLockOn(isLockOn);
                 }
                 else
-                {
+                {                    
                     isLockOn = false;
                 }
             
@@ -422,7 +422,8 @@ public class Player : MonoBehaviour
             StartCoroutine(SkillCool(2, 4, 0));
             counterSkill.Play();
             if (boss.animator.GetInteger("AttackInt") == 2)
-            {            
+            {    
+                
                 boss.animator.SetTrigger("Groggy");
             }
         }
@@ -470,9 +471,11 @@ public class Player : MonoBehaviour
         {
             if (Input.GetMouseButtonDown(0) && isLockOn == true)
             {
+                bowAnimation.ArrowShot();
                 isSkill = false; // 스킬화살 장전시엔 다른 스킬 사용 불가용
 
                 isLockOn = false; // 화살 발사 후 에임기능을 다시 하기 위한 체크
+                UnityEngine.Debug.Log("쏨");
 
                 Vector3 directionToTarget = (target.position - ShotPointer.transform.position).normalized;
 

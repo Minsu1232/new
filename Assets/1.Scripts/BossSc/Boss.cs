@@ -109,6 +109,10 @@ public class Boss : MonoBehaviour, IDamageable
     {
         if (!isDie)
         {
+            // ui 실시간 업데이트
+            hp.text = $"{remainHealth}/{initialHealth}";
+            hpBar.fillAmount = (float)remainHealth / initialHealth;
+            neutralizeBar.fillAmount = (float)remainNeutralizeVlaue / neutralizeValue;
             if (animator.GetCurrentAnimatorStateInfo(0).IsName("Groggy")) // 카운터 성공시
             {
                 counterColor[0].SetColor("_EmissionColor", Color.black); // 색 초기화
@@ -118,8 +122,7 @@ public class Boss : MonoBehaviour, IDamageable
             {
                 Groggy();
                 MonsterMove();
-                Attack();
-                neutralizeBar.fillAmount = (float)remainNeutralizeVlaue / neutralizeValue;
+                Attack();                
                 Gimmick();
 
             }
@@ -280,7 +283,7 @@ public class Boss : MonoBehaviour, IDamageable
         }
     }
     // 애니메이션 작동 트리거
-    IEnumerator Gethit()
+    public IEnumerator Gethit()
     {
         if (isGettingHit)  // 이미 피격 상태인 경우 더 이상 진행하지 않음
             yield break;
