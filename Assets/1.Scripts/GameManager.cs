@@ -1,7 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.Windows;
 using Vitals;
 
 public class GameManager : MonoBehaviour
@@ -11,12 +13,24 @@ public class GameManager : MonoBehaviour
 
     [Header("Player UI")]
     public Player player;
-    public Image[] image;    
+    public Image[] image;
     public Text mana;
 
     [Header("Game UI")]
     public GameObject menu;
+    public GameObject shopMenu;
+    public GameObject shop;
+    public GameObject dungeonPanel;
+    public GameObject transPanel;
+    public CanvasGroup panelCanvasGroup;
 
+
+    [Header("Transform")]
+    public Transform bossStart;
+    public Transform questStart;
+
+
+    public bool isShop;
     private void Awake()
     {
         if (Instance == null)
@@ -32,14 +46,18 @@ public class GameManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        
+
     }
 
     // Update is called once per frame
     void Update()
     {
-       
-
+        // esc로 끌수 있음
+        if (UnityEngine.Input.GetKeyDown(KeyCode.Escape))
+        {
+            shop.SetActive(false);
+            isShop = false;
+        }
 
     }
     public void MenuOpen()
@@ -52,7 +70,89 @@ public class GameManager : MonoBehaviour
         {
             menu.SetActive(false);
         }
+
+    }
+    public void ShopOpen()
+    {
+
+        if (!shop.activeSelf)
+        {
+            isShop = false;
+        }
+        else
+        {
+            isShop = true;
+        }
+    }
+    public void ShopExit()
+    {
+        shop.SetActive(false);
+
+        if (UnityEngine.Input.GetKeyDown(KeyCode.Escape))
+        {
+            shop.SetActive(false);
+        }
+        isShop = false;
+    }
+    public void BossZoneTrans()
+    {
+        CharacterController controller = player.GetComponent<CharacterController>();
+
+        if (controller != null)
+        {
+            // CharacterController를 잠시 비활성화
+            controller.enabled = false;
+
+            // 캐릭터의 위치를 변경
+            player.transform.position = bossStart.transform.position;
+
+            // CharacterController를 다시 활성화
+            controller.enabled = true;
+
+            // 패널 꺼짐
+            dungeonPanel.gameObject.SetActive(false);
+        }
+        else
+        {
+            // CharacterController가 없는 경우, 직접 위치 설정
+            player.transform.position = bossStart.transform.position;
+        }
+    }
+    public void PanelClose()
+    {
+        dungeonPanel.gameObject.SetActive(false);
+    }
+    public void StartFadeIn()
+    {
+        if (!transPanel.activeSelf)
+        {
+            transPanel.gameObject.SetActive(true);
+        }
+
         
     }
-   
+
+    private IEnumerator FadeCanvasGroup(CanvasGroup cg, float start, float end, float lerpTime)
+    {
+        float _timeStartedLerping = Time.time;
+        float timeSinceStarted = Time.time - _timeStartedLerping;
+        float percentageComplete = timeSinceStarted / lerpTime;
+
+        while (true)
+        {
+            timeSinceStarted = Time.time - _timeStartedLerping;
+            percentageComplete = timeSinceStarted / lerpTime;
+
+            float currentValue = Mathf.Lerp(start, end, percentageComplete);
+
+            cg.alpha = currentValue;
+
+            if (percentageComplete >= 1) break;
+
+            yield return new WaitForEndOfFrame();
+
+        }
+    }
 }
+
+

@@ -34,7 +34,8 @@ public class PouderKeg : MonoBehaviour
     {
         if(other.gameObject.name == "FireArrow(Clone)")
         {
-            if(gameObject.name == "PouderKegBundle")
+            DestroyObject();
+            if (gameObject.name == "PouderKegBundle")
             {
                 explosion.gameObject.SetActive(true);
                 Collider[] hitColliders = Physics.OverlapSphere(transform.position, 14f);
@@ -61,13 +62,13 @@ public class PouderKeg : MonoBehaviour
     //    Gizmos.DrawWireSphere(transform.position, 13f);
     //}
 
-    private void OnDisable()
-    {
-        if(itemPrefab != null)
-        {
-            DestroyObject();
-        }   
+    //private void OnDisable()
+    //{
+    //    if(itemPrefab != null)
+    //    {
+    //        DestroyObject();
+    //    }   
         
                     
-    }
+    //}
 }

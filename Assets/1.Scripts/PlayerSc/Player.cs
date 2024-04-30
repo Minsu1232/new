@@ -154,19 +154,22 @@ public class Player : MonoBehaviour
 
 
             }
-
-            if (!isLockOn)
+            if (!GameManager.Instance.isShop)
             {
-                LookAround();
-                MoveAndCamera();
-            }
-            else
-            {
-                LockOnTarget();  // LockOn 상태일 때 타겟을 바라보는 함수
-                LockOnCamera();  // LockOn 상태일 때 움직이는 함수
-                ArrowShot();
+                if (!isLockOn)
+                {
+                    LookAround();
+                    MoveAndCamera();
+                }
+                else
+                {
+                    LockOnTarget();  // LockOn 상태일 때 타겟을 바라보는 함수
+                    LockOnCamera();  // LockOn 상태일 때 움직이는 함수
+                    ArrowShot();
 
+                }
             }
+           
 
             Skill(); // 스킬 관련 매서드
             Recovery(); // 자연 회복 매서드
@@ -421,11 +424,11 @@ public class Player : MonoBehaviour
             mp -= 3;
             StartCoroutine(SkillCool(2, 4, 0));
             counterSkill.Play();
-            if (boss.animator.GetInteger("AttackInt") == 2)
-            {    
-                
+            if (boss.gameObject.activeSelf&& boss.animator.GetInteger("AttackInt") == 2)
+            {                    
                 boss.animator.SetTrigger("Groggy");
             }
+           
         }
         else if (mp >= 5 && isLockOn == false && cool[5] == false && Input.GetKeyDown(KeyCode.Space))
         {
