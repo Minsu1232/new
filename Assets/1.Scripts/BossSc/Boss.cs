@@ -42,8 +42,11 @@ public class Boss : MonoBehaviour, IDamageable
     public Image neutralizeBar;
     public Image destructionBar;
     public Image destructionImage;
+    public GameObject bossUI;
+
     [Header("Player Attributes")]
     public Player player;
+    
 
     [Header("Check Attributes")]
     public bool isgimmick; // 업데이트문 제약 조건    
@@ -186,7 +189,7 @@ public class Boss : MonoBehaviour, IDamageable
     void MonsterMove()
     {
         // 애니메이션 진행중일땐 움직임 x
-        if (!animator.GetCurrentAnimatorStateInfo(0).IsName("Attack") && !animator.GetCurrentAnimatorStateInfo(0).IsName("SecondAttack") && !animator.GetCurrentAnimatorStateInfo(0).IsName("CounterAttack") && isAttack == false && !isDie && player != null && !isgimmick)
+        if (!animator.GetCurrentAnimatorStateInfo(0).IsName("Attack") && !animator.GetCurrentAnimatorStateInfo(0).IsName("SecondAttack") && !animator.GetCurrentAnimatorStateInfo(0).IsName("CounterAttack") && !animator.GetCurrentAnimatorStateInfo(0).IsName("Start") && isAttack == false && !isDie && player != null && !isgimmick)
         {
             navMeshAgent.enabled = true;
             navMeshAgent.SetDestination(player.transform.position);
@@ -247,7 +250,7 @@ public class Boss : MonoBehaviour, IDamageable
     void CounterColorRed()
     {
         // 밝기 조절
-        float intensity = 1000.0f;
+        float intensity = 100.0f;
         Color emissionColor = new Color(1.0f, 0.0f, 0.0f); // 기본 빨간색
         Color intenseColor = new Color(emissionColor.r * intensity, emissionColor.g * intensity, emissionColor.b * intensity);
 
@@ -275,6 +278,7 @@ public class Boss : MonoBehaviour, IDamageable
     {
         if (!isDie)
         {
+            bossUI.gameObject.SetActive(false); // 죽으면 UI 사라짐
             Debug.Log("Monster died.");
             animator.SetTrigger("Die");
             isDie = true;

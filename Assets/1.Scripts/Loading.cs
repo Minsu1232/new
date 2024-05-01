@@ -9,6 +9,7 @@ public class Loading : MonoBehaviour
     float timeElapsed = 0;
     float lerpDuration = 3;
     public CanvasGroup panelCanvasGroup;
+    public GameObject image;
 
     private void OnEnable()
     {
@@ -28,11 +29,15 @@ public class Loading : MonoBehaviour
     {
         if (timeElapsed < lerpDuration)
         {
-            loading.fillAmount = Mathf.Lerp(0, 1, timeElapsed / lerpDuration);
+            if(loading != null)
+            {
+                loading.fillAmount = Mathf.Lerp(0, 1, timeElapsed / lerpDuration);
+            }
+            
             timeElapsed += Time.deltaTime;
             if(loading.fillAmount >= 0.98f)
             {
-                gameObject.SetActive(false);
+                image.SetActive(false);
                 StartCoroutine(FadeCanvasGroup(panelCanvasGroup, panelCanvasGroup.alpha, 0, 1.5f));
             }
         }

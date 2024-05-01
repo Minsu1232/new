@@ -84,7 +84,7 @@ public class NormalMonster : MonoBehaviour, IDamageable
     /// 몬스터의 피격 함수 ArrowDamage에서 호출.
     /// </summary>
     /// <param name="damage"></param>
-    public void TakeDamage(int damage, int neutralizeValu)
+    public void TakeDamage(int damage, int neutralizeValu, int destruction, bool shouldTriggerHitAnimation = true)
     {
 
         if (remainHealth > 0)

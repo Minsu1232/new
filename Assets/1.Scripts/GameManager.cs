@@ -118,6 +118,30 @@ public class GameManager : MonoBehaviour
             player.transform.position = bossStart.transform.position;
         }
     }
+    public void QuestZoneTrans()
+    {
+        CharacterController controller = player.GetComponent<CharacterController>();
+
+        if (controller != null)
+        {
+            // CharacterController를 잠시 비활성화
+            controller.enabled = false;
+
+            // 캐릭터의 위치를 변경
+            player.transform.position = questStart.transform.position;
+
+            // CharacterController를 다시 활성화
+            controller.enabled = true;
+
+            // 패널 꺼짐
+            dungeonPanel.gameObject.SetActive(false);
+        }
+        else
+        {
+            // CharacterController가 없는 경우, 직접 위치 설정
+            player.transform.position = bossStart.transform.position;
+        }
+    }
     public void PanelClose()
     {
         dungeonPanel.gameObject.SetActive(false);
