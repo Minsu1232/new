@@ -43,6 +43,7 @@ public class Boss : MonoBehaviour, IDamageable
     public Image destructionBar;
     public Image destructionImage;
     public GameObject bossUI;
+    public QuestScriptable quest;
 
     [Header("Player Attributes")]
     public Player player;
@@ -250,7 +251,7 @@ public class Boss : MonoBehaviour, IDamageable
     void CounterColorRed()
     {
         // ¹à±â Á¶Àý
-        float intensity = 100.0f;
+        float intensity = 10.0f;
         Color emissionColor = new Color(1.0f, 0.0f, 0.0f); // ±âº» »¡°£»ö
         Color intenseColor = new Color(emissionColor.r * intensity, emissionColor.g * intensity, emissionColor.b * intensity);
 
@@ -278,7 +279,8 @@ public class Boss : MonoBehaviour, IDamageable
     {
         if (!isDie)
         {
-            bossUI.gameObject.SetActive(false); // Á×À¸¸é UI »ç¶óÁü
+            quest.isMainClear = true; // Äù½ºÆ® ¿Ï·á
+            //bossUI.gameObject.SetActive(false); // Á×À¸¸é UI »ç¶óÁü
             Debug.Log("Monster died.");
             animator.SetTrigger("Die");
             isDie = true;

@@ -217,7 +217,7 @@ public class Player : MonoBehaviour
     {
         isSound = false;
         {
-            if (isWalk == true)
+            if (isWalk == true && !animator.GetCurrentAnimatorStateInfo(0).IsName("StandUp")) // 캐릭터 생성시 모션 동안 움직일수 없음
             {
                 animator.SetBool("IsWalking", false);
                 // 입력값을 vector2로 저장

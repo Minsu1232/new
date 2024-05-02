@@ -25,6 +25,8 @@ public class NormalMonster : MonoBehaviour, IDamageable
     [Header("Player Attributes")]
     public Player player;
 
+    [Header("Quest")]
+    public QuestScriptable quest;
 
     Animator animator;
 
@@ -108,6 +110,7 @@ public class NormalMonster : MonoBehaviour, IDamageable
     {
         if (!isDie)
         {
+            quest.killed += 1;
             Debug.Log("Monster died.");
             animator.SetTrigger("Die");
             isDie = true;
