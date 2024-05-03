@@ -16,6 +16,7 @@ public class NormalMonster : MonoBehaviour, IDamageable
     [SerializeField]
     NavMeshAgent navMeshAgent;
     [SerializeField]
+    public GameObject portal;
 
     [Header("Monster UI")]
     public Text hp;
@@ -110,6 +111,7 @@ public class NormalMonster : MonoBehaviour, IDamageable
     {
         if (!isDie)
         {
+            portal.gameObject.SetActive(true);
             quest.killed += 1;
             Debug.Log("Monster died.");
             animator.SetTrigger("Die");

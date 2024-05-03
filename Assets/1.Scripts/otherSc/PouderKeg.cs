@@ -24,7 +24,7 @@ public class PouderKeg : MonoBehaviour
     //{
     //    // 아이템 생성시 복셀방식으로
     //    Vector3 spawnPosition = new Vector3(transform.position.x, transform.position.y + 3, transform.position.z);
-    //    GameObject item = Instantiate(itemPrefab,spawnPosition, Quaternion.identity);
+    //    GameObject item = Instantiate(itemPrefab, spawnPosition, Quaternion.identity);
     //    Rigidbody rb = item.GetComponent<Rigidbody>();
     //    Vector3 forceDirection = new Vector3(Random.Range(-1f, 1f), 1, Random.Range(-1f, 1f));
     //    rb.AddForce(forceDirection.normalized * 30f, ForceMode.Impulse);

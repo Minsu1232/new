@@ -22,7 +22,9 @@ public class GameManager : MonoBehaviour
     public GameObject shop;
     public GameObject dungeonPanel;
     public GameObject transPanel;
+    public GameObject inventory;
     public CanvasGroup panelCanvasGroup;
+
 
 
     [Header("Transform")]
@@ -58,7 +60,24 @@ public class GameManager : MonoBehaviour
             shop.SetActive(false);
             isShop = false;
         }
+        InventoryOpen();
 
+    }
+    public void InventoryOpen()
+    {
+        if (UnityEngine.Input.GetKeyDown(KeyCode.I))
+        {            
+            if (inventory.activeSelf)
+            {
+                inventory.SetActive(false);
+            }
+            else
+            {
+                inventory.SetActive(true);
+            }
+            
+        }
+        
     }
     public void MenuOpen()
     {

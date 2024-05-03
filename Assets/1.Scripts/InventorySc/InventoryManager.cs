@@ -4,21 +4,21 @@ using UnityEngine;
 
 public class InventoryManager : MonoBehaviour
 {
-    public Inventory inventory;
+   
     public GameObject[] healingEffect;
 
     void Update()
     {
         if (Input.GetKeyDown(KeyCode.Tab))
         {
-            inventory.SwitchSlot();
+             Inventory.instance.SwitchSlot();
         }
 
         if (Input.GetKeyDown(KeyCode.Q))
         {
 
             // 슬릇에 따른 파티클효과
-            if (inventory.selectedSlot == 0)
+            if (Inventory.instance.selectedSlot == 0)
             {
                 healingEffect[0].SetActive(true);
             }
@@ -29,7 +29,7 @@ public class InventoryManager : MonoBehaviour
 
 
 
-            inventory.UsePotion();
+            Inventory.instance.UsePotion();
         }
     }
 }

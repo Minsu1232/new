@@ -99,7 +99,11 @@ public class ArrownDamage : MonoBehaviour
                 audioSource.PlayOneShot(hitSound, 0.1f);
                 damageable.TakeDamage(damage, neutralizeValu, destructionValu, true);
                 
-            }            
+            }
+            else
+            {
+                damageable.TakeDamage(damage, neutralizeValu, destructionValu, true);
+            }
             
             StartCoroutine(DotDamage(damageable, damageScriptable.duration, damageScriptable.damagePerSecond));
             StickArrow(other);

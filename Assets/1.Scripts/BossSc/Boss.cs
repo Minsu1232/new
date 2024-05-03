@@ -35,6 +35,7 @@ public class Boss : MonoBehaviour, IDamageable
     public AudioClip runSound;
     public Material[] counterColor;
     public GameObject portal;
+    public GameObject dropItem;
 
 
     [Header("Monster UI")]
@@ -280,6 +281,7 @@ public class Boss : MonoBehaviour, IDamageable
     {
         if (!isDie)
         {
+            SpawnItem();
             portal.gameObject.SetActive(true); // 귀환 포탈;
             quest.isMainClear = true; // 퀘스트 완료
             //bossUI.gameObject.SetActive(false); // 죽으면 UI 사라짐
@@ -493,6 +495,32 @@ public class Boss : MonoBehaviour, IDamageable
         yield return new WaitForSeconds(5f);
         navMeshAgent.speed = walkSpeed; // 다시 원래 속도로 돌아감 현잰 왜인지 모르겠으나 안돌아감
         animator.SetBool("IsGroggy", false);
+    }
+    void SpawnItem()
+    {
+        Vector3 spawnPosition = new Vector3(transform.position.x, transform.position.y + 3, transform.position.z);
+        GameObject item = Instantiate(dropItem, spawnPosition, Quaternion.identity);
+        Rigidbody rb = item.GetComponent<Rigidbody>();       
+        
+
+        // 아이템을 공중으로 솟구치게 하는 힘
+        Vector3 upForce = new Vector3(0, 1, 0);
+        rb.AddForce(upForce * 10f, ForceMode.Impulse);
+
+
+        StartCoroutine(DelayedAddForce(rb)); // 아이템 공중에 띄운뒤 키메네틱을 사용해 멈춤.
+
+
+    }
+
+    IEnumerator DelayedAddForce(Rigidbody rb)
+    {
+        if (rb != null)
+        {
+            yield return new WaitForSeconds(0.5f);
+            rb.isKinematic = true;
+        }
+       
     }
     private void OnTriggerEnter(Collider other)
     {

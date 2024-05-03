@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3ee7d5010552acc449ffa275deaddf98, type: 3}
   m_Name: HP
   m_EditorClassIdentifier: 
-  potionName: "\uCCB4\uB825\uD68C\uBCF5\uBB3C\uC57D"
+  itemName: "\uCCB4\uB825\uD68C\uBCF5\uBB3C\uC57D"
   potionType: HP
   effectAmount: 40
   possess: 99
