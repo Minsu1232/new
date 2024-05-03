@@ -11,6 +11,7 @@ TagManager:
   - GimmickWalls
   - PouderKeg
   - Terrian
+  - Boss
   layers:
   - Default
   - TransparentFX

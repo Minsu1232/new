@@ -25,18 +25,21 @@ public class Player : MonoBehaviour
     [SerializeField]
     Transform character;
     [SerializeField]
-    Transform cameraArm;    
+    Transform cameraArm;
+    public GameObject healEffect;
     public Transform target;
     public Image hpBar;
     public Image mpBar;
     public Text hp;
     public Text mana;
     public ParticleSystem counterSkill;
+    public CharacterController controller;  // 지형에 맞는 움직임을 자연스럽게 하기위해 사용
     public AudioClip buffSound;
     public AudioClip rollingSound;
     public AudioClip walkSound;
     public AudioClip runSound;
     public AudioClip counterSkillSound;
+    
 
 
     [Header("Arrow Attributes")]
@@ -60,7 +63,7 @@ public class Player : MonoBehaviour
     // 컴포넌트
     Rigidbody rb;
     Animator animator;
-    CharacterController controller;
+  
     public Boss boss;
 
     // 캐릭터컨트롤러 관리용 변수
@@ -117,8 +120,7 @@ public class Player : MonoBehaviour
     }
     void Start()
     {
-        isSound = false;
-        controller = gameObject.GetComponent<CharacterController>(); // 지형에 맞는 움직임을 자연스럽게 하기위해 사용
+        isSound = false;        
         shotCount = 1;
         hp.text = $"{remainHealth}/{initialHealth}";
         hpBar.fillAmount = remainHealth / initialHealth;

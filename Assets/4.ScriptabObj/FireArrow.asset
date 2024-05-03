@@ -17,6 +17,7 @@ MonoBehaviour:
   duration: 3
   effectType: '"Fire"'
   particleEffect: {fileID: 685090368539115530, guid: c848cb3d55640964ba057c9c1a09e55e, type: 3}
+  particleEffectSecond: {fileID: 4596544553357837919, guid: 8eb503696b886e04faff8fc0f480d473, type: 3}
   stamina: 6
   neutralizeValue: 4
   destructionValue: 1

@@ -62,6 +62,7 @@ public class ArrownDamage : MonoBehaviour
         //}
         if (other.gameObject.tag == "BossRoom")
         {
+            // 던전 내 구조물에도 화살이 박히게끔
             StickArrow(other);
             if (damageScriptable.name == "PoisonArrow")
             {
@@ -82,7 +83,7 @@ public class ArrownDamage : MonoBehaviour
             Debug.Log("닿았다");
             // 일반 화살일땐 넉백 모션이 없음
             // 각 사운드 클립의 소리 조절
-            if(damageScriptable.name == "Arrow")
+            if(damageScriptable.name == "Arrow") 
             {
                 damageable.TakeDamage(damage, neutralizeValu, destructionValu, false);
                 audioSource.PlayOneShot(hitSound, 0.3f);
@@ -137,6 +138,10 @@ public class ArrownDamage : MonoBehaviour
         // 파티클 시스템의 인스턴스를 생성하고, 부모를 몬스터로 설정합니다.
         ParticleSystem particleInstance = Instantiate(damageScriptable.particleEffect, transform.position, Quaternion.identity, collision.transform);
         particleInstance.Play();
+        if(damageScriptable.particleEffectSecond != null) // 두개의 파티클 효과 제어
+        {
+            damageScriptable.particleEffectSecond.Play();
+        }
       
         // 화살도 몬스터의 자식으로 설정
         transform.SetParent(collision.transform);        

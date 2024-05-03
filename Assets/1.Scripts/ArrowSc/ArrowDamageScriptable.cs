@@ -10,6 +10,7 @@ public class ArrowDamageScriptable : ScriptableObject
     public float duration;
     public string effectType;
     public ParticleSystem particleEffect;
+    public ParticleSystem particleEffectSecond;
     public int stamina;
     public int neutralizeValue;
     public int destructionValue;

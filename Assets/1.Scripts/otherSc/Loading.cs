@@ -12,10 +12,12 @@ public class Loading : MonoBehaviour
     public GameObject image;
 
     private void OnEnable()
-    {
-        // 초기화
+    {// Loading 재활용
         timeElapsed = 0;
-        lerpDuration = 3.0f; // 3초 동안 애니메이션 실행
+        lerpDuration = 3.0f; // 애니메이션 시간 초기화
+        loading.fillAmount = 0; // 로딩 바 초기화
+        image.SetActive(true); // 이미지 활성화
+        panelCanvasGroup.alpha = 1; // 패널 투명도 초기화
 
     }
     // Start is called before the first frame update
@@ -29,9 +31,11 @@ public class Loading : MonoBehaviour
     {
         if (timeElapsed < lerpDuration)
         {
-            if(loading != null)
+        
+            if (loading != null)
             {
                 loading.fillAmount = Mathf.Lerp(0, 1, timeElapsed / lerpDuration);
+                
             }
             
             timeElapsed += Time.deltaTime;
@@ -39,8 +43,10 @@ public class Loading : MonoBehaviour
             {
                 image.SetActive(false);
                 StartCoroutine(FadeCanvasGroup(panelCanvasGroup, panelCanvasGroup.alpha, 0, 1.5f));
+            
             }
         }
+        
     }
     private IEnumerator FadeCanvasGroup(CanvasGroup cg, float start, float end, float lerpTime)
     {
@@ -53,14 +59,15 @@ public class Loading : MonoBehaviour
             timeSinceStarted = Time.time - _timeStartedLerping;
             percentageComplete = timeSinceStarted / lerpTime;
 
-            float currentValue = Mathf.Lerp(start, end, percentageComplete);
+            cg.alpha = Mathf.Lerp(start, end, percentageComplete);
 
-            cg.alpha = currentValue;
-
-            if (percentageComplete >= 1) break;
+            if (percentageComplete >= 1)
+            {
+                gameObject.SetActive(false); // 페이드아웃 후 게임 오브젝트 비활성화
+                break;
+            }
 
             yield return new WaitForEndOfFrame();
-
         }
     }
 }

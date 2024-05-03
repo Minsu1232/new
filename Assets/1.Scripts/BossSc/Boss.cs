@@ -23,8 +23,8 @@ public class Boss : MonoBehaviour, IDamageable
     public int runSpeed;
 
     [Header("Boss Attributes")]
-    [SerializeField]
-    NavMeshAgent navMeshAgent;
+    
+    public NavMeshAgent navMeshAgent;
     public GameObject[] gimmickWalls;
     public Transform gimmickStartPosition;
     public int gimmickCount; // 0ÀÌ µÇ¸é ÆÄÈÑ    
@@ -34,6 +34,7 @@ public class Boss : MonoBehaviour, IDamageable
     public AudioClip walkSound;
     public AudioClip runSound;
     public Material[] counterColor;
+    public GameObject portal;
 
 
     [Header("Monster UI")]
@@ -279,6 +280,7 @@ public class Boss : MonoBehaviour, IDamageable
     {
         if (!isDie)
         {
+            portal.gameObject.SetActive(true); // ±ÍÈ¯ Æ÷Å»;
             quest.isMainClear = true; // Äù½ºÆ® ¿Ï·á
             //bossUI.gameObject.SetActive(false); // Á×À¸¸é UI »ç¶óÁü
             Debug.Log("Monster died.");
