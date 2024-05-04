@@ -12,9 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3ee7d5010552acc449ffa275deaddf98, type: 3}
   m_Name: MP
   m_EditorClassIdentifier: 
-  itemName: "\uB9C8\uB098\uD68C\uBCF5\uBB3C\uC57D"
+  itemName: MP
   potionType: MP
   effectAmount: 20
-  possess: 99
+  possess: 94
   icon: {fileID: 21300000, guid: 6592b916f86b19e428db6f6847c7b6dd, type: 3}
+  money: {fileID: 0}
   price: 500

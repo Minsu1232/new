@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using static UnityEditor.Progress;
 
 public class Inventory : MonoBehaviour
 {
@@ -23,13 +24,14 @@ public class Inventory : MonoBehaviour
 
     void Awake()
     {
-        if (instance == null)
+        if (instance != null && instance != this)
         {
-            instance = this; // 인스턴스를 할당
+            Destroy(gameObject);
         }
         else
         {
-            Destroy(gameObject); // 이미 인스턴스가 있으면 중복된 인스턴스 제거
+            instance = this;
+            DontDestroyOnLoad(gameObject);
         }
     }
     void Start()
@@ -95,7 +97,7 @@ public class Inventory : MonoBehaviour
         Item currentPotion = selectedSlot == 0 ? potions[selectedSlot] : potions[selectedSlot];
         if (potions[selectedSlot] != null && currentPotion.possess > 0)
         {
-            potions[selectedSlot].Use(player); // 선택된 포션 사용
+            potions[selectedSlot].Use(player, potions[selectedSlot].itemName); // 선택된 포션 사용
         }
         else
         {
@@ -114,9 +116,23 @@ public class Inventory : MonoBehaviour
             potionImage.sprite = mpPotionSprite; // MP 이미지 설정
         }
     }
-    void UseCoinBundle()
+    public void UpdateUI(Item updatedItem)
     {
-        
+        // 각 슬롯을 순회하며 해당 아이템의 UI를 업데이트
+        for (int i = 0; i < inventorySlotImage.Length; i++)
+        {
+            // 해당 슬롯의 아이템과 업데이트할 아이템이 일치하는 경우에만 UI를 업데이트
+            if (inventorySlotImage[i].sprite == updatedItem.icon)
+            {
+                inventory[i].text = updatedItem.possess.ToString(); // 아이템 갯수 업데이트
+                inventory[i].gameObject.SetActive(updatedItem.possess > 0); // 아이템 소지량에 따라 활성화/비활성화
+                if (updatedItem.possess == 0)
+                {
+                    inventorySlotImage[i].sprite = null; // 아이템 소지량이 0이면 스프라이트 제거
+                }
+                break; // 해당 아이템을 찾았으므로 루프 종료
+            }
+        }
     }
-   
+
 }

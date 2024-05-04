@@ -12,9 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3ee7d5010552acc449ffa275deaddf98, type: 3}
   m_Name: HP
   m_EditorClassIdentifier: 
-  itemName: "\uCCB4\uB825\uD68C\uBCF5\uBB3C\uC57D"
+  itemName: HP
   potionType: HP
   effectAmount: 40
-  possess: 99
+  possess: 86
   icon: {fileID: 21300000, guid: e52ea25af699fd445b7046374f81a5b9, type: 3}
+  money: {fileID: 0}
   price: 400

@@ -12,9 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3ee7d5010552acc449ffa275deaddf98, type: 3}
   m_Name: CoinBundle
   m_EditorClassIdentifier: 
-  itemName: "\uB3D9\uC804\uBCF4\uB530\uB9AC"
+  itemName: RandomBox
   potionType: 
   effectAmount: 0
   possess: 0
   icon: {fileID: 21300000, guid: a7610de486e40bc4097b57a059ff1ef6, type: 3}
+  money: {fileID: 11400000, guid: 834d1a09373e7c64e92935b8724ba322, type: 2}
   price: 0
