@@ -15,7 +15,10 @@ public class BossSpawnStartArea : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+        if (!boss.activeSelf)
+        {
+            bossUI.SetActive(false);
+        }
     }
     // 존 통과시 보스와 ui on
     private void OnTriggerEnter(Collider other)

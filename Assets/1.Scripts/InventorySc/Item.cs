@@ -24,9 +24,9 @@ public class Item : ScriptableObject, IItem
                 player = player.GetComponent<Player>();
                 possess--;
                 int newHealth = player.remainHealth + effectAmount;
-                player.remainHealth = Mathf.Min(newHealth, player.initialHealth); // 포션이 최대 HP를 넘기게 차지 않음
-                player.hp.text = $"{player.remainHealth}/{player.initialHealth}";
-                player.hpBar.fillAmount = (float)player.remainHealth / player.initialHealth;
+                player.remainHealth = Mathf.Min(newHealth, player.playerState.health); // 포션이 최대 HP를 넘기게 차지 않음
+                player.hp.text = $"{player.remainHealth}/{player.playerState.health}";
+                player.hpBar.fillAmount = (float)player.remainHealth / player.playerState.health;
                 Debug.Log("HP Potion used. " + effectAmount + " Health restored.");
             }
             else if (name == "MP")
@@ -34,9 +34,9 @@ public class Item : ScriptableObject, IItem
                 player = player.GetComponent<Player>();
                 possess--;
                 int newMp = player.mp + effectAmount;
-                player.mp = Mathf.Min(newMp, player.maxMp); // 포션이 최대 HP를 넘기게 차지 않음
-                player.mana.text = $"{player.mp}/{player.maxMp}";
-                player.mpBar.fillAmount = (float)player.mp / player.maxMp;
+                player.mp = Mathf.Min(newMp, player.playerState.mp); // 포션이 최대 HP를 넘기게 차지 않음
+                player.mana.text = $"{player.mp}/{player.playerState.mp}";
+                player.mpBar.fillAmount = (float)player.mp / player.playerState.mp;
                 Debug.Log("MP Potion used. " + effectAmount + " Mana restored.");
             }
             if (name == "RandomBox")

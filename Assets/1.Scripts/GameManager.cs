@@ -15,6 +15,8 @@ public class GameManager : MonoBehaviour
     public Player player;
     public Image[] image;
     public Text mana;
+    public GameObject status;
+    public GameObject skillBar;
 
     [Header("Game UI")]
     public GameObject menu;
@@ -60,6 +62,7 @@ public class GameManager : MonoBehaviour
             shop.SetActive(false);
             isShop = false;
         }
+        StatusOpen();
         InventoryOpen();
 
     }
@@ -78,6 +81,25 @@ public class GameManager : MonoBehaviour
             
         }
         
+    }
+    public void StatusOpen()
+    {
+        if(UnityEngine.Input.GetKeyDown(KeyCode.E)) 
+        {
+            if (!status.activeSelf)
+            {
+                status.gameObject.SetActive(true);
+            }
+            else
+            {
+                status.gameObject.SetActive(false);
+            }
+            
+        }
+    }
+    public void StatusClose()
+    {
+        status.gameObject.SetActive(false);
     }
     public void MenuOpen()
     {
@@ -119,6 +141,7 @@ public class GameManager : MonoBehaviour
 
         if (controller != null)
         {
+            StartCoroutine(skillBarOff());
             // CharacterController를 잠시 비활성화
             controller.enabled = false;
 
@@ -143,6 +166,7 @@ public class GameManager : MonoBehaviour
 
         if (controller != null)
         {
+            StartCoroutine(skillBarOff());
             // CharacterController를 잠시 비활성화
             controller.enabled = false;
 
@@ -195,6 +219,12 @@ public class GameManager : MonoBehaviour
             yield return new WaitForEndOfFrame();
 
         }
+    }
+    IEnumerator skillBarOff()
+    {
+        skillBar.SetActive(false);
+        yield return new WaitForSeconds(3f);
+        skillBar.SetActive(true);
     }
 }
 

@@ -48,7 +48,7 @@ public class Loading : MonoBehaviour
         }
         
     }
-    private IEnumerator FadeCanvasGroup(CanvasGroup cg, float start, float end, float lerpTime)
+    private IEnumerator FadeCanvasGroup(CanvasGroup cg, float start, float end, float lerpTime) // 화면이 서서히 밝아지게
     {
         float _timeStartedLerping = Time.time;
         float timeSinceStarted = Time.time - _timeStartedLerping;

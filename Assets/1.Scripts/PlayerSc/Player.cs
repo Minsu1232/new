@@ -3,6 +3,7 @@ using System.Collections;
 using System.Diagnostics;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.Experimental.GlobalIllumination;
 using UnityEngine.UI;
 
 
@@ -11,14 +12,15 @@ public class Player : MonoBehaviour
     [Header("Player Info")]
     public PlayerState playerState;
     // 캐릭터의 정보
-    public int initialHealth = 100;
+    public int initialHealth;
     public int remainHealth;
-    public int str = 2;
-    public int dex = 5;
-    public float walkSpeed = 5f;
-    public float runSpeed = 7f;
-    public int maxMp = 70;
+    public int str;
+    public int dex;
+    public float walkSpeed;
+    public float runSpeed;
+    public int maxMp;
     public int mp;
+    public int level;
     public float recovery; // 캐릭터 마나 회복 시간
 
     [Header("Player Attributes")]
@@ -26,12 +28,11 @@ public class Player : MonoBehaviour
     Transform character;
     [SerializeField]
     Transform cameraArm;
+    [SerializeField]
+    Money money;
     public GameObject healEffect;
     public Transform target;
-    public Image hpBar;
-    public Image mpBar;
-    public Text hp;
-    public Text mana;
+    public Transform characterObj;
     public ParticleSystem counterSkill;
     public CharacterController controller;  // 지형에 맞는 움직임을 자연스럽게 하기위해 사용
     public AudioClip buffSound;
@@ -39,7 +40,20 @@ public class Player : MonoBehaviour
     public AudioClip walkSound;
     public AudioClip runSound;
     public AudioClip counterSkillSound;
-    
+    public AudioClip petSummons;
+
+    [Header("Player Status")]
+    public Text maxHP;
+    public Text maxMP;
+    public Text maxStr;
+    public Text maxDex;
+    public Text nowLevel;
+    public Image hpBar;
+    public Image mpBar;
+    public Text hp;
+    public Text mana;
+
+
 
 
     [Header("Arrow Attributes")]
@@ -57,6 +71,7 @@ public class Player : MonoBehaviour
     [SerializeField]
     Text[] coolText;
     public int skillComand;
+    public PetManager pet;
     
 
 
@@ -111,7 +126,15 @@ public class Player : MonoBehaviour
         maxMp = playerState.mp;
         remainHealth = initialHealth;
         mp = maxMp;
+        level = playerState.level;
         skillComand = 0;
+
+        maxHP.text = initialHealth.ToString();
+        maxMP.text = mp.ToString();
+        maxStr.text = str.ToString();
+        maxDex.text = dex.ToString();
+        nowLevel.text = level.ToString();
+
         isDie = false;
         isWalk = true;
 
@@ -122,8 +145,8 @@ public class Player : MonoBehaviour
     {
         isSound = false;        
         shotCount = 1;
-        hp.text = $"{remainHealth}/{initialHealth}";
-        hpBar.fillAmount = remainHealth / initialHealth;
+        hp.text = $"{remainHealth}/{playerState.health}";
+        hpBar.fillAmount = remainHealth / playerState.health;
         audioSource = GetComponent<AudioSource>();
 
     }
@@ -370,7 +393,7 @@ public class Player : MonoBehaviour
 
     public void Skill()
     {
-
+        //StartCoroutine(SkillCool(a, b, c)); a = 스킬쿨타임,b = 스킬쿨의 인덱스, c = 화살종류 인덱스
         if (mp >= 15 && isLockOn == false && isSkill == false && cool[0] == false && Input.GetKeyDown(KeyCode.Alpha1))
         {
             //버프 (10초간 힘 3 증가)
@@ -414,10 +437,17 @@ public class Player : MonoBehaviour
             skillArrow[3].gameObject.SetActive(true);
             skillComand = 3;
         }
-        else if (isLockOn == false && isSkill == false && Input.GetKeyDown(KeyCode.Alpha5))
+        else if (mp>= 15 && isLockOn == false && isSkill == false && Input.GetKeyDown(KeyCode.Alpha5))
         {
-            //기본화살            
+            //기본화살
+            mp -= 15;
+            isSkill = true;
+            StartCoroutine(SkillCool(30, 6, 0));
+            audioSource.PlayOneShot(petSummons);
+            StartCoroutine(PetUsing());
+            
             skillComand = 0;
+            
 
         }
         else if (mp >= 3 && isLockOn == false && cool[4] == false && Input.GetKeyDown(KeyCode.F))
@@ -446,10 +476,11 @@ public class Player : MonoBehaviour
 
             }
         }
+        
 
     }
 
-    IEnumerator SkillCool(int coolTime, int skillCoolIndex, int skillArrowIndex)
+    IEnumerator SkillCool(int coolTime, int skillCoolIndex, int skillArrowIndex) // 스킬 쿨타임 및 UI 관리
     {
         cool[skillCoolIndex] = true;
         skillCool[skillCoolIndex].fillAmount = 0;
@@ -468,6 +499,39 @@ public class Player : MonoBehaviour
         skillCool[skillCoolIndex].fillAmount = 1;
         cool[skillCoolIndex] = false;
 
+    }
+    IEnumerator PetUsing()
+    {
+        pet.gameObject.SetActive(true);
+        StartCoroutine(PetAttack());
+        yield return new WaitForSeconds(14f);
+        pet.animator.SetTrigger("Leave");
+        yield return new WaitForSeconds(1.3f);
+        StopCoroutine(PetAttack()); // 명시적으로 코루틴 중지
+        pet.gameObject.SetActive(false);
+    }
+    IEnumerator PetAttack()
+    {
+        while (pet.gameObject.activeSelf)
+        {
+            yield return new WaitForSeconds(3f); // 공격 주기는 3초
+            if (target != null)
+            {
+                pet.transform.parent = target.parent;
+                pet.animator.SetTrigger("Attack");
+                boss.TakeDamage(15,5,2,true);
+                pet.transform.localPosition = new Vector3(-0.05f, 0.25f, 0.88f);
+                pet.transform.LookAt(target); //타겟을 바라보게
+                
+            }
+            yield return new WaitForSeconds(1.5f);
+            pet.transform.parent = characterObj.transform;
+            pet.transform.localPosition = new Vector3(-1.5f, 0.33f, 2.1f);
+            pet.transform.localRotation = Quaternion.identity; ;
+           
+        }
+       
+        
     }
 
     void ArrowShot()
@@ -577,12 +641,12 @@ public class Player : MonoBehaviour
     {
         if (isInvincible) return; // 무적 상태일 때는 피해를 받지 않음
         remainHealth -= damage; // 피해량을 먼저 적용
-        remainHealth = Mathf.Clamp(remainHealth, 0, initialHealth); // 체력이 음수가 되지 않도록 제어
+        remainHealth = Mathf.Clamp(remainHealth, 0, playerState.health); // 체력이 음수가 되지 않도록 제어
 
         // Hpbar 감소ui
 
-        hp.text = $"{remainHealth}/{initialHealth}";
-        hpBar.fillAmount = (float)remainHealth / initialHealth;
+        hp.text = $"{remainHealth}/{playerState.health}";
+        hpBar.fillAmount = (float)remainHealth / playerState.health;
 
         if (!isRolling)
         {
@@ -613,10 +677,10 @@ public class Player : MonoBehaviour
     // mpBar 감소 UI
     void Stamina()
     {
-        mana.text = $"{mp}/{maxMp}";
+        mana.text = $"{mp}/{playerState.mp}";
         if (maxMp > 0)  // 최대 MP가 0보다 클 때만 계산
         {
-            mpBar.fillAmount = (float)mp / maxMp;
+            mpBar.fillAmount = (float)mp / playerState.mp;
         }
         else
         {
@@ -713,6 +777,67 @@ public class Player : MonoBehaviour
             
         }
     }
-    
+
+    // 플레이어 스테이터스 버튼 관리 매서드
+    public void MaxHpUpButton()
+    {
+        if(money.money > 100)
+        {
+            playerState.health += 15; // 스탯 증가
+            // ui 업데이트
+            maxHP.text = playerState.health.ToString(); 
+            money.money -= 100;
+            playerState.level++;
+            nowLevel.text = playerState.level.ToString();
+            Inventory.instance.money.text = money.money.ToString();
+            hp.text = $"{remainHealth}/{playerState.health}";
+            hpBar.fillAmount = (float)remainHealth / playerState.health;
+        }
+       
+        
+    }
+    public void MaxMpUpButton()
+    {
+        if (money.money > 100)
+        {
+            playerState.mp += 5;
+            maxMP.text = playerState.mp.ToString();
+            playerState.level++;
+            nowLevel.text = playerState.level.ToString();
+            money.money -= 100;
+            mana.text = $"{mp}/{playerState.mp}";
+            // mp는 매니저에서 관리를 시작해 일단 유지중
+            Inventory.instance.money.text = money.money.ToString();
+
+        }
+    }
+    public void MaxStrUpButton()
+    {
+        if(money.money > 100)
+        {
+            playerState.str += 1;
+            maxStr.text = playerState.str.ToString();
+            playerState.level++;
+            nowLevel.text = playerState.level.ToString();
+            money.money -= 100;
+            Inventory.instance.money.text = money.money.ToString();
+        }
+     
+    }
+    public void MaxDexUpButton()
+    {
+        if(money.money > 100)
+        {
+            playerState.dex += 1;
+            maxDex.text = playerState.dex.ToString();
+            playerState.level++;
+            nowLevel.text = playerState.level.ToString();
+            
+            money.money -= 100;
+            Inventory.instance.money.text = money.money.ToString();
+        }
+       
+    }
+
 }
 

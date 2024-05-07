@@ -6,6 +6,7 @@ public class PlayerRespawn : MonoBehaviour
 {
     public Transform respawn;
     public GameObject loading;
+    public GameObject skillBar;
     // Start is called before the first frame update
     void Start()
     {
@@ -26,7 +27,9 @@ public class PlayerRespawn : MonoBehaviour
             
             if (player != null && player.controller != null)
             {
+                
                 loading.SetActive(true);
+                StartCoroutine(skillBarOff());
                 player.controller.enabled = false;
                 other.transform.position = respawn.position;
                 player.controller.enabled = true;
@@ -34,5 +37,11 @@ public class PlayerRespawn : MonoBehaviour
                 gameObject.SetActive(false);
             }
         }
+    }
+    IEnumerator skillBarOff()
+    {
+        skillBar.SetActive(false);
+        yield return new WaitForSeconds(3f);
+        skillBar.SetActive(true);
     }
 }

@@ -12,5 +12,6 @@ public class PlayerState : ScriptableObject
     public float walkSpeed = 5f;
     public float runSpeed = 7f;
     public int mp = 50;
+    public int level;
 
 }

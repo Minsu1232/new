@@ -52,34 +52,38 @@ public class Inventory : MonoBehaviour
     public void AddItem(Item item)
     {
         Item foundItem = items.Find(i => i.itemName == item.itemName);
-       
-        items.Add(item);
-        item.possess ++;
-        for (int i = 0; i < instance.inventorySlotImage.Length; i++)
+
+        if (foundItem != null)
         {
-
-            if (instance.inventorySlotImage[i].sprite == null)
-            {
-                instance.inventory[i].text = item.possess.ToString(); // 슬릇창과 포션 갯수 연동
-                if (instance.inventory[i].text.ToString() == "0") // 인벤토리 소지가 0일땐 text(false)
+            // 아이템이 이미 존재하면 수량만 증가
+            foundItem.possess++;
+            // 해당 아이템의 슬롯을 찾아 정보를 업데이트
+            for (int i = 0; i < inventorySlotImage.Length; i++)
+            {//앞칸이 비어있지만 이미 인벤토리에 있는 아이템이면 누적
+                if (inventorySlotImage[i].sprite == foundItem.icon)
                 {
-                    instance.inventory[i].gameObject.SetActive(false);
+                    inventory[i].text = foundItem.possess.ToString();
+                    break;
                 }
-                else
-                {
-                    instance.inventory[i].gameObject.SetActive(true);
-                }
-                instance.inventorySlotImage[i].sprite = item.icon;
-                break; // 슬롯에 이미지를 할당하고 나면 루프 종료
-            }
-            else if (instance.inventorySlotImage[i].sprite == item.icon)
-            {
-                instance.inventory[i].text = item.possess.ToString(); // 슬릇창과 포션 갯수 연동
-                break; // 이미지가 이미 할당되어 있고, 같은 아이콘일 경우 루프 종료
             }
         }
-
+        else
+        {
+            // 새 아이템을 인벤토리에 추가
+            items.Add(item);
+            item.possess++;
+            for (int i = 0; i < inventorySlotImage.Length; i++)
+            {
+                if (inventorySlotImage[i].sprite == null)
+                {
+                    inventorySlotImage[i].sprite = item.icon;
+                    inventory[i].text = item.possess.ToString();
+                    inventory[i].gameObject.SetActive(true);
+                    break;
+                }
+            }
         }
+    }
     public void RemoveItem(Item item)
     {
         items.Remove(item);

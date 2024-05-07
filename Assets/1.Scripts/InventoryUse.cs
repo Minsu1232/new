@@ -13,7 +13,7 @@ public class InventoryUse : MonoBehaviour, IPointerClickHandler
 
     public void OnPointerClick(PointerEventData eventData)
     {
-        Image image = GetComponent<Image>();
+        Image image = GetComponent<Image>();        
         item = Inventory.instance.items.Find(i => i.itemName == image.sprite.name); // 스프라이트와 아이템 이름을 통해 아이템 참조
 
         if (eventData.button == PointerEventData.InputButton.Right && item != null)
@@ -27,6 +27,7 @@ public class InventoryUse : MonoBehaviour, IPointerClickHandler
             if (item.possess == 0) // 아이템의 수량이 0이 되면 아이템 제거
             {
                 Inventory.instance.RemoveItem(item);
+                
             }
         }
 
