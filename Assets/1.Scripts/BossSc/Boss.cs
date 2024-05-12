@@ -289,7 +289,7 @@ public class Boss : MonoBehaviour, IDamageable
             animator.SetTrigger("Die");
             isDie = true;
             navMeshAgent.enabled = false;
-            StartCoroutine(DeactivateAfterDelay()); //3초뒤 갈때마다 호출을위해 파괴 x
+            StartCoroutine(DeactivateAfterDelay()); //3초뒤false ( 갈때마다 호출을위해 파괴 x )
         }
     }
     IEnumerator DeactivateAfterDelay()

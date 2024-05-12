@@ -117,9 +117,17 @@ public class NormalMonster : MonoBehaviour, IDamageable
             animator.SetTrigger("Die");
             isDie = true;
             navMeshAgent.enabled = false;
-            Destroy(gameObject, 3f);
+            StartCoroutine(DeactivateAfterDelay());//3초뒤false ( 갈때마다 호출을위해 파괴 x )
         }
 
+    }
+    IEnumerator DeactivateAfterDelay()
+    {
+        // 3초간 대기
+        yield return new WaitForSeconds(3f);
+
+        // 오브젝트 비활성화
+        gameObject.SetActive(false);
     }
     //navmesh 이동 함수
     void MonsterMove()

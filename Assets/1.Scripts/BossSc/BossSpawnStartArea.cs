@@ -17,7 +17,7 @@ public class BossSpawnStartArea : MonoBehaviour
     {
         if (!boss.activeSelf)
         {
-            bossUI.SetActive(false);
+            bossUI.SetActive(false); // 수정예정 > Boss스크립트 Die매서드에서 다루기
         }
     }
     // 존 통과시 보스와 ui on
