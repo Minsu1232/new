@@ -15,7 +15,7 @@ public class InventoryUse : MonoBehaviour, IPointerClickHandler
     {
         Image image = GetComponent<Image>();        
         item = Inventory.instance.items.Find(i => i.itemName == image.sprite.name); // 스프라이트와 아이템 이름을 통해 아이템 참조
-
+        Debug.Log("아이템크릭");
         if (eventData.button == PointerEventData.InputButton.Right && item != null)
         {
             Debug.Log("Using item: " + image.sprite.name);

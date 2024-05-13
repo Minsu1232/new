@@ -65,7 +65,11 @@ public class NormalMonster : MonoBehaviour, IDamageable
         isDie = false;
         animator = GetComponent<Animator>();
         navMeshAgent = GetComponent<NavMeshAgent>();
-        navMeshAgent.speed = walkSpeed;
+        if(navMeshAgent != null)
+        {
+            navMeshAgent.speed = walkSpeed;
+        }
+       
         //시작 ui
         hp.text = $"{initialHealth}/{initialHealth}";
         hpBar.fillAmount = remainHealth / initialHealth;
@@ -98,7 +102,11 @@ public class NormalMonster : MonoBehaviour, IDamageable
         remainHealth = Mathf.Clamp(remainHealth, 0, initialHealth);
         hp.text = $"{remainHealth}/{initialHealth}";
         hpBar.fillAmount = (float)remainHealth / initialHealth;
-        StartCoroutine(Gethit());
+        if(gameObject.name != "training_dummy")
+        {
+            StartCoroutine(Gethit());
+        }
+        
         if (remainHealth <= 0)
         {
             Die();
@@ -111,6 +119,10 @@ public class NormalMonster : MonoBehaviour, IDamageable
     {
         if (!isDie)
         {
+            if(gameObject.name == "training_dummy")
+            {
+                Destroy(gameObject);
+            }
             portal.gameObject.SetActive(true);
             quest.killed += 1;
             Debug.Log("Monster died.");
@@ -132,7 +144,7 @@ public class NormalMonster : MonoBehaviour, IDamageable
     //navmesh 이동 함수
     void MonsterMove()
     {
-        if (isAttack == false || !isDie && player != null)
+        if (isAttack == false && !isDie && player != null && navMeshAgent != null)
         {
             navMeshAgent.enabled = true;
 
@@ -146,43 +158,47 @@ public class NormalMonster : MonoBehaviour, IDamageable
     // 몬스터의 공격함수
     void Attack()
     {
-        // 플레이어와의 거리 계산
-        float distance = Vector3.Distance(gameObject.transform.position, player.transform.position);
-
-        // 거리가 3f 이하일 경우 Attack 메서드 호출
-        if (distance <= 3f && player.remainHealth > 0)
+        if (animator != null)
         {
-            // 플레이어를 공격
-            if (!isKill)
+            // 플레이어와의 거리 계산
+            float distance = Vector3.Distance(gameObject.transform.position, player.transform.position);
+
+            // 거리가 3f 이하일 경우 Attack 메서드 호출
+            if (distance <= 3f && player.remainHealth > 0)
             {
-                animator.SetBool("Attack", true);
-                animator.SetBool("Move", false);
-                isAttack = true;
-                navMeshAgent.enabled = false;
+                // 플레이어를 공격
+                if (!isKill)
+                {
+                    animator.SetBool("Attack", true);
+                    animator.SetBool("Move", false);
+                    isAttack = true;
+                    navMeshAgent.enabled = false;
+                }
+
+
+            }
+            else if (player.remainHealth <= 0)
+            {
+                // player가 죽었을때의 행동
+                if (!isKill)
+                {
+                    animator.SetTrigger("Kill");
+                    isKill = true;
+                }
+
+            }
+            else
+            {
+                // 거리가 멀어지면 다시 이동
+                isAttack = false;
+                animator.SetBool("Move", true);
+                animator.SetBool("Attack", false);
+
             }
 
-
         }
-        else if (player.remainHealth <= 0)
-        {
-            // player가 죽었을때의 행동
-            if (!isKill)
-            {
-                animator.SetTrigger("Kill");
-                isKill = true;
-            }
-
-        }
-        else
-        {
-            // 거리가 멀어지면 다시 이동
-            isAttack = false;
-            animator.SetBool("Move", true);
-            animator.SetBool("Attack", false);
-
-        }
-
     }
+       
     // 애니메이션 이벤트용 매서드
     void Hit()
     {

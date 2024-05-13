@@ -34,7 +34,7 @@ public class PlayerRespawn : MonoBehaviour
                 other.transform.position = respawn.position;
                 player.controller.enabled = true;
                 
-                gameObject.SetActive(false);
+                
             }
         }
     }
@@ -43,5 +43,6 @@ public class PlayerRespawn : MonoBehaviour
         skillBar.SetActive(false);
         yield return new WaitForSeconds(3f);
         skillBar.SetActive(true);
+        gameObject.SetActive(false);
     }
 }

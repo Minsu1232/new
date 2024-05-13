@@ -281,6 +281,7 @@ public class Boss : MonoBehaviour, IDamageable
     {
         if (!isDie)
         {
+            player.target = null;
             SpawnItem();
             portal.gameObject.SetActive(true); // ±ÍÈ¯ Æ÷Å»;
             quest.isMainClear = true; // Äù½ºÆ® ¿Ï·á
