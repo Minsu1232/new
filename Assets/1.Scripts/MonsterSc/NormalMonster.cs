@@ -124,7 +124,11 @@ public class NormalMonster : MonoBehaviour, IDamageable
                 Destroy(gameObject);
             }
             portal.gameObject.SetActive(true);
-            quest.killed += 1;
+            if(quest != null)
+            {
+                quest.killed += 1;
+            }
+            
             Debug.Log("Monster died.");
             animator.SetTrigger("Die");
             isDie = true;

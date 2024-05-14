@@ -51,6 +51,13 @@ public class Quest : MonoBehaviour
             completeButton[1].gameObject.SetActive(true);
             questScriptables[1].isMainClear = false;
         }
+        else if(questScriptables[2].killed >= 1 && questScriptables[2].isTutorial) // player ontrigger를 통해 istutorial체크
+        {
+            questScriptables[2].CheckQuestCompletion();
+            questText[2].text = questScriptables[2].questDetail;
+            completeButton[2].gameObject.SetActive(true);
+           
+        }
     }
 
     void OnMouseDown()
@@ -102,6 +109,11 @@ public class Quest : MonoBehaviour
     public void MainReward()
     {
         money.money += questScriptables[1].rewardCoin;
+        mainQuest.gameObject.SetActive(false);
+    }
+    public void TutorialReward()
+    {
+        money.money += questScriptables[2].rewardCoin;
         mainQuest.gameObject.SetActive(false);
     }
     //public void DailyQuest()

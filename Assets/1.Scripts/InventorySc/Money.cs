@@ -9,7 +9,7 @@ public class Money : ScriptableObject
 
     private void OnEnable()
     {
-        money = 10000; // test 편의성을 위해 (데이터 저장 후 지울예정)
+         // test 편의성을 위해 (데이터 저장 후 지울예정)
     }
     
 }

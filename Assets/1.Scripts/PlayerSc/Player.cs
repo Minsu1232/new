@@ -179,7 +179,7 @@ public class Player : MonoBehaviour
 
 
             }
-            if (!GameManager.Instance.isShop)
+            if (!GameManager.Instance.shop.activeSelf)
             {
                 if (!isLockOn)
                 {
@@ -503,7 +503,7 @@ public class Player : MonoBehaviour
     IEnumerator PetUsing()
     {
         pet.gameObject.SetActive(true);
-        StartCoroutine(PetAttack());
+        StartCoroutine(PetAttack()); // 공격 코루틴
         yield return new WaitForSeconds(14f);
         pet.animator.SetTrigger("Leave");
         yield return new WaitForSeconds(1.3f);
@@ -512,14 +512,17 @@ public class Player : MonoBehaviour
     }
     IEnumerator PetAttack()
     {
-        while (pet.gameObject.activeSelf)
+        while (pet.gameObject.activeSelf) // 스킬이 활성화 되어 있는 동안
         {
             yield return new WaitForSeconds(3f); // 공격 주기는 3초
             if (target != null)
             {
+                IDamageable idm = target.GetComponentInParent<IDamageable>(); //transform값에 GetComponentInParent를 사용해 부모에 인터페이스 할당
                 pet.transform.parent = target.parent;
+                
                 pet.animator.SetTrigger("Attack");
-                boss.TakeDamage(15,5,2,true);
+                idm.TakeDamage(15,5,2,true);
+                
                 pet.transform.localPosition = new Vector3(-0.05f, 0.25f, 0.88f);
                 pet.transform.LookAt(target); //타겟을 바라보게
                 
@@ -773,8 +776,12 @@ public class Player : MonoBehaviour
     {
         if (other.gameObject.tag == "BossRoom")
         {
-            isSand = true;
-            
+            isSand = true;            
+        }
+       if(other.gameObject.tag == "Potal")
+        {
+            Quest quest = FindObjectOfType<Quest>(); // 포탈을 탄 후 튜토리얼의 완료를 위해
+            quest.questScriptables[2].isTutorial = true;
         }
     }
 

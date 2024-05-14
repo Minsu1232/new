@@ -7,6 +7,7 @@ public class PlayerRespawn : MonoBehaviour
     public Transform respawn;
     public GameObject loading;
     public GameObject skillBar;
+    public GameObject[] quest;
     // Start is called before the first frame update
     void Start()
     {
@@ -40,9 +41,21 @@ public class PlayerRespawn : MonoBehaviour
     }
     IEnumerator skillBarOff()
     {
+        string sting;
         skillBar.SetActive(false);
+        for(int i = 0; i < quest.Length; i++)
+        {
+            if (quest[i].activeSelf)
+            {
+                quest[i].SetActive(false);
+                sting = quest[i].gameObject.name;
+            }
+            
+        }
         yield return new WaitForSeconds(3f);
         skillBar.SetActive(true);
+        for (int i = 0; i < quest.Length; i++)
+        
         gameObject.SetActive(false);
     }
 }

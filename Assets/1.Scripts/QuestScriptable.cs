@@ -13,7 +13,9 @@ public class QuestScriptable : ScriptableObject
     public string questDetail;
     public bool isCompleted;
     public bool isMainClear;
+    public bool isTutorial;
     public int rewardCoin;
+   
      
 
    
@@ -33,6 +35,12 @@ public class QuestScriptable : ScriptableObject
             questDetail = "(메인) 화약 창고에 서식중인\n  불가살 처치하기";
             rewardCoin = 1000;
         }
+        else if (questName == "TutorialQuest")
+        {
+            isTutorial = false;
+            questDetail = "폐관수련을 마무리하고 복귀해라";
+            rewardCoin = 500;
+        }
        
     }
     public void CheckQuestCompletion()
@@ -45,9 +53,15 @@ public class QuestScriptable : ScriptableObject
         }
         else if(questName == "MainQuest1" && isMainClear)
         {
+            
             questDetail = "불가살 처치 완료";
         }
-       
+        else if (questName == "TutorialQuest" && killed >=1)
+        {            
+            questDetail = "복귀 완료";
+            
+        }
+
     }
 
 }
