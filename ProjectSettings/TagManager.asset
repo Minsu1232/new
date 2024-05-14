@@ -12,6 +12,7 @@ TagManager:
   - PouderKeg
   - Terrian
   - Boss
+  - Potal
   layers:
   - Default
   - TransparentFX
