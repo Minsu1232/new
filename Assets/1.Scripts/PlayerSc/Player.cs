@@ -30,6 +30,9 @@ public class Player : MonoBehaviour
     Transform cameraArm;
     [SerializeField]
     Money money;
+    public Transform defaultSpawn;
+    public Transform tutorialSpawn;
+    public QuestScriptable isTutorial;
     public GameObject healEffect;
     public Transform target;
     public Transform characterObj;
@@ -113,7 +116,14 @@ public class Player : MonoBehaviour
     public float detectionRadius = 5f; // 검색 반경
     private void OnEnable()
     {
-
+        //if(isTutorial.isTutorial == true)
+        //{
+        //    gameObject.transform.position = defaultSpawn.transform.position;
+        //}
+        //else
+        //{
+        //    gameObject.transform.position = tutorialSpawn.transform.position;
+        //}        
         roll = 1;
         StopAllCoroutines();
         // 스크립터블 초기화
@@ -141,6 +151,7 @@ public class Player : MonoBehaviour
         rb = GetComponent<Rigidbody>();
         animator = GetComponent<Animator>();
     }
+    
     void Start()
     {
         isSound = false;        

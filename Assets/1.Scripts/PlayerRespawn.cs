@@ -8,6 +8,7 @@ public class PlayerRespawn : MonoBehaviour
     public GameObject loading;
     public GameObject skillBar;
     public GameObject[] quest;
+    
     // Start is called before the first frame update
     void Start()
     {

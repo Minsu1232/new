@@ -6,6 +6,7 @@ public class BossSpawnStartArea : MonoBehaviour
 {
     public GameObject boss;
     public GameObject bossUI;
+    public GameObject[] torches;
     // Start is called before the first frame update
     void Start()
     {
@@ -28,5 +29,17 @@ public class BossSpawnStartArea : MonoBehaviour
             boss.gameObject.SetActive(true);
             bossUI.gameObject.SetActive(true); 
         }
+        StartCoroutine(torchesOn());
+      
+    }
+    // 보스존 입장시 횃불on
+    IEnumerator torchesOn()
+    {
+        for (int i = 0; i < torches.Length; i++)
+        {
+            torches[i].SetActive(true);
+            yield return new WaitForSeconds(0.11f);
+        }
+        
     }
 }

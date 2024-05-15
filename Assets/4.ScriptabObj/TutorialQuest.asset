@@ -14,7 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   killed: 0
   questName: TutorialQuest
-  questDetail: 
+  questDetail: "\uD3D0\uAD00\uC218\uB828\uC744 \uB9C8\uBB34\uB9AC\uD558\uACE0 \uBCF5\uADC0\uD574\uB77C"
   isCompleted: 0
   isMainClear: 0
+  isTutorial: 0
   rewardCoin: 500
