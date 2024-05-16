@@ -17,5 +17,5 @@ MonoBehaviour:
   damage: 30
   walkSpeed: 6
   runSpeed: 8
-  neutralizeValue: 100
+  neutralizeValue: 150
   destructionValue: 4
