@@ -17,6 +17,8 @@ MonoBehaviour:
   questDetail: "(\uBA54\uC778) \uD654\uC57D \uCC3D\uACE0\uC5D0 \uC11C\uC2DD\uC911\uC778\n 
     \uBD88\uAC00\uC0B4 \uCC98\uCE58\uD558\uAE30"
   isCompleted: 0
-  rewardCoin: 0
-  money: {fileID: 0}
-  text: {fileID: 0}
+  isMainClear: 0
+  isTutorial: 0
+  rewardCoin: 1000
+  clearZone: {fileID: 0}
+  nextQuest: {fileID: 0}

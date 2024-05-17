@@ -19,4 +19,5 @@ MonoBehaviour:
   isMainClear: 0
   isTutorial: 0
   rewardCoin: 100
+  clearZone: {fileID: 0}
   nextQuest: {fileID: 11400000, guid: 698783d5c68983f45b651232ecaaa966, type: 2}

@@ -16,6 +16,7 @@ public class QuestScriptable : ScriptableObject
     public bool isTutorial;
     public int rewardCoin;
 
+    public GameObject clearZone;
     public QuestScriptable nextQuest;
 
 
@@ -41,25 +42,26 @@ public class QuestScriptable : ScriptableObject
         {
             isTutorial = false;
             questDetail = "폐관수련을 마무리하고 복귀해라";
-            rewardCoin = 500;
+            
         }
         else if (questName == "TutorialQuest1")
         {
             isTutorial = false;
             questDetail = "돌아온 마을의 분위기를 파악해라";
-            rewardCoin = 100;
+            
         }
         else if (questName == "TutorialQuest2")
         {
             isTutorial = false;
             questDetail = "대화중인 상인들의 말을 엿들어라";
-            rewardCoin = 100;
+            clearZone.SetActive(true);
+            
         }
         else if (questName == "TutorialQuest3")
         {// 승지방은 조선시대 왕명의 출납 등의 업무를 담당하던 곳
             isTutorial = false;
             questDetail = "중앙에 있는 승지방에가 소문을 파악해라";
-            rewardCoin = 100;
+            rewardCoin = 800; // 최초 튜토리얼 진행안내의 마지막
         }
 
     }
@@ -80,13 +82,13 @@ public class QuestScriptable : ScriptableObject
             //questDetail = "복귀 완료";
             TransferToNextQuest();
         }
-        else if (questName == "TutorialQuest1")
+        else if (questName == "TutorialQuest1" && isTutorial)
         {
             //isCompleted = true;
             ////questDetail = "마을 분위기 파악 완료";
             TransferToNextQuest();
         }
-        else if (questName == "TutorialQuest2" )
+        else if (questName == "TutorialQuest2" && isTutorial)
         {
             //isCompleted = true;
             //questDetail = "상인들의 말 엿듣기 완료";
@@ -105,17 +107,19 @@ public class QuestScriptable : ScriptableObject
     {
         if (nextQuest != null)
         {
+           
             questName = nextQuest.questName;
             questDetail = nextQuest.questDetail;
             rewardCoin = nextQuest.rewardCoin;
-            
+            clearZone = nextQuest.clearZone;
              killed = 0; // 필요한 경우 초기화
             isCompleted = false;
             isMainClear = false;
             isTutorial = nextQuest.isTutorial;
-            nextQuest.UpdateQuestDetail();
+            nextQuest = nextQuest.nextQuest;
+            nextQuest.UpdateQuestDetail();            
             Debug.Log("다음 퀘스트로 이동: " + questName);
-            isTutorial = nextQuest.isTutorial;
+            
         }
     }
 

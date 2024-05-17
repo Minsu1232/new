@@ -14,7 +14,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   killed: 0
   questName: DailyQuest
-  questDetail: "\uC6E8\uC5B4 \uC6B8\uD504 \uCC98\uCE58\uD558\uAE30 0/1"
+  questDetail: "\uC6E8\uC5B4 \uC6B8\uD504 \uCC98\uCE58\uD558\uAE30 1/1 (\uC644\uB8CC)"
   isCompleted: 0
   isMainClear: 0
+  isTutorial: 0
   rewardCoin: 200
+  clearZone: {fileID: 0}
+  nextQuest: {fileID: 0}

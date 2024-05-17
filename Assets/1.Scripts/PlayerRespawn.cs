@@ -43,6 +43,7 @@ public class PlayerRespawn : MonoBehaviour
     IEnumerator skillBarOff()
     {
         List<GameObject> deactivatedQuests = new List<GameObject>();
+        deactivatedQuests.Clear();
         skillBar.SetActive(false);
 
         for (int i = 0; i < quest.Length; i++)

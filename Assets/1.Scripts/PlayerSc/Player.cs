@@ -30,6 +30,8 @@ public class Player : MonoBehaviour
     Transform cameraArm;
     [SerializeField]
     Money money;
+    public GameObject virtualCamera;
+    public Camera mainCamera;
     public Transform defaultSpawn;
     public Transform tutorialSpawn;
     public QuestScriptable isTutorial;
@@ -105,7 +107,7 @@ public class Player : MonoBehaviour
     public bool isSand;
 
 
-
+    int a = 0; // tutorial 퀘스트 위치 활성화오프용 변수
     // 스킬 쿨타임 체크용
     bool isSkill;
 
@@ -518,7 +520,10 @@ public class Player : MonoBehaviour
         pet.gameObject.SetActive(true);
         StartCoroutine(PetAttack()); // 공격 코루틴
         yield return new WaitForSeconds(14f);
-        pet.animator.SetTrigger("Leave");
+        if(pet != null)
+        {
+            pet.animator.SetTrigger("Leave");
+        }        
         yield return new WaitForSeconds(1.3f);
         StopCoroutine(PetAttack()); // 명시적으로 코루틴 중지
         pet.gameObject.SetActive(false);
@@ -787,14 +792,38 @@ public class Player : MonoBehaviour
     }
     private void OnTriggerEnter(Collider other)
     {
+
         if (other.gameObject.tag == "BossRoom")
         {
-            isSand = true;            
+            isSand = true;
         }
-       if(other.gameObject.tag == "Potal")
+        if (other.gameObject.tag == "Potal")
         {
-            Quest quest = FindObjectOfType<Quest>(); // 포탈을 탄 후 튜토리얼의 완료를 위해
-            quest.questScriptables[2].isTutorial = true;
+            Quest quest = FindObjectOfType<Quest>(); // 포탈을 탄 후 튜토리얼의 완료를 위해            
+            quest.questScriptables[2].isTutorial = true; //퀘스트의 트리거
+            Vector3 tutorial = new Vector3(-72.19f, 4.01f, 22.96f);
+            if(other.gameObject.name == "Tutorial2StartZone")
+            {
+                UnityEngine.Debug.Log("시네머신");
+                virtualCamera.gameObject.SetActive(true);
+              
+                    mainCamera.depth = -1;
+                
+            }
+            if (other.gameObject.name == "Tutorial2ClearZone")
+            {
+
+                a++;
+                if (a == 1)
+                {
+                    other.transform.position = tutorial;
+                }
+                else if (a == 2)
+                {
+                    other.gameObject.SetActive(false);
+                }
+
+            }
         }
     }
 

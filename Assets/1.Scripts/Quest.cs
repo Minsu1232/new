@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -11,17 +12,24 @@ public class Quest : MonoBehaviour
     public string questName;
     public GameObject quest;
     public GameObject mainQuest;
+    public GameObject tutorialQuest;
     public GameObject[] completeButton;
-    public Text[] questText;    
+    public GameObject[] mainquestButtonOff;
+    public GameObject[] dailyquestButtonOff;
+    public Text[] questText;
+    public Text[] panelText;
     public List<QuestScriptable> questScriptables = new List<QuestScriptable>();
     public Money money;
-   
+
 
     public bool isDaily;
-    
+
     // Start is called before the first frame update
     void Start()
     {
+        GameObject particleObject = GameObject.Find("Tutorial2ClearZone");
+        questScriptables[4].clearZone = particleObject.gameObject;
+        questScriptables[4].clearZone.gameObject.SetActive(false);
         // 추가될 퀘스트에 대한 텍스트 편의성 제공
         // questText 배열의 길이를 기준으로 초기화 작업 수행
         int textCount = questText.Length;
@@ -41,11 +49,15 @@ public class Quest : MonoBehaviour
     private void Update()
     {
         if (questScriptables[0].killed >= 1 && !questScriptables[0].isCompleted)
-        {
-            Debug.Log("퀘스트 완");
+        {            
             questScriptables[0].CheckQuestCompletion();
             questText[0].text = questScriptables[0].questDetail;
             completeButton[0].gameObject.SetActive(true);
+            panelText[1].text = "자정이 지난 후 초기화 됩니다";
+            for (int i = 0; i < mainquestButtonOff.Length; i++)
+            {
+                dailyquestButtonOff[i].gameObject.SetActive(false);
+            }
 
         }
         else if (questScriptables[1].isMainClear)
@@ -53,55 +65,33 @@ public class Quest : MonoBehaviour
             questScriptables[1].CheckQuestCompletion();
             questText[1].text = questScriptables[1].questDetail;
             completeButton[1].gameObject.SetActive(true);
-            questScriptables[1].isMainClear = false;
+            panelText[0].text = "클리어 한 임무입니다"; // 챕터1 메인 퀘스트 완료표시
+            for(int i = 0; i < mainquestButtonOff.Length; i++)
+            {
+                mainquestButtonOff[i].gameObject.SetActive(false);
+            }
+            
+            //questScriptables[1].isMainClear = false;
         }
         // 튜토리얼과 메인 스토리 퀘스트 진행의 시작
         if (questScriptables[2].isTutorial) // player ontrigger를 통해 istutorial체크
         {
-            questScriptables[2].CheckQuestCompletion();
-            if (questScriptables[2].nextQuest == null)
+            if (questScriptables[2].questName == "TutorialQuest3")
             {
-                questScriptables[2].nextQuest = questScriptables[3];
+                completeButton[2].gameObject.SetActive(true);
+                // 시작튜토리얼 진행의 마지막인 3번을 완료시 완료버튼이 등장
             }
-            else if (questScriptables[2].nextQuest == questScriptables[3])
-            {
-                questScriptables[2].nextQuest = questScriptables[4];
-            }
-            else if (questScriptables[2].nextQuest == questScriptables[4])
-            {
-                questScriptables[2].nextQuest = questScriptables[5];
-            }
+            questScriptables[2].CheckQuestCompletion(); // 튜토리얼 다음 텍스트
             questText[2].text = questScriptables[2].questDetail;
-           
             
         }
-        
-        //for (int i = 0; i < questScriptables.Count; i++)
-        //{
-        //    QuestScriptable quest = questScriptables[i];
 
-        //    if (quest.killed >= 1 && !quest.isCompleted)
-        //    {
-        //        quest.CheckQuestCompletion();
-        //        questText[i].text = quest.questDetail;
-        //        if (quest.isCompleted)
-        //        {
-        //            completeButton[i].SetActive(true);
-        //        }
-        //        // 다음 퀘스트로 전환 후 텍스트 업데이트
-        //        if (quest.nextQuest != null && quest.isCompleted)
-        //        {
-        //            questScriptables[i] = quest.nextQuest;
-        //            questScriptables[i].UpdateQuestDetail();
-        //            questText[i].text = questScriptables[i].questDetail;
-        //        }
-        //    }
-        //}
+ 
     }
     void SetupQuestChain()
     {
         // 각 퀘스트의 nextQuest를 설정합니다.
-        for (int i = 0; i < questScriptables.Count-1; i++)
+        for (int i = 0; i < questScriptables.Count - 1; i++)
         {
             if (questScriptables[i].questName.StartsWith("TutorialQuest"))
             {
@@ -114,7 +104,7 @@ public class Quest : MonoBehaviour
     {
         if (!questPanel.activeSelf)
         {
-            questPanel.SetActive(true);            
+            questPanel.SetActive(true);
         }
 
 
@@ -164,7 +154,9 @@ public class Quest : MonoBehaviour
     public void TutorialReward()
     {
         money.money += questScriptables[2].rewardCoin;
-        
+        tutorialQuest.gameObject.SetActive(false);
+        questScriptables[2].isTutorial = true;
+
     }
     //public void DailyQuest()
     //{
