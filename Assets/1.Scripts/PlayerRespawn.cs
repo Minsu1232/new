@@ -42,21 +42,26 @@ public class PlayerRespawn : MonoBehaviour
     }
     IEnumerator skillBarOff()
     {
-        string sting;
+        List<GameObject> deactivatedQuests = new List<GameObject>();
         skillBar.SetActive(false);
-        for(int i = 0; i < quest.Length; i++)
+
+        for (int i = 0; i < quest.Length; i++)
         {
             if (quest[i].activeSelf)
             {
                 quest[i].SetActive(false);
-                sting = quest[i].gameObject.name;
+                deactivatedQuests.Add(quest[i]); // 켜저있는 퀘스트창만 리스트에 넣고 끈 후
             }
-            
         }
+
         yield return new WaitForSeconds(3f);
+
         skillBar.SetActive(true);
-        for (int i = 0; i < quest.Length; i++)
-        
-        gameObject.SetActive(false);
+
+        for (int i = 0; i < deactivatedQuests.Count; i++)
+        {
+            deactivatedQuests[i].SetActive(true); // 켜짐
+            deactivatedQuests.Clear();
+        }
     }
 }

@@ -8,6 +8,7 @@ public class NormalMonsterScriptable : ScriptableObject
     public string MonsterName = "";
     public int health = 80;
     public int damage = 15;
+    public int dropMoney;
     public int walkSpeed = 4;
     public int runSpeed = 6;
     

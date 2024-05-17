@@ -15,10 +15,12 @@ public class QuestScriptable : ScriptableObject
     public bool isMainClear;
     public bool isTutorial;
     public int rewardCoin;
-   
-     
 
-   
+    public QuestScriptable nextQuest;
+
+
+
+
     // Start is called before the first frame update
 
 
@@ -41,7 +43,25 @@ public class QuestScriptable : ScriptableObject
             questDetail = "폐관수련을 마무리하고 복귀해라";
             rewardCoin = 500;
         }
-       
+        else if (questName == "TutorialQuest1")
+        {
+            isTutorial = false;
+            questDetail = "돌아온 마을의 분위기를 파악해라";
+            rewardCoin = 100;
+        }
+        else if (questName == "TutorialQuest2")
+        {
+            isTutorial = false;
+            questDetail = "대화중인 상인들의 말을 엿들어라";
+            rewardCoin = 100;
+        }
+        else if (questName == "TutorialQuest3")
+        {// 승지방은 조선시대 왕명의 출납 등의 업무를 담당하던 곳
+            isTutorial = false;
+            questDetail = "중앙에 있는 승지방에가 소문을 파악해라";
+            rewardCoin = 100;
+        }
+
     }
     public void CheckQuestCompletion()
     {
@@ -52,16 +72,52 @@ public class QuestScriptable : ScriptableObject
             
         }
         else if(questName == "MainQuest1" && isMainClear)
-        {
-            
+        {            
             questDetail = "불가살 처치 완료";
         }
         else if (questName == "TutorialQuest" && killed >=1)
         {            
-            questDetail = "복귀 완료";
-            
+            //questDetail = "복귀 완료";
+            TransferToNextQuest();
         }
-
+        else if (questName == "TutorialQuest1")
+        {
+            //isCompleted = true;
+            ////questDetail = "마을 분위기 파악 완료";
+            TransferToNextQuest();
+        }
+        else if (questName == "TutorialQuest2" )
+        {
+            //isCompleted = true;
+            //questDetail = "상인들의 말 엿듣기 완료";
+            TransferToNextQuest();
+        }
+        else if (questName == "TutorialQuest3")
+        {
+            //isCompleted = true;
+            //questDetail = "승지방 소문 파악 완료";
+            TransferToNextQuest();
+        }
+    
     }
+    // 완료시 다음퀘스트로 진행하기 위한 매서드
+    private void TransferToNextQuest()
+    {
+        if (nextQuest != null)
+        {
+            questName = nextQuest.questName;
+            questDetail = nextQuest.questDetail;
+            rewardCoin = nextQuest.rewardCoin;
+            
+             killed = 0; // 필요한 경우 초기화
+            isCompleted = false;
+            isMainClear = false;
+            isTutorial = nextQuest.isTutorial;
+            nextQuest.UpdateQuestDetail();
+            Debug.Log("다음 퀘스트로 이동: " + questName);
+            isTutorial = nextQuest.isTutorial;
+        }
+    }
+
 
 }

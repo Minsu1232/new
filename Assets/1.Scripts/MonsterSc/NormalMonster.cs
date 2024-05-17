@@ -17,6 +17,8 @@ public class NormalMonster : MonoBehaviour, IDamageable
     NavMeshAgent navMeshAgent;
     [SerializeField]
     public GameObject portal;
+    [SerializeField]
+    Money money;
 
     [Header("Monster UI")]
     public Text hp;
@@ -119,6 +121,7 @@ public class NormalMonster : MonoBehaviour, IDamageable
     {
         if (!isDie)
         {
+            money.money += normalMonsterObj.dropMoney;
             if(gameObject.name == "training_dummy")
             {
                 Destroy(gameObject);

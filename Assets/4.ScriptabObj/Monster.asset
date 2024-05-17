@@ -15,5 +15,6 @@ MonoBehaviour:
   MonsterName: 
   health: 80
   damage: 15
+  dropMoney: 125
   walkSpeed: 4
   runSpeed: 6

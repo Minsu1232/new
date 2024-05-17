@@ -116,14 +116,16 @@ public class Player : MonoBehaviour
     public float detectionRadius = 5f; // 검색 반경
     private void OnEnable()
     {
-        //if(isTutorial.isTutorial == true)
-        //{
-        //    gameObject.transform.position = defaultSpawn.transform.position;
-        //}
-        //else
-        //{
-        //    gameObject.transform.position = tutorialSpawn.transform.position;
-        //}        
+        if (isTutorial.isTutorial == true)
+        {
+            gameObject.transform.position = defaultSpawn.transform.position;
+            
+        }
+        else
+        {
+            gameObject.transform.position = tutorialSpawn.transform.position;
+            gameObject.transform.rotation = Quaternion.Euler(transform.rotation.x, transform.rotation.y + 180f, transform.rotation.y);
+        }
         roll = 1;
         StopAllCoroutines();
         // 스크립터블 초기화
