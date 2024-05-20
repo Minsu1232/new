@@ -13,7 +13,8 @@ MonoBehaviour:
   m_Name: Monster 3
   m_EditorClassIdentifier: 
   MonsterName: 
-  health: 80
-  damage: 15
+  health: 40
+  damage: 6
+  dropMoney: 0
   walkSpeed: 4
   runSpeed: 6

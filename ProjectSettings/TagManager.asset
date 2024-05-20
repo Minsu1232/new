@@ -13,6 +13,7 @@ TagManager:
   - Terrian
   - Boss
   - Potal
+  - Animals
   layers:
   - Default
   - TransparentFX

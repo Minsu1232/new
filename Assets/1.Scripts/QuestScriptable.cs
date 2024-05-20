@@ -15,6 +15,7 @@ public class QuestScriptable : ScriptableObject
     public bool isMainClear;
     public bool isTutorial;
     public int rewardCoin;
+    public bool isPrologue;
 
     public GameObject clearZone;
     public QuestScriptable nextQuest;
@@ -41,7 +42,7 @@ public class QuestScriptable : ScriptableObject
         else if (questName == "TutorialQuest")
         {
             isTutorial = false;
-            questDetail = "폐관수련을 마무리하고 복귀해라";
+            questDetail = "폐관수련을 마무리하고 복귀해라 \n\n(이 게임은 체력이 있는 객체 또는 \n특정 오브젝트에게만 활을 쏠 수 있으며 \n우클릭시 자동 에이밍 됩니다)";
             
         }
         else if (questName == "TutorialQuest1")

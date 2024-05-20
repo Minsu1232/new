@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.UI;
@@ -40,9 +41,19 @@ public class NormalMonster : MonoBehaviour, IDamageable
     bool isAttack;
     bool isDie;
     bool isKill;
-    bool isGettingHit; 
+    bool isGettingHit;
+    bool isAnimalsHit;
 
+    [SerializeField]
+    private float hitRecoveryTime = 5.0f; // 피격 후 회복 시간
+    private float currentHitRecoveryTimer;
 
+    [Header("Animals Specific Attributes")]
+    public float patrolRadius = 10f;  // 초기 이동 범위
+    public float detectionRadius = 15f;  // 플레이어 감지 범위
+
+    private Vector3 initialPosition; // 초기위치
+    private Vector3 targetPosition;
 
 
     // Start is called before the first frame update
@@ -50,6 +61,9 @@ public class NormalMonster : MonoBehaviour, IDamageable
     private void Awake()
     {
         isAttack = false;
+        isAnimalsHit = false;
+
+
     }
     private void OnEnable()
     {
@@ -64,6 +78,10 @@ public class NormalMonster : MonoBehaviour, IDamageable
 
     private void Start()
     {
+        if(player == null)
+        {
+            player = FindObjectOfType<Player>(); // 만약 player가 할당이 안되어있으면
+        }
         isDie = false;
         animator = GetComponent<Animator>();
         navMeshAgent = GetComponent<NavMeshAgent>();
@@ -71,7 +89,9 @@ public class NormalMonster : MonoBehaviour, IDamageable
         {
             navMeshAgent.speed = walkSpeed;
         }
-       
+        // 초기 위치 저장
+        initialPosition = transform.position;
+        SetNewRandomTarget();
         //시작 ui
         hp.text = $"{initialHealth}/{initialHealth}";
         hpBar.fillAmount = remainHealth / initialHealth;
@@ -80,14 +100,67 @@ public class NormalMonster : MonoBehaviour, IDamageable
     // Update is called once per frame
     void Update()
     {
+       
         if (!isDie)
         {
-            MonsterMove();
-            Attack();
+            if (gameObject.CompareTag("Animals"))
+            {
+                if (Vector3.Distance(transform.position, player.transform.position) <= detectionRadius || isAnimalsHit ==true) // isAnimalsHit는 피격시 상시로 player를 쫓기 위한 bool타입 
+                {                                                                                                              // takedamage발동시 발동
+                    // 플레이어가 감지 범위 내에 있을 때
+                    navMeshAgent.enabled = true;
+                    Attack();
+                    MonsterMove();
+                }
+                else
+                {
+                    // 플레이어가 감지 범위 밖에 있을 때
+                    navMeshAgent.enabled = false;
+                    MoveTowardsTarget();
+                }
+            }
+            else
+            {
+                MonsterMove();
+                Attack();
+            }
+            if (currentHitRecoveryTimer > 0)
+            {
+                currentHitRecoveryTimer -= Time.deltaTime;
+            }
+
         }
 
 
     }
+ /// <summary>
+ /// ////////////////////////////// animal이동용 매서드
+ /// </summary>
+    void SetNewRandomTarget()
+    {
+        float randomX = Random.Range(-detectionRadius, detectionRadius);
+        float randomZ = Random.Range(-detectionRadius, detectionRadius);
+        targetPosition = initialPosition + new Vector3(randomX, 0, randomZ);
+        // 랜덤한 위치를 선정 해 준뒤
+    }
+    void MoveTowardsTarget()
+    {
+        // 이동
+        transform.position = Vector3.MoveTowards(transform.position, targetPosition,normalMonsterObj.walkSpeed * Time.deltaTime);
+        transform.LookAt(new Vector3(targetPosition.x, transform.position.y, targetPosition.z)); // 방향전환시 전방보게끔
+        CheckAndSetNewTargetIfNeeded();
+    }
+    void CheckAndSetNewTargetIfNeeded()
+    {
+        // 거리안에 없으면 다시 위치 지정
+        if (Vector3.Distance(transform.position, targetPosition) < 1f)
+        {
+            SetNewRandomTarget();
+        }
+    }
+    ////////////////////////////////////////
+
+
 
     /// <summary>
     /// 몬스터의 피격 함수 ArrowDamage에서 호출.
@@ -96,9 +169,16 @@ public class NormalMonster : MonoBehaviour, IDamageable
     public void TakeDamage(int damage, int neutralizeValu, int destruction, bool shouldTriggerHitAnimation = true)
     {
 
+        isAnimalsHit = true;
         if (remainHealth > 0)
         {
             remainHealth -= damage;
+            if (gameObject.CompareTag("Animals") && navMeshAgent.enabled == false) // animals들만 해당
+            {
+                currentHitRecoveryTimer = hitRecoveryTime; // 피격 후 회복 타이머 초기화
+                navMeshAgent.enabled = true;
+               
+            }
         }
         // health값이 음수가 되지 않게 제어
         remainHealth = Mathf.Clamp(remainHealth, 0, initialHealth);
@@ -126,7 +206,11 @@ public class NormalMonster : MonoBehaviour, IDamageable
             {
                 Destroy(gameObject);
             }
-            portal.gameObject.SetActive(true);
+            if (portal != null)
+            {
+                portal.gameObject.SetActive(true);
+            }
+            
             if(quest != null)
             {
                 quest.killed += 1;
@@ -136,7 +220,15 @@ public class NormalMonster : MonoBehaviour, IDamageable
             animator.SetTrigger("Die");
             isDie = true;
             navMeshAgent.enabled = false;
-            StartCoroutine(DeactivateAfterDelay());//3초뒤false ( 갈때마다 호출을위해 파괴 x )
+            if (gameObject.CompareTag("Animals"))
+            {
+                Destroy(gameObject, 3f); // 야생동물을 파괴하며 재생성
+            }
+            else
+            {
+                StartCoroutine(DeactivateAfterDelay());//3초뒤false ( 갈때마다 호출을위해 파괴 x )
+            }
+            
         }
 
     }

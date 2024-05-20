@@ -13,12 +13,12 @@ MonoBehaviour:
   m_Name: TutorialQuest
   m_EditorClassIdentifier: 
   killed: 0
-  questName: TutorialQuest3
-  questDetail: "\uC911\uC559\uC5D0 \uC788\uB294 \uC2B9\uC9C0\uBC29\uC5D0\uAC00 \uC18C\uBB38\uC744
-    \uD30C\uC545\uD574\uB77C"
+  questName: TutorialQuest
+  questDetail: "\uD3D0\uAD00\uC218\uB828\uC744 \uB9C8\uBB34\uB9AC\uD558\uACE0 \uBCF5\uADC0\uD574\uB77C"
   isCompleted: 0
   isMainClear: 0
   isTutorial: 0
   rewardCoin: 800
+  isPrologue: 0
   clearZone: {fileID: 0}
-  nextQuest: {fileID: 11400000, guid: 698783d5c68983f45b651232ecaaa966, type: 2}
+  nextQuest: {fileID: 11400000, guid: fe18ead5592c3814d8431b68e330626e, type: 2}

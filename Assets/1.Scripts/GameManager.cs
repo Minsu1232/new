@@ -33,7 +33,7 @@ public class GameManager : MonoBehaviour
     public Transform bossStart;
     public Transform questStart;
 
-
+    public bool isPrologue = false; // 이미 봤다면 프롤로그가 나오지 않게
     public bool isShop;
     private void Awake()
     {
@@ -50,7 +50,7 @@ public class GameManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-
+        isPrologue = false; // 테스트
     }
 
     // Update is called once per frame

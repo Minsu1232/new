@@ -24847,6 +24847,8 @@ MonoBehaviour:
   character: {fileID: 9134699590903095079}
   cameraArm: {fileID: 0}
   money: {fileID: 0}
+  virtualCamera: {fileID: 0}
+  mainCamera: {fileID: 0}
   defaultSpawn: {fileID: 0}
   tutorialSpawn: {fileID: 0}
   isTutorial: {fileID: 0}
@@ -74114,6 +74116,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d94a30d96a4e0734da2170b968417e4a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  prologue: {fileID: 11400000, guid: d04ddd72a41b217478dde7591d964a17, type: 2}
 --- !u!4 &9134699590903095079
 Transform:
   m_ObjectHideFlags: 0
