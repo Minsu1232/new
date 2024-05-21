@@ -226,6 +226,10 @@ public class GameManager : MonoBehaviour
         yield return new WaitForSeconds(3f);
         skillBar.SetActive(true);
     }
+    public void Quit()
+    {
+        Application.Quit();
+    }
 }
 
 

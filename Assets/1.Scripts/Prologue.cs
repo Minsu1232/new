@@ -7,6 +7,7 @@ using UnityEngine.UI;
 
 public class Prologue : MonoBehaviour
 {
+    public QuestScriptable prologue;
     public TextMeshProUGUI[] textObjects;  // UI Text 오브젝트 배열
     public float displayTime = 5f; // 자동 전환 시간 간격
     public GameObject mainLoading;
@@ -15,7 +16,8 @@ public class Prologue : MonoBehaviour
     private float timer;
 
     void Start()
-    {
+    {   
+        prologue.isPrologue = true;
         if (textObjects.Length > 0)
         {
             ShowText(currentIndex);

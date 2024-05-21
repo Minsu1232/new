@@ -131,26 +131,26 @@ public class Player : MonoBehaviour
         roll = 1;
         StopAllCoroutines();
         // 스크립터블 초기화
-        initialHealth = playerState.health;
-        str = playerState.str;
-        dex = playerState.dex;
-        walkSpeed = playerState.walkSpeed;
-        runSpeed = playerState.runSpeed;
-        mp = playerState.mp;
-        maxMp = playerState.mp;
-        remainHealth = initialHealth;
-        mp = maxMp;
-        level = playerState.level;
-        skillComand = 0;
+        //initialHealth = playerState.health;
+        //str = playerState.str;
+        //dex = playerState.dex;
+        //walkSpeed = playerState.walkSpeed;
+        //runSpeed = playerState.runSpeed;
+        //mp = playerState.mp;
+        //maxMp = playerState.mp;
+        //remainHealth = initialHealth;
+        //mp = maxMp;
+        //level = playerState.level;
+        //skillComand = 0;
 
-        maxHP.text = initialHealth.ToString();
-        maxMP.text = mp.ToString();
-        maxStr.text = str.ToString();
-        maxDex.text = dex.ToString();
-        nowLevel.text = level.ToString();
+        //maxHP.text = initialHealth.ToString();
+        //maxMP.text = mp.ToString();
+        //maxStr.text = str.ToString();
+        //maxDex.text = dex.ToString();
+        //nowLevel.text = level.ToString();
 
-        isDie = false;
-        isWalk = true;
+        //isDie = false;
+        //isWalk = true;
 
         rb = GetComponent<Rigidbody>();
         animator = GetComponent<Animator>();
@@ -158,6 +158,7 @@ public class Player : MonoBehaviour
     
     void Start()
     {
+        StartCoroutine(InitializePlayer());
         isSound = false;        
         shotCount = 1;
         hp.text = $"{remainHealth}/{playerState.health}";
@@ -218,7 +219,41 @@ public class Player : MonoBehaviour
 
 
     }
+    IEnumerator InitializePlayer()
+    {
+        while (!DataManager.Instance.isDataLoaded)
+        {
+            yield return null; // 데이터 로드 완료 대기
+        }
 
+        // 데이터 로드 후 초기화 로직
+        SetupPlayer();
+    }
+    void SetupPlayer()
+    {
+        initialHealth = playerState.health;
+        str = playerState.str;
+        dex = playerState.dex;
+        walkSpeed = playerState.walkSpeed;
+        runSpeed = playerState.runSpeed;
+        mp = playerState.mp;
+        maxMp = playerState.mp;
+        remainHealth = initialHealth;
+        mp = maxMp;
+        level = playerState.level;
+        skillComand = 0;
+
+        maxHP.text = initialHealth.ToString();
+        maxMP.text = mp.ToString();
+        maxStr.text = str.ToString();
+        maxDex.text = dex.ToString();
+        nowLevel.text = level.ToString();
+
+        isDie = false;
+        isWalk = true;
+
+        
+    }
     void DetectObjects()
     {
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
@@ -826,67 +861,87 @@ public class Player : MonoBehaviour
             }
         }
     }
-
+    private int CalculateUpgradeCost(int upgradeCount)
+    {// 스탯 10번을 올리면 해당 스탯 올리는 비용이 1.3배가 됨
+        return (int)(playerState.baseUpgradeCost * Mathf.Pow(1.3f, upgradeCount / 10));
+    }
     // 플레이어 스테이터스 버튼 관리 매서드
     public void MaxHpUpButton()
     {
-        if(money.money > 100)
+ 
+        int cost = CalculateUpgradeCost(playerState.hpUpgradeCount);
+        if (money.money >= cost)
         {
-            playerState.health += 15; // 스탯 증가
-            // ui 업데이트
-            maxHP.text = playerState.health.ToString(); 
-            money.money -= 100;
+            playerState.health += 15;
+            initialHealth = playerState.health;            
+            maxHP.text = playerState.health.ToString();
             playerState.level++;
             nowLevel.text = playerState.level.ToString();
+            money.money -= cost;
             Inventory.instance.money.text = money.money.ToString();
             hp.text = $"{remainHealth}/{playerState.health}";
-            hpBar.fillAmount = (float)remainHealth / playerState.health;
+            playerState.hpUpgradeCount++; // 업그레이드 횟수 증가
         }
-       
-        
+
+
     }
     public void MaxMpUpButton()
     {
-        if (money.money > 100)
+        int cost = CalculateUpgradeCost(playerState.mpUpgradeCount);
+        if (money.money >= cost)
         {
-            playerState.mp += 5;
+            playerState.mp += 1;
+            mp = playerState.mp;
             maxMP.text = playerState.mp.ToString();
             playerState.level++;
             nowLevel.text = playerState.level.ToString();
-            money.money -= 100;
-            mana.text = $"{mp}/{playerState.mp}";
-            // mp는 매니저에서 관리를 시작해 일단 유지중
+            money.money -= cost;
             Inventory.instance.money.text = money.money.ToString();
-
+            playerState.mpUpgradeCount++; // 업그레이드 횟수 증가
         }
     }
     public void MaxStrUpButton()
-    {
-        if(money.money > 100)
+    {//str관련 데미지 로직은 ArrowDamage스크립트에서 관리
+        int cost = CalculateUpgradeCost(playerState.strUpgradeCount);
+        if (money.money >= cost)
         {
             playerState.str += 1;
+            str = playerState.str;
             maxStr.text = playerState.str.ToString();
             playerState.level++;
             nowLevel.text = playerState.level.ToString();
-            money.money -= 100;
+            money.money -= cost;
             Inventory.instance.money.text = money.money.ToString();
+            playerState.strUpgradeCount++; // 업그레이드 횟수 증가
         }
-     
+
     }
     public void MaxDexUpButton()
     {
-        if(money.money > 100)
+        int cost = CalculateUpgradeCost(playerState.dexUpgradeCount);
+        if (money.money >= cost)
         {
             playerState.dex += 1;
+            dex = playerState.dex;
             maxDex.text = playerState.dex.ToString();
             playerState.level++;
             nowLevel.text = playerState.level.ToString();
-            
-            money.money -= 100;
+            UpdateSpeed();
+            money.money -= cost;
             Inventory.instance.money.text = money.money.ToString();
+            playerState.dexUpgradeCount++; // 업그레이드 횟수 증가
         }
+
+    }
+    private void UpdateSpeed()
+    {
+        // playerState 오브젝트를 사용하여 이동 속도 업데이트
+        playerState.walkSpeed += 0.1f;  // dex 1당 워크 스피드 0.1 증가
+        walkSpeed = playerState.walkSpeed; // 게임 내에서 사용할 실제 값 업데이트
+
+        playerState.runSpeed += 0.1f;   // dex 1당 런 스피드 0.1 증가
+        runSpeed = playerState.runSpeed; // 게임 내에서 사용할 실제 값 업데이트
        
     }
-
 }
 

@@ -1,0 +1,16 @@
+{
+    "killed": 0,
+    "questName": "",
+    "questDetail": "",
+    "isCompleted": false,
+    "isMainClear": false,
+    "isTutorial": false,
+    "rewardCoin": 0,
+    "isPrologue": false,
+    "clearZone": {
+        "instanceID": 0
+    },
+    "nextQuest": {
+        "instanceID": 0
+    }
+}
