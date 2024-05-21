@@ -30,6 +30,11 @@ public class Quest : MonoBehaviour
         GameObject particleObject = GameObject.Find("Tutorial2ClearZone");
         questScriptables[4].clearZone = particleObject.gameObject;
         questScriptables[4].clearZone.gameObject.SetActive(false);
+
+        if (questScriptables[6].isTutorial)
+        {
+            Destroy(tutorialQuest);
+        }
         // 추가될 퀘스트에 대한 텍스트 편의성 제공
         // questText 배열의 길이를 기준으로 초기화 작업 수행
         int textCount = questText.Length;
@@ -155,7 +160,9 @@ public class Quest : MonoBehaviour
     {
         money.money += questScriptables[2].rewardCoin;
         tutorialQuest.gameObject.SetActive(false);
-        questScriptables[2].isTutorial = true;
+        
+        questScriptables[6].isTutorial = true;// 튜토리얼 진행 체크용도
+        questScriptables[2].isTutorial = true; 
 
     }
     //public void DailyQuest()

@@ -89,6 +89,10 @@ public class NormalMonster : MonoBehaviour, IDamageable
         {
             navMeshAgent.speed = walkSpeed;
         }
+        else if(navMeshAgent != null && gameObject.CompareTag("Animals"))
+         {
+            navMeshAgent.speed = runSpeed;
+        } 
         // 초기 위치 저장
         initialPosition = transform.position;
         SetNewRandomTarget();

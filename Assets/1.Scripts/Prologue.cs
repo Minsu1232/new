@@ -16,8 +16,16 @@ public class Prologue : MonoBehaviour
     private float timer;
 
     void Start()
-    {   
-        prologue.isPrologue = true;
+    {
+        if (prologue.isPrologue)
+        {
+            EndPrologue();
+        }
+        else
+        {
+            prologue.isPrologue = true;
+        }
+        
         if (textObjects.Length > 0)
         {
             ShowText(currentIndex);

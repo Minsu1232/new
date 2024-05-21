@@ -4,6 +4,7 @@ using System.Diagnostics;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Experimental.GlobalIllumination;
+using UnityEngine.InputSystem.LowLevel;
 using UnityEngine.UI;
 
 
@@ -122,6 +123,7 @@ public class Player : MonoBehaviour
         {
             gameObject.transform.position = defaultSpawn.transform.position;
             
+
         }
         else
         {
@@ -834,17 +836,28 @@ public class Player : MonoBehaviour
         }
         if (other.gameObject.tag == "Potal")
         {
-            Quest quest = FindObjectOfType<Quest>(); // 포탈을 탄 후 튜토리얼의 완료를 위해            
-            quest.questScriptables[2].isTutorial = true; //퀘스트의 트리거
+            Quest quest = FindObjectOfType<Quest>(); // 포탈을 탄 후 튜토리얼의 완료를 위해          
+            
             Vector3 tutorial = new Vector3(-72.19f, 4.01f, 22.96f);
             if(other.gameObject.name == "Tutorial2StartZone")
             {
-                UnityEngine.Debug.Log("시네머신");
-                virtualCamera.gameObject.SetActive(true);
-              
-                    mainCamera.depth = -1;
+                if (quest.questScriptables[2].isTutorial)
+                {
+                    Destroy(other.gameObject);
+                }
+                else
+                {
+                    UnityEngine.Debug.Log("시네머신");
+                    virtualCamera.gameObject.SetActive(true);
+                    Destroy(other.gameObject);
+                }
+               
+
+
+                mainCamera.depth = -1;
                 
             }
+            quest.questScriptables[2].isTutorial = true; //퀘스트의 트리거
             if (other.gameObject.name == "Tutorial2ClearZone")
             {
 
