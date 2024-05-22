@@ -17928,6 +17928,10 @@ MonoBehaviour:
   playerState: {fileID: 11400000, guid: 75a377af7ff3d3c4ba4ddaaf7a0911c5, type: 2}
   prologue: {fileID: 11400000, guid: d04ddd72a41b217478dde7591d964a17, type: 2}
   tutorial: {fileID: 11400000, guid: aa5b637cba3a64a4a9a7bf1e44a923b7, type: 2}
+  items:
+  - {fileID: 11400000, guid: fce6ba3b7992bf7479bdbb16f90a503c, type: 2}
+  - {fileID: 11400000, guid: 0dceeba1e2936a046b60425fa459d5ab, type: 2}
+  - {fileID: 11400000, guid: 576d82f64634d9147a5f305789cd7122, type: 2}
   isDataLoaded: 0
   isPrologued: 0
 --- !u!4 &2051778924

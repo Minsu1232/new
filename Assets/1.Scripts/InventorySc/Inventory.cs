@@ -4,8 +4,10 @@ using UnityEngine;
 using UnityEngine.UI;
 
 
+
 public class Inventory : MonoBehaviour
 {
+  
     public static Inventory instance;
 
 
@@ -21,7 +23,13 @@ public class Inventory : MonoBehaviour
     public Text potionRemain;
     public Text[] inventory;
     public Text money;
-
+    [System.Serializable]
+    public class ItemData
+    {
+        public string itemName;
+        public int possess;
+        public string spriteName;
+    }
     void Awake()
     {
         if (instance != null && instance != this)
@@ -36,6 +44,7 @@ public class Inventory : MonoBehaviour
     }
     void Start()
     {
+        //LoadInventoryFromJson();
         selectedSlot = 0;
         UpdatePotionImage(); // 초기 이미지 설정
         potions[0].possess = 99;// 테스트를위해
@@ -49,20 +58,68 @@ public class Inventory : MonoBehaviour
         potionRemain.text = potions[selectedSlot].possess.ToString();
         money.text = moneyData.money.ToString();
     }
+    public void SaveInventory(List<Item> items)
+    {
+        List<ItemData> dataToSave = new List<ItemData>();
+        foreach (var item in items)
+        {
+            dataToSave.Add(new ItemData()
+            {
+                itemName = item.name,  // 스크립터블 오브젝트의 이름
+                possess = item.possess,               // 아이템의 갯수
+                spriteName = item.icon.name             // 스프라이트의 이름
+            });
+        }
+
+        string json = JsonUtility.ToJson(new Serialization<List<ItemData>>() { Data = dataToSave }, true);
+        System.IO.File.WriteAllText(Application.persistentDataPath + "/inventory.json", json);
+    }
+
+    public List<Item> LoadInventory()
+    {
+        string filePath = Application.persistentDataPath + "/inventory.json";
+        if (System.IO.File.Exists(filePath))
+        {
+            string json = System.IO.File.ReadAllText(filePath);
+            Serialization<List<ItemData>> savedData = JsonUtility.FromJson<Serialization<List<ItemData>>>(json);
+            List<Item> loadedItems = new List<Item>();
+            foreach (var itemData in savedData.Data)
+            {
+                Item item = new Item()
+                {
+                    //itemName = Resources.Load<ScriptableObject>("Data/" + itemData.itemName),
+                    possess = itemData.possess,
+                    icon = Resources.Load<Sprite>(itemData.spriteName)
+                };
+                loadedItems.Add(item);
+            }
+            return loadedItems;
+        }
+        return new List<Item>(); // 파일이 없다면 빈 리스트 반환
+    }
+
+    [System.Serializable]
+    private class Serialization<T>
+    {
+        public T Data;
+    }
     public void AddItem(Item item)
     {
         Item foundItem = items.Find(i => i.itemName == item.itemName);
 
         if (foundItem != null)
         {
+            
             // 아이템이 이미 존재하면 수량만 증가
             foundItem.possess++;
             // 해당 아이템의 슬롯을 찾아 정보를 업데이트
             for (int i = 0; i < inventorySlotImage.Length; i++)
             {//앞칸이 비어있지만 이미 인벤토리에 있는 아이템이면 누적
+                
                 if (inventorySlotImage[i].sprite == foundItem.icon)
                 {
                     inventory[i].text = foundItem.possess.ToString();
+                    
                     break;
                 }
             }
@@ -72,6 +129,7 @@ public class Inventory : MonoBehaviour
             // 새 아이템을 인벤토리에 추가
             items.Add(item);
             item.possess++;
+            
             for (int i = 0; i < inventorySlotImage.Length; i++)
             {
                 if (inventorySlotImage[i].sprite == null)
@@ -79,14 +137,17 @@ public class Inventory : MonoBehaviour
                     inventorySlotImage[i].sprite = item.icon;
                     inventory[i].text = item.possess.ToString();
                     inventory[i].gameObject.SetActive(true);
+                   
                     break;
                 }
             }
         }
+       
     }
     public void RemoveItem(Item item)
     {
         items.Remove(item);
+        
     }
 
     public void SwitchSlot()
@@ -137,6 +198,10 @@ public class Inventory : MonoBehaviour
                 break; // 해당 아이템을 찾았으므로 루프 종료
             }
         }
+    }
+    private void OnApplicationQuit()
+    {
+        
     }
 
 }
