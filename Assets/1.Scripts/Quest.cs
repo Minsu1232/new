@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -23,10 +24,29 @@ public class Quest : MonoBehaviour
 
 
     public bool isDaily;
-
+    [System.Serializable]
+    public class GameData
+    {
+        public string questClearTime;
+    }
+    public static void SaveGameData(GameData data)
+    {
+        string json = JsonUtility.ToJson(data);
+        File.WriteAllText(Application.persistentDataPath + "/savefile.json", json);
+    }
+    public static GameData LoadGameData()
+    {
+        string path = Application.persistentDataPath + "/savefile.json";
+        if (File.Exists(path))
+        {
+            string json = File.ReadAllText(path);
+            return JsonUtility.FromJson<GameData>(json);
+        }
+        return new GameData(); // 파일이 없을 경우 새로운 데이터 객체를 반환
+    }
     // Start is called before the first frame update
     void Start()
-    {
+    { 
         GameObject particleObject = GameObject.Find("Tutorial2ClearZone");
         questScriptables[4].clearZone = particleObject.gameObject;
         questScriptables[4].clearZone.gameObject.SetActive(false);
@@ -42,19 +62,36 @@ public class Quest : MonoBehaviour
         for (int i = 0; i < textCount; i++)
         {
             if (i < questScriptables.Count)
-            {
-                questScriptables[i].isCompleted = false;
+            {              
                 questScriptables[i].killed = 0;
                 questScriptables[i].UpdateQuestDetail();
                 questText[i].text = questScriptables[i].questDetail;
             }
         }
+        if (questScriptables[0].isCompleted)
+        {
+            for (int i = 0; i < mainquestButtonOff.Length; i++)
+            {
+                dailyquestButtonOff[i].gameObject.SetActive(false);
+            }
+            panelText[1].text = "자정이 지난 후 초기화 됩니다";
+        }
+        else if (questScriptables[1].isMainClear) 
+        {
+            panelText[0].text = "완료 한 임무입니다";
+        }
     }
 
     private void Update()
-    {
-        if (questScriptables[0].killed >= 1 && !questScriptables[0].isCompleted)
-        {            
+    { 
+        if (questScriptables[0].killed >= 1 && questScriptables[0].isCompleted)
+        {             // 퀘스트 클리어 시간을 저장
+            GameData data = new GameData
+            {
+                questClearTime = DateTime.Now.ToString()
+            };
+            SaveGameData(data);
+            questScriptables[0].killed = 0;
             questScriptables[0].CheckQuestCompletion();
             questText[0].text = questScriptables[0].questDetail;
             completeButton[0].gameObject.SetActive(true);
@@ -70,7 +107,7 @@ public class Quest : MonoBehaviour
             questScriptables[1].CheckQuestCompletion();
             questText[1].text = questScriptables[1].questDetail;
             completeButton[1].gameObject.SetActive(true);
-            panelText[0].text = "클리어 한 임무입니다"; // 챕터1 메인 퀘스트 완료표시
+            panelText[0].text = "완료 한 임무입니다"; // 챕터1 메인 퀘스트 완료표시
             for(int i = 0; i < mainquestButtonOff.Length; i++)
             {
                 mainquestButtonOff[i].gameObject.SetActive(false);
@@ -90,8 +127,29 @@ public class Quest : MonoBehaviour
             questText[2].text = questScriptables[2].questDetail;
             
         }
+        if (questScriptables[0].isCompleted)
+        {
+            // 게임 데이터 불러오기
+            GameData loadedData = LoadGameData();
+            DateTime questClearTime = DateTime.Parse(loadedData.questClearTime);
+            DateTime currentTime = DateTime.Now;
+            Debug.Log((currentTime - questClearTime).TotalHours);
+            // 퀘스트 클리어 시간으로부터 24시간이 지났는지 확인
+            if ((currentTime - questClearTime).TotalHours >= 24)
+            {
+                questScriptables[0].isCompleted = false;
+                for (int i = 0; i < mainquestButtonOff.Length; i++)
+                {
+                    questScriptables[0].UpdateQuestDetail();
+                    panelText[1].text = "웨어 울프 처치하기";
+                    dailyquestButtonOff[i].gameObject.SetActive(true);
+                }
 
+
+            }
+        }
  
+
     }
     void SetupQuestChain()
     {
@@ -109,6 +167,7 @@ public class Quest : MonoBehaviour
     {
         if (!questPanel.activeSelf)
         {
+            
             questPanel.SetActive(true);
         }
 

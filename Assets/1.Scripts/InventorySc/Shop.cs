@@ -29,9 +29,11 @@ public class Shop : MonoBehaviour
             //item.possess += 1; // 갯수 증가
             Debug.Log(item.name + " purchased for " + item.price + ". Remaining money: " + playerMoney.money);
             Inventory.instance.AddItem(item);  // 인벤토리에 아이템 추가 로직 추가 예정
+            
+            //Inventory.instance.SaveInventory();
             //for (int i = 0; i < Inventory.instance.inventorySlotImage.Length; i++)
             //{
-               
+
             //    if (Inventory.instance.inventorySlotImage[i].sprite == null)
             //    {
             //        Inventory.instance.inventory[i].text = item.possess.ToString(); // 슬릇창과 포션 갯수 연동
@@ -51,8 +53,8 @@ public class Shop : MonoBehaviour
             //        Inventory.instance.inventory[i].text = item.possess.ToString(); // 슬릇창과 포션 갯수 연동
             //        break; // 이미지가 이미 할당되어 있고, 같은 아이콘일 경우 루프 종료
             //    }
-               
-                
+
+
             //}
         }
         else

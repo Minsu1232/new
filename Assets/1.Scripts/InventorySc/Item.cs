@@ -13,6 +13,7 @@ public class Item : ScriptableObject, IItem
     public Sprite icon;
     public Money money;
     public int price;
+    public Item saveItems;
     
 
     public void Use(Player player, string name) // Player 객체는 이 메서드를 호출할 때 전달됩니다.
@@ -39,7 +40,7 @@ public class Item : ScriptableObject, IItem
                 player.mpBar.fillAmount = (float)player.mp / player.playerState.mp;
                 Debug.Log("MP Potion used. " + effectAmount + " Mana restored.");
             }
-            if (name == "RandomBox")
+            if (name == "CoinBundle")
             {               
                 int baseRandom = Random.Range(1, 10); // 1부터 9까지 랜덤한 정수 생성
                 int price = baseRandom * 100; // 생성된 수에 100을 곱하여 100의 단위로 만듦

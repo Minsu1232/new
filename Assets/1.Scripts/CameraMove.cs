@@ -25,7 +25,7 @@ public class CameraMove : MonoBehaviour
         if (Mathf.Abs(dollyCart.m_Position - 8f) < tolerance)
         {
             storyText.gameObject.SetActive(true);
-            storyText.text = "상점 아저씬 여전히 기대고있네";
+            storyText.text = "저 아저씨가 기대고 있는 건물이 상점인가 ?";
         }
         else if (Mathf.Abs(dollyCart.m_Position - 25f) < tolerance)
         {
@@ -38,7 +38,7 @@ public class CameraMove : MonoBehaviour
         }
         else if (Mathf.Abs(dollyCart.m_Position - 70f) < tolerance)
         {
-            storyText.text = "그 새 또 무슨일이 일어났군 \n 가까이 가서 들어보자";
+            storyText.text = "그새 또 무슨일이 일어났군 \n 가까이 가서 들어보자";
         }
         // dollyCart가 최대 거리에 도달했는지 확인
         if (dollyCart.m_Position >= dollyCart.m_Path.PathLength)

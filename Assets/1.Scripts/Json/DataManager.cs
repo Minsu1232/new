@@ -11,7 +11,10 @@ public class DataManager : MonoBehaviour
     public PlayerState playerState;
     public QuestScriptable prologue;
     public QuestScriptable tutorial;
-    public Item[] items;
+    public QuestScriptable mainQuest;
+    public QuestScriptable dailyQuest;
+    public Money money;
+    
 
     public bool isDataLoaded = false; // 데이터 로드 완료 상태 플래그
     public bool isPrologued = false;
@@ -19,7 +22,9 @@ public class DataManager : MonoBehaviour
     string PlayerDataPath;
     string QuestDataPath;
     string tutorialDataPath;
-    string inventoryDataPath;
+    string moneyDataPath;
+    string mainDataPath;
+    string dailyDataPath;
     
     
 
@@ -40,14 +45,20 @@ public class DataManager : MonoBehaviour
         PlayerDataPath = Path.Combine(Application.persistentDataPath, "playerState.json");
         QuestDataPath = Path.Combine(Application.persistentDataPath, "Quest.json");
         tutorialDataPath = Path.Combine(Application.persistentDataPath, "Tutorial.json");
-        inventoryDataPath = Path.Combine(Application.persistentDataPath, "Inventory.json");
+        moneyDataPath = Path.Combine(Application.persistentDataPath, "Money.json");
+        mainDataPath = Path.Combine(Application.persistentDataPath, "MainQuest.json");
+        dailyDataPath = Path.Combine(Application.persistentDataPath, "dailyQuest.json");
+
         PlayerLoadGameData();
         PrologueLoadGameData();
         TutorialLoadGameData();
+        MoneyLoadGameData();
+        MainLoadGameData();
+        DailyLoadGameData();
         //InventoryLoadGameData();
     }
     [System.Serializable]
-    public class QuestScriptableArray
+    public class ItemArray
     {
         public Item[] items;
     }
@@ -69,13 +80,24 @@ public class DataManager : MonoBehaviour
         File.WriteAllText(tutorialDataPath, json);
         Debug.Log("Game data saved to " + tutorialDataPath);
     }
-    //public void InventorySaveGameData()
-    //{
-    //    QuestScriptableArray itemsArray = new QuestScriptableArray { items = items };
-    //    string json = JsonUtility.ToJson(itemsArray, true);
-    //    File.WriteAllText(inventoryDataPath, json);
-    //    Debug.Log("Inventory data saved to " + inventoryDataPath);
-    //}
+    public void MoneySaveGameData()
+    {
+        string json = JsonUtility.ToJson(money, true);
+        File.WriteAllText(moneyDataPath, json);
+        Debug.Log("Inventory data saved to " + moneyDataPath);
+    }
+    public void MainSaveGameData()
+    {
+        string json = JsonUtility.ToJson(mainQuest, true);
+        File.WriteAllText(mainDataPath, json);
+        Debug.Log("Inventory data saved to " + mainDataPath);
+    }
+    public void DailySaveGameData()
+    {
+        string json = JsonUtility.ToJson(dailyQuest, true);
+        File.WriteAllText(dailyDataPath, json);
+        Debug.Log("Inventory data saved to " + dailyDataPath);
+    }
 
     public void PlayerLoadGameData()
     {
@@ -109,7 +131,37 @@ public class DataManager : MonoBehaviour
             string json = File.ReadAllText(tutorialDataPath);
             JsonUtility.FromJsonOverwrite(json, tutorial);
             Debug.Log("Prologue data loaded from " + tutorialDataPath);
-            isPrologued = true;
+            
+        }
+    }
+    private void MoneyLoadGameData()
+    {
+        if (File.Exists(moneyDataPath))
+        {
+            string json = File.ReadAllText(moneyDataPath);
+            JsonUtility.FromJsonOverwrite(json, money);
+            Debug.Log("Prologue data loaded from " + moneyDataPath);
+            
+        }
+    }
+    private void MainLoadGameData()
+    {
+        if (File.Exists(mainDataPath))
+        {
+            string json = File.ReadAllText(mainDataPath);
+            JsonUtility.FromJsonOverwrite(json, mainQuest);
+            Debug.Log("Prologue data loaded from " + mainDataPath);
+
+        }
+    }
+    private void DailyLoadGameData()
+    {
+        if (File.Exists(dailyDataPath))
+        {
+            string json = File.ReadAllText(dailyDataPath);
+            JsonUtility.FromJsonOverwrite(json, dailyQuest);
+            Debug.Log("Prologue data loaded from " + dailyDataPath);
+
         }
     }
     //public void InventoryLoadGameData()
@@ -132,6 +184,9 @@ public class DataManager : MonoBehaviour
         PlayerSaveGameData();
         PrologueSaveGameData();
         TutorialSaveGameData();
+        MoneySaveGameData();
+        MainSaveGameData();
+        DailySaveGameData();
         //InventorySaveGameData();
     }
 }

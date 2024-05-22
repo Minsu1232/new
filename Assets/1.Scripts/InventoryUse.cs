@@ -1,6 +1,8 @@
 
+using System.IO;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.Playables;
 using UnityEngine.UI;
 
 
@@ -11,6 +13,19 @@ public class InventoryUse : MonoBehaviour, IPointerClickHandler
     public Item item;
     public Image[] items;
 
+    string inventoryDataPath;
+    private void OnEnable()
+    {
+        
+    }
+    private void Start()
+    {
+
+        
+    }
+
+  
+ 
     public void OnPointerClick(PointerEventData eventData)
     {
         Image image = GetComponent<Image>();        
@@ -23,11 +38,13 @@ public class InventoryUse : MonoBehaviour, IPointerClickHandler
             itemCount = item.possess; // 아이템 수량 업데이트
 
             Inventory.instance.UpdateUI(item); // 아이템에 대한 UI만 업데이트
-
+            
             if (item.possess == 0) // 아이템의 수량이 0이 되면 아이템 제거
             {
                 Inventory.instance.RemoveItem(item);
                 
+
+
             }
         }
 
@@ -52,8 +69,9 @@ public class InventoryUse : MonoBehaviour, IPointerClickHandler
         item.Use(player,name);
         
     }
+    
 
 
-   
+
 }
 

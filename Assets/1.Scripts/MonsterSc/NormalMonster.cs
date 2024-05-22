@@ -218,6 +218,7 @@ public class NormalMonster : MonoBehaviour, IDamageable
             if(quest != null)
             {
                 quest.killed += 1;
+                quest.isCompleted = true;
             }
             
             Debug.Log("Monster died.");

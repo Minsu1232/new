@@ -20,11 +20,18 @@ public class InventoryManager : MonoBehaviour
             // 슬릇에 따른 파티클효과
             if (Inventory.instance.selectedSlot == 0)
             {
-                healingEffect[0].SetActive(true);
+                if (Inventory.instance.potionRemain.text != "0")
+                {
+                    healingEffect[0].SetActive(true);
+                }
+                
             }
             else
             {
-                healingEffect[1].SetActive(true);
+                if (Inventory.instance.potionRemain.text != "0")
+                {
+                    healingEffect[0].SetActive(true);
+                }
             }
 
 
