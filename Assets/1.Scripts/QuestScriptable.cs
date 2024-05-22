@@ -72,7 +72,7 @@ public class QuestScriptable : ScriptableObject
         {
             isCompleted = true;
             questDetail = "웨어 울프 처치하기 " + killed + "/1 (완료)";  // UI 업데이트 호출
-            killed = 0;
+           
         }
         else if(questName == "MainQuest1" && isMainClear)
         {            

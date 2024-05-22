@@ -52,7 +52,7 @@ public class DataManager : MonoBehaviour
         PlayerLoadGameData();
         PrologueLoadGameData();
         TutorialLoadGameData();
-        MoneyLoadGameData();
+        //MoneyLoadGameData();
         MainLoadGameData();
         DailyLoadGameData();
         //InventoryLoadGameData();
@@ -80,12 +80,12 @@ public class DataManager : MonoBehaviour
         File.WriteAllText(tutorialDataPath, json);
         Debug.Log("Game data saved to " + tutorialDataPath);
     }
-    public void MoneySaveGameData()
-    {
-        string json = JsonUtility.ToJson(money, true);
-        File.WriteAllText(moneyDataPath, json);
-        Debug.Log("Inventory data saved to " + moneyDataPath);
-    }
+    //public void MoneySaveGameData()
+    //{
+    //    string json = JsonUtility.ToJson(money, true);
+    //    File.WriteAllText(moneyDataPath, json);
+    //    Debug.Log("Inventory data saved to " + moneyDataPath);
+    //}
     public void MainSaveGameData()
     {
         string json = JsonUtility.ToJson(mainQuest, true);
@@ -134,16 +134,16 @@ public class DataManager : MonoBehaviour
             
         }
     }
-    private void MoneyLoadGameData()
-    {
-        if (File.Exists(moneyDataPath))
-        {
-            string json = File.ReadAllText(moneyDataPath);
-            JsonUtility.FromJsonOverwrite(json, money);
-            Debug.Log("Prologue data loaded from " + moneyDataPath);
+    //private void MoneyLoadGameData()
+    //{
+    //    if (File.Exists(moneyDataPath))
+    //    {
+    //        string json = File.ReadAllText(moneyDataPath);
+    //        JsonUtility.FromJsonOverwrite(json, money);
+    //        Debug.Log("Prologue data loaded from " + moneyDataPath);
             
-        }
-    }
+    //    }
+    //}
     private void MainLoadGameData()
     {
         if (File.Exists(mainDataPath))
@@ -184,7 +184,7 @@ public class DataManager : MonoBehaviour
         PlayerSaveGameData();
         PrologueSaveGameData();
         TutorialSaveGameData();
-        MoneySaveGameData();
+        //MoneySaveGameData();
         MainSaveGameData();
         DailySaveGameData();
         //InventorySaveGameData();

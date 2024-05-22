@@ -12,10 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 593d4ca371566af42b5f2380897b5669, type: 3}
   m_Name: Quest
   m_EditorClassIdentifier: 
-  killed: 0
+  killed: 1
   questName: DailyQuest
-  questDetail: "\uC6E8\uC5B4 \uC6B8\uD504 \uCC98\uCE58\uD558\uAE30 0/1"
-  isCompleted: 0
+  questDetail: "\uC6E8\uC5B4 \uC6B8\uD504 \uCC98\uCE58\uD558\uAE30 1/1 (\uC644\uB8CC)"
+  isCompleted: 1
   isMainClear: 0
   isTutorial: 0
   rewardCoin: 200

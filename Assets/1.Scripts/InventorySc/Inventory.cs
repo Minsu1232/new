@@ -28,12 +28,14 @@ public class Inventory : MonoBehaviour
     [System.Serializable]
     public class ItemData
     {
-        public string saveItem;
+        
         public string itemName;
         public int possess;
         public string spriteName;
         public int imageIndex;
         public int itemsIndex;
+        public int moneyAmount; // Money 스크립터블의 화폐 수량 저장
+
     }
     void Awake()
     {
@@ -54,13 +56,13 @@ public class Inventory : MonoBehaviour
         selectedSlot = 0;
         UpdatePotionImage(); // 초기 이미지 설정
         potionRemain.text = potions[selectedSlot].possess.ToString();
+        money.text = moneyData.money.ToString();
 
 
     }
     private void Update()
-    {
-           
-        money.text = moneyData.money.ToString();
+    {           
+        
     }
     [System.Serializable]
     public class InventoryData
@@ -83,20 +85,32 @@ public class Inventory : MonoBehaviour
         List<ItemData> dataToSave = new List<ItemData>();
         foreach (var item in items)
         {
+            if (item.money == null || item.icon == null)
+            {
+                Debug.LogError("saveItems or icon is null");
+                continue; // Skip this item or handle it differently
+            }
+
             int index = Array.FindIndex(inventorySlotImage, slot => slot.sprite == item.icon);
             int itemIndex = items.FindIndex(items => items.itemName == item.itemName);
-
+            if (index == -1 || itemIndex == -1)
+            {
+                Debug.LogError("Invalid index found");
+                continue; // Skip this item or handle it differently
+            }
             dataToSave.Add(new ItemData()
             {
 
-                saveItem = item.saveItems.name,
+
                 itemName = item.itemName,
                 possess = item.possess,
                 spriteName = item.icon.name,
                 imageIndex = index,
-                itemsIndex = itemIndex
-                
-            });
+                itemsIndex = itemIndex,
+                moneyAmount = item.money.money
+
+
+            }) ;  
         }
       
         string json = JsonUtility.ToJson(new Serialization<List<ItemData>>() { Data = dataToSave }, true);
@@ -122,10 +136,26 @@ public class Inventory : MonoBehaviour
                 item.possess = itemData.possess;
                 item.icon = Resources.Load<Sprite>(itemData.spriteName);
 
-                int index = Array.FindIndex(potions, i => i.itemName  == item.itemName);
+                if (item.itemName == "CoinBundle")
+                {
+                    Money money = ScriptableObject.CreateInstance<Money>();
+                    item.money = money;
+                    money.money = itemData.moneyAmount; // 저장된 화폐 수량으로 초기화
+                    
+                }
+                if (item.itemName == "HP" ||  item.itemName == "MP")
+                {
+                    int index = Array.FindIndex(potions, i => i.itemName == item.itemName);
+                    item.possess = potions[index].possess;
+                    Money money = ScriptableObject.CreateInstance<Money>();
+                    item.money = money;
+                    money.money = itemData.moneyAmount; // 코인번들의 머니스크립터블 할당을 위해 함께 할당
+                }
+                
+                
                 loadedItems.Add(item);
                 items.Add(item);
-                //potions[index].possess = item.possess;
+                
                 Debug.Log("Inventory Loaded successfully at " + Application.persistentDataPath + "/inventory.json");
                 // UI 업데이트 로직
                 if (itemData.imageIndex != -1 && itemData.imageIndex < inventorySlotImage.Length)
@@ -185,7 +215,7 @@ public class Inventory : MonoBehaviour
                 }
             }
         }
-        SaveInventory();
+        
     }
     public void RemoveItem(Item item)
     {
@@ -248,7 +278,7 @@ public class Inventory : MonoBehaviour
     }
     private void OnApplicationQuit()
     {
-        
+        SaveInventory();
     }
 
 }

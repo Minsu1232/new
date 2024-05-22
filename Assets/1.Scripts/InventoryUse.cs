@@ -36,18 +36,21 @@ public class InventoryUse : MonoBehaviour, IPointerClickHandler
             Debug.Log("Using item: " + image.sprite.name);
             item.Use(player, item.itemName); // 아이템 사용
             itemCount = item.possess; // 아이템 수량 업데이트
-
+            if(item.itemName == "CoinBundle")
+            {
+                Inventory.instance.money.text = item.money.money.ToString(); // 제이슨으로 할당 된 머니의 텍스트 초기화
+            }
+            
             Inventory.instance.UpdateUI(item); // 아이템에 대한 UI만 업데이트
             
             if (item.possess == 0) // 아이템의 수량이 0이 되면 아이템 제거
             {
-                Inventory.instance.RemoveItem(item);
-                
-
+                Inventory.instance.RemoveItem(item);               
 
             }
+        
         }
-
+        //Inventory.instance.SaveInventory();
     }
     int FindSpriteIndexByName(string spriteName)
     {
