@@ -25,6 +25,8 @@ public class Inventory : MonoBehaviour
     public Text potionRemain;
     public Text[] inventory;
     public Text money;
+
+    public GameObject[] healingEffect;
     [System.Serializable]
     public class ItemData
     {
@@ -35,6 +37,7 @@ public class Inventory : MonoBehaviour
         public int imageIndex;
         public int itemsIndex;
         public int moneyAmount; // Money 스크립터블의 화폐 수량 저장
+        public int effectAmount;
 
     }
     void Awake()
@@ -51,19 +54,22 @@ public class Inventory : MonoBehaviour
     }
     void Start()
     {
+
         LoadInventory();
         //LoadInventoryFromJson();
         selectedSlot = 0;
         UpdatePotionImage(); // 초기 이미지 설정
-        potionRemain.text = potions[selectedSlot].possess.ToString();
+        //potionRemain.text = potions[selectedSlot].possess.ToString();
         money.text = moneyData.money.ToString();
 
 
     }
-    private void Update()
-    {           
-        
+    void Update()
+    {
+        QclickPotion();
     }
+
+
     [System.Serializable]
     public class InventoryData
     {
@@ -87,30 +93,39 @@ public class Inventory : MonoBehaviour
         {
             if (item.money == null || item.icon == null)
             {
-                Debug.LogError("saveItems or icon is null");
-                continue; // Skip this item or handle it differently
+                //Debug.LogError("saveItems or icon is null");
+                //continue; // Skip this item or handle it differently
             }
 
             int index = Array.FindIndex(inventorySlotImage, slot => slot.sprite == item.icon);
             int itemIndex = items.FindIndex(items => items.itemName == item.itemName);
-            if (index == -1 || itemIndex == -1)
-            {
-                Debug.LogError("Invalid index found");
-                continue; // Skip this item or handle it differently
-            }
+            //if (index == -1 || itemIndex == -1)
+            //{
+            //    Debug.LogError("Invalid index found");
+            //    continue; // Skip this item or handle it differently
+            //}
             dataToSave.Add(new ItemData()
             {
 
 
-                itemName = item.itemName,
-                possess = item.possess,
-                spriteName = item.icon.name,
-                imageIndex = index,
-                itemsIndex = itemIndex,
-                moneyAmount = item.money.money
+                itemName = item.itemName != null ? item.itemName : "Unknown Item", // 기본값으로 "Unknown Item" 설정
+                possess = item.possess, // possess는 int이므로 null 체크가 필요 없습니다.
+                spriteName = item.icon != null ? item.icon.name : "DefaultIcon", // 기본값으로 "DefaultIcon" 설정
+                imageIndex = (item.icon != null && index != -1) ? index : -1, // icon이 null이 아니고, 유효한 index가 있는 경우에만 할당
+                itemsIndex = itemIndex != -1 ? itemIndex : -1, // 유효한 itemsIndex만 할당
+                moneyAmount = item.money != null ? item.money.money : 0, // 기본값으로 0 설정
+                effectAmount = item.effectAmount
 
 
-            }) ;  
+            }); ;
+            //if (item.itemName == "HP" )
+            //{
+            //    potions[0].possess = item.possess; 
+            //}
+            //else if(item.itemName == "MP")
+            //{
+            //    potions[1].possess = item.possess;
+            //}
         }
       
         string json = JsonUtility.ToJson(new Serialization<List<ItemData>>() { Data = dataToSave }, true);
@@ -135,7 +150,17 @@ public class Inventory : MonoBehaviour
                 item.itemName = itemData.itemName;
                 item.possess = itemData.possess;
                 item.icon = Resources.Load<Sprite>(itemData.spriteName);
+                item.effectAmount = itemData.effectAmount;
 
+                if (item.itemName == "HP")
+                {
+                    potions[0] = item;
+
+                }
+                if (item.itemName == "MP")
+                {
+                    potions[1] = item;
+                }
                 if (item.itemName == "CoinBundle")
                 {
                     Money money = ScriptableObject.CreateInstance<Money>();
@@ -155,7 +180,10 @@ public class Inventory : MonoBehaviour
                 
                 loadedItems.Add(item);
                 items.Add(item);
-                
+                if (item.possess == 0)
+                {
+                    RemoveItem(item);
+                }
                 Debug.Log("Inventory Loaded successfully at " + Application.persistentDataPath + "/inventory.json");
                 // UI 업데이트 로직
                 if (itemData.imageIndex != -1 && itemData.imageIndex < inventorySlotImage.Length)
@@ -178,13 +206,30 @@ public class Inventory : MonoBehaviour
     public void AddItem(Item item)
     {
         Item foundItem = items.Find(i => i.itemName == item.itemName);
-
+      
         if (foundItem != null)
         {
+            // 포션 배열 업데이트
+            if (foundItem.itemName == "HP")
+            {
+                potions[0] = foundItem;
+            }
+            else if (foundItem.itemName == "MP")
+            {
+                potions[1] = foundItem;
+            }
             Debug.Log(foundItem);
             // 아이템이 이미 존재하면 수량만 증가
+            //if(foundItem.itemName == "HP")
+            //{
+            //    potions[0].possess = foundItem.possess;
+            //}
+            //else if(foundItem.itemName == "MP")
+            //{
+            //    potions[1].possess = foundItem.possess;
+            //}
             foundItem.possess++;
-            UpdateUI(item);
+            UpdateUI(foundItem);
             // 해당 아이템의 슬롯을 찾아 정보를 업데이트
             for (int i = 0; i < inventorySlotImage.Length; i++)
             {//앞칸이 비어있지만 이미 인벤토리에 있는 아이템이면 누적
@@ -192,23 +237,38 @@ public class Inventory : MonoBehaviour
                 if (inventorySlotImage[i].sprite == foundItem.icon)
                 {
                     inventory[i].text = foundItem.possess.ToString();
-                    UpdateUI(foundItem);
+                    
                     break;
                 }
             }
         }
         else
-        {
+        {// potions에 할당할 스크립터블 오브젝트 생성
+            Item newItem = ScriptableObject.CreateInstance<Item>();
+            newItem.itemName = item.itemName;
+            newItem.icon = item.icon;
+            newItem.effectAmount = item.effectAmount;
+            newItem.possess = 0; 
+
+            // 포션 배열 업데이트
+            if (newItem.itemName == "HP") // 할당되어야 q가 발동 이유를 잘 모르겠음.
+            {
+                potions[0] = newItem;
+            }
+            else if (newItem.itemName == "MP")
+            {
+                potions[1] = newItem;
+            }
             // 새 아이템을 인벤토리에 추가
-            items.Add(item);
-            item.possess++;
-            UpdateUI(item);
+            items.Add(newItem);
+            newItem.possess++;
+            UpdateUI(newItem);
             for (int i = 0; i < inventorySlotImage.Length; i++)
             {
                 if (inventorySlotImage[i].sprite == null)
                 {
-                    inventorySlotImage[i].sprite = item.icon;
-                    inventory[i].text = item.possess.ToString();
+                    inventorySlotImage[i].sprite = newItem.icon;
+                    inventory[i].text = newItem.possess.ToString();
                     inventory[i].gameObject.SetActive(true);
                    
                     break;
@@ -216,6 +276,41 @@ public class Inventory : MonoBehaviour
             }
         }
         
+    }
+
+    void QclickPotion()
+    {
+
+        if (Input.GetKeyDown(KeyCode.Tab))
+        {
+            SwitchSlot();
+        }
+
+        if (Input.GetKeyDown(KeyCode.Q))
+        {
+            UsePotion();
+            // 슬릇에 따른 파티클효과
+            if (selectedSlot == 0)
+            {
+                if (potionRemain.text != "0")
+                {
+                    healingEffect[0].SetActive(true);
+                }
+
+            }
+            else
+            {
+                if (potionRemain.text != "0")
+                {
+                    healingEffect[0].SetActive(true);
+                }
+            }
+
+
+
+            
+
+        }
     }
     public void RemoveItem(Item item)
     {
@@ -226,9 +321,9 @@ public class Inventory : MonoBehaviour
     public void SwitchSlot()
     {
         selectedSlot = (selectedSlot + 1) % 2; // 슬롯 전환 로직
-        
-        UpdatePotionImage(); // 이미지 업데이트
         UpdateUI(potions[selectedSlot]);
+        UpdatePotionImage(); // 이미지 업데이트
+       
     }
 
     public void UsePotion()
@@ -236,14 +331,22 @@ public class Inventory : MonoBehaviour
         Item currentPotion = selectedSlot == 0 ? potions[selectedSlot] : potions[selectedSlot];
         if (potions[selectedSlot] != null && currentPotion.possess > 0)
         {
-            potions[selectedSlot].Use(player, potions[selectedSlot].itemName); // 선택된 포션 사용
-            UpdateUI(currentPotion);
-
+            potions[selectedSlot].Use(player, potions[selectedSlot].itemName); // 선택된 포션 사용           
+            
+            Item index = items.Find(i => i.itemName == currentPotion.itemName);
+            potions[selectedSlot].possess = index.possess;
+            
+            if (index.possess == 0)
+            {
+                RemoveItem(index);
+            }
+            UpdateUI(index);
         }
         else
         {
             Debug.Log("No potion in slot " + (selectedSlot + 1));
         }
+        
     }
 
     void UpdatePotionImage()

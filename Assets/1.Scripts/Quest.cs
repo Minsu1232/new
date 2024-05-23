@@ -146,7 +146,7 @@ public class Quest : MonoBehaviour
             questScriptables[0].isCompleted = false;
             questScriptables[0].killed = 0;
             questScriptables[0].UpdateQuestDetail();
-           
+            Debug.Log("퀘스트초기화");
             CancelInvoke("CheckQuestReset"); // 타이머 중단
             isQuestTimerActive = false;
         }

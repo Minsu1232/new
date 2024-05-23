@@ -1,0 +1,16 @@
+{
+    "killed": 0,
+    "questName": "MainQuest1",
+    "questDetail": "(메인) 화약 창고에 서식중인\n  불가살 처치하기",
+    "isCompleted": false,
+    "isMainClear": true,
+    "isTutorial": false,
+    "rewardCoin": 1000,
+    "isPrologue": false,
+    "clearZone": {
+        "instanceID": 0
+    },
+    "nextQuest": {
+        "instanceID": 0
+    }
+}

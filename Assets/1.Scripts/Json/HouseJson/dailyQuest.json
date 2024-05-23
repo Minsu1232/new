@@ -1,0 +1,16 @@
+{
+    "killed": 1,
+    "questName": "DailyQuest",
+    "questDetail": "웨어 울프 처치하기 1/1 (완료)",
+    "isCompleted": true,
+    "isMainClear": false,
+    "isTutorial": false,
+    "rewardCoin": 200,
+    "isPrologue": false,
+    "clearZone": {
+        "instanceID": 0
+    },
+    "nextQuest": {
+        "instanceID": 0
+    }
+}

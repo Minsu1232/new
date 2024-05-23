@@ -1,0 +1,15 @@
+{
+    "characterName": "유다희",
+    "health": 10000,
+    "str": 2,
+    "dex": 4,
+    "walkSpeed": 5.0,
+    "runSpeed": 7.0,
+    "mp": 70,
+    "level": 1,
+    "hpUpgradeCount": 0,
+    "mpUpgradeCount": 0,
+    "strUpgradeCount": 0,
+    "dexUpgradeCount": 0,
+    "baseUpgradeCost": 100
+}

@@ -1,0 +1,13 @@
+{
+    "itemName": "HP",
+    "potionType": "HP",
+    "effectAmount": 40,
+    "possess": 100,
+    "icon": {
+        "instanceID": 10144
+    },
+    "money": {
+        "instanceID": 0
+    },
+    "price": 400
+}
