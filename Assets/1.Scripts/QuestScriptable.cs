@@ -42,26 +42,26 @@ public class QuestScriptable : ScriptableObject
         else if (questName == "TutorialQuest")
         {
             isTutorial = false;
-            questDetail = "폐관수련을 마무리하고 복귀해라 \n\n(이 게임은 체력이 있는 객체 또는 \n특정 오브젝트에게만 활을 쏠 수 있으며 \n우클릭시 자동 에이밍 됩니다)";
+            questDetail = "폐관수련을 마무리하고 복귀해라 \n\n(체력이 있는 객체 또는 특정 오브젝트에 \n우클릭시 에이밍 되고 좌클릭으로 쏠 수 있습니다.)";
             
         }
         else if (questName == "TutorialQuest1")
         {
             isTutorial = false;
-            questDetail = "돌아온 마을의 분위기를 파악해라";
+            questDetail = "돌아온 마을의 분위기를 파악해라 \n\n(상점은 노란색 선이 그려진 작은 \n 건물이고 클릭시 이용 가능 합니다)";
             
         }
         else if (questName == "TutorialQuest2")
         {
             isTutorial = false;
-            questDetail = "대화중인 상인들의 말을 엿들어라";
+            questDetail = "대화중인 상인들의 말을 엿들어라 \n\n(선이 그려진 큰 건물은 \n 퀘스트 수주 건물 입니다.)";
             clearZone.SetActive(true);
             
         }
         else if (questName == "TutorialQuest3")
         {// 승지방은 조선시대 왕명의 출납 등의 업무를 담당하던 곳
             isTutorial = false;
-            questDetail = "중앙에 있는 승지방에가 소문을 파악해라";
+            questDetail = "중앙에 있는 승지방에가 소문을 파악해라 \n\n(퀘스트류는 노란포탈을 통해 \n 클리어가 가능하며 필드사냥터는\n 상시로 이용 가능합니다)";
             rewardCoin = 800; // 최초 튜토리얼 진행안내의 마지막
         }
 

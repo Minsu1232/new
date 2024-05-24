@@ -5,6 +5,8 @@ using UnityEngine;
 public class TitleButton : MonoBehaviour
 {
     public GameObject buttonParticle;
+    public GameObject optionPanel;
+    public GameObject porologuePanel;
     // Start is called before the first frame update
     void Start()
     {
@@ -14,7 +16,11 @@ public class TitleButton : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+        if(Input.GetKeyDown(KeyCode.Escape))
+        {
+            optionPanel.SetActive(false);
+            porologuePanel.SetActive(false);
+        }
     }
     public void particleOn() // 이벤트트리거 기능을 통해 파티클의 위치 변환활용
     {
@@ -27,5 +33,25 @@ public class TitleButton : MonoBehaviour
     {
         buttonParticle.SetActive(false);
 
+    }
+    public void OtionPanelOn()
+    {
+        optionPanel.SetActive(true);
+    } 
+    public void OtionPanelOff()
+    {
+        optionPanel.SetActive(false);
+    }
+    public void ProloguePanelOn()
+    {
+        porologuePanel.SetActive(true);
+    }
+    public void ProloguePanelOff()
+    {
+        porologuePanel.SetActive(false);
+    }
+    public void Quit()
+    {
+        Application.Quit();
     }
 }

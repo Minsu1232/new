@@ -1,5 +1,7 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.UI;
@@ -17,6 +19,7 @@ public class GameManager : MonoBehaviour
     public Text mana;
     public GameObject status;
     public GameObject skillBar;
+    
 
     [Header("Game UI")]
     public GameObject menu;
@@ -26,7 +29,10 @@ public class GameManager : MonoBehaviour
     public GameObject transPanel;
     public GameObject inventory;
     public CanvasGroup panelCanvasGroup;
-
+    public GameObject guidePanel;
+    public GameObject optionPanel;
+    public Outline questOutline;
+    public Outline shopOutline;
 
 
     [Header("Transform")]
@@ -35,6 +41,14 @@ public class GameManager : MonoBehaviour
 
     public bool isPrologue = false; // 이미 봤다면 프롤로그가 나오지 않게
     public bool isShop;
+    public QuestScriptable tutorial;
+    public TextMeshProUGUI Guide;
+
+    public float duration = 2.0f; // 알파값 변화에 소요되는 시간 (초)
+    private float startTime; // 알파값 변화 시작 시간
+    private bool isFadingIn = false; // 페이드 인 상태 관리
+
+    public GameObject tutorial2startzone;
     private void Awake()
     {
         if (Instance == null)
@@ -50,6 +64,18 @@ public class GameManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+
+
+        if (!tutorial.isTutorial)
+        {
+            Guide.gameObject.SetActive(true);
+            StartFadingIn2();
+        }
+        else
+        {
+            Destroy(tutorial2startzone);
+        }
+
         isPrologue = false; // 테스트
     }
 
@@ -60,16 +86,30 @@ public class GameManager : MonoBehaviour
         if (UnityEngine.Input.GetKeyDown(KeyCode.Escape))
         {
             shop.SetActive(false);
+            menu.SetActive(false);
+            shopMenu.SetActive(false); 
+            dungeonPanel.SetActive(false);
+            status.SetActive(false);
+            inventory.SetActive(false);
+            guidePanel.SetActive(false);
+            optionPanel.SetActive(false);
             isShop = false;
+
         }
         StatusOpen();
         InventoryOpen();
+        TutorialOn();
 
+    }
+    public void OnMouseEnter2()
+    {
+        questOutline.enabled = true;
     }
     public void InventoryOpen()
     {
+        
         if (UnityEngine.Input.GetKeyDown(KeyCode.I))
-        {            
+        {
             if (inventory.activeSelf)
             {
                 inventory.SetActive(false);
@@ -78,13 +118,26 @@ public class GameManager : MonoBehaviour
             {
                 inventory.SetActive(true);
             }
-            
+
         }
-        
+
+    }
+    public void InventoryOpenButton()
+    {
+       inventory.gameObject.SetActive(true);
+    }
+    public void OptionPanelOpen()
+    {
+        optionPanel.SetActive(true);
+    }
+    public void OptionPanelOff()
+    {
+        optionPanel.SetActive(false);
     }
     public void StatusOpen()
     {
-        if(UnityEngine.Input.GetKeyDown(KeyCode.E)) 
+        
+        if (UnityEngine.Input.GetKeyDown(KeyCode.E))
         {
             if (!status.activeSelf)
             {
@@ -94,8 +147,36 @@ public class GameManager : MonoBehaviour
             {
                 status.gameObject.SetActive(false);
             }
-            
+
         }
+    }
+    public void StatusOpenButton()
+    {
+        status.gameObject.SetActive(true);
+    }
+    public void GuideOpen()
+    {
+        guidePanel.SetActive(true);
+    }
+    public void GuideOff()
+    {
+        guidePanel.SetActive(false);
+    }
+
+    public void StatusOpenByMouse()
+    {
+
+        if (!status.activeSelf)
+        {
+            status.gameObject.SetActive(true);
+        }
+     
+        else
+        {
+            status.gameObject.SetActive(false);
+        }
+
+
     }
     public void StatusClose()
     {
@@ -196,7 +277,7 @@ public class GameManager : MonoBehaviour
             transPanel.gameObject.SetActive(true);
         }
 
-        
+
     }
 
     private IEnumerator FadeCanvasGroup(CanvasGroup cg, float start, float end, float lerpTime)
@@ -225,6 +306,33 @@ public class GameManager : MonoBehaviour
         skillBar.SetActive(false);
         yield return new WaitForSeconds(3f);
         skillBar.SetActive(true);
+    }
+    public void TutorialOn()
+    {
+        if (!tutorial.isTutorial)
+        {
+            if (isFadingIn)
+            {
+                float time = (Time.time - startTime) / duration; // 정규화된 시간 계산
+                float alpha = Mathf.Lerp(0, 1, time); // 알파값 계산
+                Color newColor = Guide.color;
+                newColor.a = alpha;
+                Guide.color = newColor; // 알파값 적용
+
+                // 페이드 인 완료 체크
+                if (time >= 1.0f)
+                {
+                    isFadingIn = false;
+                    Destroy(Guide.gameObject);
+                }
+            }
+        }
+    }
+
+    private void StartFadingIn2()
+    {
+        startTime = Time.time;
+        isFadingIn = true;
     }
     public void Quit()
     {
