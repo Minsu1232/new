@@ -1,0 +1,28 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 593d4ca371566af42b5f2380897b5669, type: 3}
+  m_Name: GuideQuest 4
+  m_EditorClassIdentifier: 
+  killed: 0
+  questName: GuideQuest4
+  questDetail: "\uBCF4\uC168\uB4EF\uC774 \uC2A4\uD0EF 1\uB2F9 \uB808\uBCA8\uC774
+    \uC624\uB985\uB2C8\uB2E4. \n \uC2A4\uD0EF\uC744 10\uD68C \uC62C\uB9AC\uBA74,
+    \uBE44\uC6A9\uB3C4 \uC99D\uAC00\uD569\uB2C8\uB2E4. \n \uC774\uC81C \uD5C8\uC218\uC544\uBE44\uB97C
+    \uCC98\uCE58 \uD6C4 \uC138\uC0C1\uC73C\uB85C \uB098\uC544\uAC00\uC138\uC694."
+  isCompleted: 0
+  isMainClear: 0
+  isTutorial: 0
+  rewardCoin: 200
+  isPrologue: 0
+  isGuide: 0
+  clearZone: {fileID: 0}
+  nextQuest: {fileID: 11400000}

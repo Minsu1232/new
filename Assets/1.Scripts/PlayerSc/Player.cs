@@ -69,6 +69,8 @@ public class Player : MonoBehaviour
     Transform ShotPointer;
     [SerializeField]
     BowAnimation bowAnimation;
+    public Image arrowStateImage;
+    
 
     [Header("Skill Attributes")]
     [SerializeField]
@@ -94,7 +96,7 @@ public class Player : MonoBehaviour
 
     // 연속샷 방지
     int shotCount;
-
+    bool isReadyToShoot = true;
 
     // 애니메이션 및 상태 체크용
     bool isWalk;
@@ -107,15 +109,18 @@ public class Player : MonoBehaviour
     public bool isInvincible = false;
     public bool isSand;
 
-
+    
     int a = 0; // tutorial 퀘스트 위치 활성화오프용 변수
     // 스킬 쿨타임 체크용
     bool isSkill;
 
     AudioSource audioSource;
     bool isSound;
-
-
+    public speedboxText guideMan;
+    bool isGuide; // 스킬가이드 클리어 트리거
+    bool isGuideShot; // 조준과 샷 클리어 트리거
+    bool isGuidStatusUp; // /스탯 관리 클리어 트리거
+    [SerializeField] QuestScriptable questScriptable;
     public float detectionRadius = 5f; // 검색 반경
     private void OnEnable()
     {
@@ -160,12 +165,15 @@ public class Player : MonoBehaviour
     
     void Start()
     {
+        //arrowStateImage.sprite;
         StartCoroutine(InitializePlayer());
         isSound = false;        
         shotCount = 1;
         hp.text = $"{remainHealth}/{playerState.health}";
         hpBar.fillAmount = remainHealth / playerState.health;
         audioSource = GetComponent<AudioSource>();
+        isGuide = false;
+        
 
     }
 
@@ -197,7 +205,7 @@ public class Player : MonoBehaviour
 
 
             }
-            if (!GameManager.Instance.shop.activeSelf)
+            if (!GameManager.Instance.IsAnyUIActive())
             {
                 if (!isLockOn)
                 {
@@ -455,9 +463,11 @@ public class Player : MonoBehaviour
             audioSource.PlayOneShot(buffSound);
             StartCoroutine(SkillCool(20, 0, 4));
             skillArrow[4].gameObject.SetActive(true);
+            ArrownDamage arrowDamage = skillArrow[0].GetComponent<ArrownDamage>(); // 캐릭터 상태창 아래 화살의 상태 이미지 업데이트
+            arrowStateImage.sprite = arrowDamage.damageScriptable.arrowStateIcon;
             skillComand = 0;
             StartCoroutine(BuffTime());
-
+            IsGuide();
         }
         else if (mp >= 8 && isLockOn == false && isSkill == false && cool[1] == false && Input.GetKeyDown(KeyCode.Alpha2))
         {
@@ -467,8 +477,10 @@ public class Player : MonoBehaviour
             isSkill = true;
             StartCoroutine(SkillCool(6, 1, 1));
             skillArrow[1].gameObject.SetActive(true);
+            ArrownDamage arrowDamage = skillArrow[1].GetComponent<ArrownDamage>();
+            arrowStateImage.sprite = arrowDamage.damageScriptable.arrowStateIcon;
             skillComand = 1;
-
+            IsGuide();
         }
         else if (mp >= 6 && isLockOn == false && isSkill == false && cool[2] == false && Input.GetKeyDown(KeyCode.Alpha3))
         {
@@ -477,8 +489,10 @@ public class Player : MonoBehaviour
             isSkill = true;
             StartCoroutine(SkillCool(5, 2, 2));
             skillArrow[2].gameObject.SetActive(true);
-
+            ArrownDamage arrowDamage = skillArrow[2].GetComponent<ArrownDamage>();
+            arrowStateImage.sprite = arrowDamage.damageScriptable.arrowStateIcon;
             skillComand = 2;
+            IsGuide();
         }
         else if (mp >= 12 && isLockOn == false && isSkill == false && cool[3] == false && Input.GetKeyDown(KeyCode.Alpha4))
         {
@@ -487,7 +501,10 @@ public class Player : MonoBehaviour
             isSkill = true;
             StartCoroutine(SkillCool(10, 3, 3));
             skillArrow[3].gameObject.SetActive(true);
+            ArrownDamage arrowDamage = skillArrow[3].GetComponent<ArrownDamage>();
+            arrowStateImage.sprite = arrowDamage.damageScriptable.arrowStateIcon;
             skillComand = 3;
+            IsGuide();
         }
         else if (mp>= 15 && isLockOn == false && isSkill == false && Input.GetKeyDown(KeyCode.Alpha5))
         {
@@ -496,10 +513,13 @@ public class Player : MonoBehaviour
             isSkill = true;
             StartCoroutine(SkillCool(30, 6, 0));
             audioSource.PlayOneShot(petSummons);
+            ArrownDamage arrowDamage = skillArrow[0].GetComponent<ArrownDamage>();
+            arrowStateImage.sprite = arrowDamage.damageScriptable.arrowStateIcon;
             StartCoroutine(PetUsing());
             
             skillComand = 0;
-            
+            IsGuide();
+
 
         }
         else if (mp >= 3 && isLockOn == false && cool[4] == false && Input.GetKeyDown(KeyCode.F))
@@ -512,7 +532,10 @@ public class Player : MonoBehaviour
             {                    
                 boss.animator.SetTrigger("Groggy");
             }
-           
+            ArrownDamage arrowDamage = skillArrow[0].GetComponent<ArrownDamage>();
+            arrowStateImage.sprite = arrowDamage.damageScriptable.arrowStateIcon;
+            IsGuide();
+
         }
         else if (mp >= 5 && isLockOn == false && cool[5] == false && Input.GetKeyDown(KeyCode.Space))
         {
@@ -522,9 +545,11 @@ public class Player : MonoBehaviour
                 // 쿨타임은 3초
                 StartCoroutine(SkillCool(3, 5, 0));
                 audioSource.PlayOneShot(rollingSound);
+                ArrownDamage arrowDamage = skillArrow[0].GetComponent<ArrownDamage>();
+                arrowStateImage.sprite = arrowDamage.damageScriptable.arrowStateIcon;
                 mp -= 5;
                 Roll();
-
+                IsGuide();
 
             }
         }
@@ -594,10 +619,11 @@ public class Player : MonoBehaviour
 
     void ArrowShot()
     {
-        if (shotCount > 0)
+        if (shotCount > 0 && isReadyToShoot)
         {
             if (Input.GetMouseButtonDown(0) && isLockOn == true)
             {
+                isReadyToShoot = false;  // 발사 준비 상태를 false로 설정하여 추가 발사를 막습니다.
                 bowAnimation.ArrowShot();
                 isSkill = false; // 스킬화살 장전시엔 다른 스킬 사용 불가용
 
@@ -622,17 +648,17 @@ public class Player : MonoBehaviour
                 Rigidbody arrowRb = arrowInstance.AddComponent<Rigidbody>(); // Rigidbody 컴포넌트 동적 추가
                 arrowRb.useGravity = false;
                 ArrowPhysics(arrowRb, directionToTarget);
-                while (shotCount > 0)
-                {
-                    shotCount--;
-                }
+                shotCount--;  // shotCount를 여기에서 한 번만 감소시킵니다.
+                StartCoroutine(ShotDelay());
                 skillComand = 0;
+                if (!isGuideShot)
+                {
+                    isGuideShot = true;
+                    questScriptable.isGuide = true;
+                }
             }
         }
-        else
-        {
-            StartCoroutine(ShotDelay());
-        }
+     
 
 
     }
@@ -665,11 +691,9 @@ public class Player : MonoBehaviour
     // 샷의 딜레이를 추가해 연속샷 방지
     IEnumerator ShotDelay()
     {
-        yield return new WaitForSeconds(0.7f);
-        if (shotCount == 0)
-        {
-            shotCount += 1;
-        }
+        yield return new WaitForSeconds(1f);  // 발사 후 1초 동안 대기합니다.
+        isReadyToShoot = true;  // 발사 준비 상태를 true로 설정하여 다시 발사할 수 있도록 합니다.
+        shotCount += 1;
 
     }
     //버프시간동안 힘 3 증가
@@ -885,6 +909,7 @@ public class Player : MonoBehaviour
         int cost = CalculateUpgradeCost(playerState.hpUpgradeCount);
         if (money.money >= cost)
         {
+            IsGuideStatusUp();
             playerState.health += 15;
             initialHealth = playerState.health;            
             maxHP.text = playerState.health.ToString();
@@ -903,6 +928,7 @@ public class Player : MonoBehaviour
         int cost = CalculateUpgradeCost(playerState.mpUpgradeCount);
         if (money.money >= cost)
         {
+            IsGuideStatusUp();
             playerState.mp += 1;
             mp = playerState.mp;
             maxMP.text = playerState.mp.ToString();
@@ -918,6 +944,7 @@ public class Player : MonoBehaviour
         int cost = CalculateUpgradeCost(playerState.strUpgradeCount);
         if (money.money >= cost)
         {
+            IsGuideStatusUp();
             playerState.str += 1;
             str = playerState.str;
             maxStr.text = playerState.str.ToString();
@@ -934,6 +961,7 @@ public class Player : MonoBehaviour
         int cost = CalculateUpgradeCost(playerState.dexUpgradeCount);
         if (money.money >= cost)
         {
+            IsGuideStatusUp();
             playerState.dex += 1;
             dex = playerState.dex;
             maxDex.text = playerState.dex.ToString();
@@ -955,6 +983,23 @@ public class Player : MonoBehaviour
         playerState.runSpeed += 0.1f;   // dex 1당 런 스피드 0.1 증가
         runSpeed = playerState.runSpeed; // 게임 내에서 사용할 실제 값 업데이트
        
+    }
+    void IsGuide() // 스킬가이드 클리어 트리거
+    {
+        if(isGuide == false && guideMan.isGuideStart)
+        {
+            isGuide = true;
+            questScriptable.isGuide = true;
+            
+        }
+    }
+    void IsGuideStatusUp() // 스킬가이드 클리어 트리거
+    {
+        if (!isGuidStatusUp)
+        {
+            isGuidStatusUp = true;
+            questScriptable.isGuide = true;
+        }
     }
 }
 

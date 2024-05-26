@@ -21,5 +21,6 @@ MonoBehaviour:
   isTutorial: 0
   rewardCoin: 1000
   isPrologue: 0
+  isGuide: 0
   clearZone: {fileID: 0}
   nextQuest: {fileID: 0}

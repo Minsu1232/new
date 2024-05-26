@@ -17,8 +17,10 @@ MonoBehaviour:
   duration: 0
   effectType: '"Gold"'
   particleEffect: {fileID: 5665623732858392265, guid: 843563750d0d49d43a87a37357c85b9d, type: 3}
+  particleEffectSecond: {fileID: 0}
   stamina: 10
   neutralizeValue: 13
   destructionValue: 3
+  arrowStateIcon: {fileID: 21300000, guid: 50ff735c851f194429d1e7245f197bb4, type: 3}
   arrowSound: {fileID: 8300000, guid: 78a6b5d05f66a4f44959f4a17973d898, type: 3}
   hitSound: {fileID: 8300000, guid: 59a6b1a6896ced14881d53b53324433b, type: 3}

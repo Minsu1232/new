@@ -12,20 +12,29 @@ public class Shop : MonoBehaviour
     public Image[] itemImages; // 상점 UI에 9개의 이미지 슬롯
     public Text[] itemName;
     public Text[] itemPrice;
+    public Text moneyText;
     Text remainPotion;
-    
 
+    private void OnEnable() 
+    { 
+    
+        // // 이벤트에 메서드 구독
+        //playerMoney.OnMoneyChanged += UpdateMoneyDisplay;
+    }
     void Start()
     {
         UpdateShopDisplay();
-        
+        //Inventory.instance.moneyData = playerMoney;
     }
-
+   
     public void BuyItem(Item item)
     {
+        Money playerMoney = MoneyManager.Instance.money;
         if (playerMoney.money >= item.price)
         {
-            playerMoney.money -= item.price; // 가격만큼 돈 감소
+            
+            //playerMoney = item.money;
+             playerMoney.money -= item.price; // 가격만큼 돈 감소
             //item.possess += 1; // 갯수 증가
             Debug.Log(item.name + " purchased for " + item.price + ". Remaining money: " + playerMoney.money);
             Inventory.instance.AddItem(item);  // 인벤토리에 아이템 추가 로직 추가 예정
@@ -80,4 +89,15 @@ public class Shop : MonoBehaviour
             }
         }
     }
+    //private void UpdateMoneyDisplay(int newMoneyAmount)
+    //{
+    //    Debug.Log("Money updated to: " + newMoneyAmount);
+    //    // UI 업데이트 로직, 예: moneyDisplayText.text = $"Money: {newMoneyAmount}";
+    //    //moneyText.text = newMoneyAmount.ToString();
+    //}
+    //private void OnDisable()
+    //{
+    //    // 이벤트 구독 해제
+    //    playerMoney.OnMoneyChanged -= UpdateMoneyDisplay;
+    //}
 }

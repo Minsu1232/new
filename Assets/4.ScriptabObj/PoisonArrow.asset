@@ -17,8 +17,10 @@ MonoBehaviour:
   duration: 2
   effectType: '"Poison"'
   particleEffect: {fileID: 7832807635120261130, guid: 4488bd6286ed90c47ac5fd986320e0f8, type: 3}
+  particleEffectSecond: {fileID: 0}
   stamina: 5
   neutralizeValue: 3
   destructionValue: 1
+  arrowStateIcon: {fileID: 21300000, guid: 008ac732be84ac741887840da4a86f60, type: 3}
   arrowSound: {fileID: 8300000, guid: 78a6b5d05f66a4f44959f4a17973d898, type: 3}
   hitSound: {fileID: 8300000, guid: 0807c6043593af1459ab130f4135ffcf, type: 3}

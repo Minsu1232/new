@@ -21,5 +21,6 @@ MonoBehaviour:
   stamina: 6
   neutralizeValue: 4
   destructionValue: 1
+  arrowStateIcon: {fileID: 21300000, guid: dea5f0f07bd0b4044b0c5aa1e6379e49, type: 3}
   arrowSound: {fileID: 8300000, guid: 5b41a586096589f4388d1010309257f2, type: 3}
   hitSound: {fileID: 8300000, guid: 0839666d956e59f448a4420c750e8efd, type: 3}

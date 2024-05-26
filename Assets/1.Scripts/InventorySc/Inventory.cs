@@ -38,6 +38,7 @@ public class Inventory : MonoBehaviour
         public int itemsIndex;
         public int moneyAmount; // Money 스크립터블의 화폐 수량 저장
         public int effectAmount;
+        public int price;
 
     }
     void Awake()
@@ -114,7 +115,9 @@ public class Inventory : MonoBehaviour
                 imageIndex = (item.icon != null && index != -1) ? index : -1, // icon이 null이 아니고, 유효한 index가 있는 경우에만 할당
                 itemsIndex = itemIndex != -1 ? itemIndex : -1, // 유효한 itemsIndex만 할당
                 moneyAmount = item.money != null ? item.money.money : 0, // 기본값으로 0 설정
-                effectAmount = item.effectAmount
+                effectAmount = item.effectAmount,
+                price = item.price,
+                
 
 
             }); ;
@@ -151,6 +154,7 @@ public class Inventory : MonoBehaviour
                 item.possess = itemData.possess;
                 item.icon = Resources.Load<Sprite>(itemData.spriteName);
                 item.effectAmount = itemData.effectAmount;
+                item.price = itemData.price;
 
                 if (item.itemName == "HP")
                 {
@@ -161,19 +165,20 @@ public class Inventory : MonoBehaviour
                 {
                     potions[1] = item;
                 }
-                if (item.itemName == "CoinBundle")
-                {
-                    Money money = ScriptableObject.CreateInstance<Money>();
-                    item.money = money;
-                    money.money = itemData.moneyAmount; // 저장된 화폐 수량으로 초기화
+                //if (item.itemName == "CoinBundle")
+                //{
+                //    Money money = ScriptableObject.CreateInstance<Money>();
+                //    item.money = money;
+                //    money.money = itemData.moneyAmount; // 저장된 화폐 수량으로 초기화
                     
-                }
+                //}
                 if (item.itemName == "HP" ||  item.itemName == "MP")
                 {
                     int index = Array.FindIndex(potions, i => i.itemName == item.itemName);
                     item.possess = potions[index].possess;
                     Money money = ScriptableObject.CreateInstance<Money>();
                     item.money = money;
+                    item.price = itemData.price;
                     money.money = itemData.moneyAmount; // 코인번들의 머니스크립터블 할당을 위해 함께 할당
                 }
                 
@@ -248,6 +253,7 @@ public class Inventory : MonoBehaviour
             newItem.itemName = item.itemName;
             newItem.icon = item.icon;
             newItem.effectAmount = item.effectAmount;
+            newItem.money = item.money;
             newItem.possess = 0; 
 
             // 포션 배열 업데이트
@@ -378,6 +384,7 @@ public class Inventory : MonoBehaviour
                 break; // 해당 아이템을 찾았으므로 루프 종료
             }
         }
+        money.text = moneyData.money.ToString();
     }
     private void OnApplicationQuit()
     {

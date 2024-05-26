@@ -14,6 +14,7 @@ public class ArrowDamageScriptable : ScriptableObject
     public int stamina;
     public int neutralizeValue;
     public int destructionValue;
+    public Sprite arrowStateIcon;
     public AudioClip arrowSound;
     public AudioClip hitSound;
 

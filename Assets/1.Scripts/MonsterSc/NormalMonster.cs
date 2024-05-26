@@ -205,7 +205,7 @@ public class NormalMonster : MonoBehaviour, IDamageable
     {
         if (!isDie)
         {
-            money.money += normalMonsterObj.dropMoney;
+            MoneyManager.Instance.money.money += normalMonsterObj.dropMoney;
             if(gameObject.name == "training_dummy")
             {
                 Destroy(gameObject);

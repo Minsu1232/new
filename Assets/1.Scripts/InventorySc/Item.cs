@@ -44,7 +44,7 @@ public class Item : ScriptableObject, IItem
             {               
                 int baseRandom = Random.Range(1, 10); // 1부터 9까지 랜덤한 정수 생성
                 int price = baseRandom * 100; // 생성된 수에 100을 곱하여 100의 단위로 만듦
-                money.money += price;
+                MoneyManager.Instance.money.money += price;
                 possess--;
                 Debug.Log(price + "획득");
 

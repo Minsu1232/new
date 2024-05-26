@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor;
 using UnityEngine;
 
 public class ShopOpen : MonoBehaviour
@@ -12,10 +13,19 @@ public class ShopOpen : MonoBehaviour
     { 
 
     }
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            shopMenu.SetActive(false);
+            shop.SetActive(false);
+
+        }
+    }
     // 마우스 커서가 오브젝트 위로 올라가면 윤곽선을 활성화합니다.
- 
+
     // 마우스 커서가 오브젝트에서 벗어나면 윤곽선을 비활성화합니다.
-   
+
     void OnMouseDown()
     {
         if (!shopMenu.activeSelf && !shop.activeSelf)

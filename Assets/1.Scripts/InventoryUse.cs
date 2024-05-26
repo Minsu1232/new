@@ -12,11 +12,15 @@ public class InventoryUse : MonoBehaviour, IPointerClickHandler
     public int itemCount;
     public Item item;
     public Image[] items;
+    public Money playerMoney;
+    public Text moneyText;
 
     string inventoryDataPath;
     private void OnEnable()
     {
-        
+
+        //// 이벤트에 메서드 구독
+        //playerMoney.OnMoneyChanged += UpdateMoneyDisplay;
     }
     private void Start()
     {
@@ -38,7 +42,7 @@ public class InventoryUse : MonoBehaviour, IPointerClickHandler
             itemCount = item.possess; // 아이템 수량 업데이트
             if(item.itemName == "CoinBundle")
             {
-                Inventory.instance.money.text = item.money.money.ToString(); // 제이슨으로 할당 된 머니의 텍스트 초기화
+               
             }
             
             Inventory.instance.UpdateUI(item); // 아이템에 대한 UI만 업데이트
@@ -72,7 +76,17 @@ public class InventoryUse : MonoBehaviour, IPointerClickHandler
         item.Use(player,name);
         
     }
-    
+    //private void UpdateMoneyDisplay(int newMoneyAmount)
+    //{
+    //    Debug.Log("Money updated to: " + newMoneyAmount);
+    //    // UI 업데이트 로직, 예: moneyDisplayText.text = $"Money: {newMoneyAmount}";
+    //    //moneyText.text = newMoneyAmount.ToString();
+    //}
+    //private void OnDisable()
+    //{
+    //    // 이벤트 구독 해제
+    //    playerMoney.OnMoneyChanged -= UpdateMoneyDisplay;
+    //}
 
 
 

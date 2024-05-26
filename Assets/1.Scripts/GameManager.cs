@@ -10,7 +10,7 @@ using Vitals;
 
 public class GameManager : MonoBehaviour
 {
-
+   
     public static GameManager Instance { get; private set; }  // 싱글턴 인스턴스
 
     [Header("Player UI")]
@@ -31,8 +31,9 @@ public class GameManager : MonoBehaviour
     public CanvasGroup panelCanvasGroup;
     public GameObject guidePanel;
     public GameObject optionPanel;
-    public Outline questOutline;
-    public Outline shopOutline;
+    public GameObject questPanel;
+    //public Outline questOutline;
+    //public Outline shopOutline;
 
 
     [Header("Transform")]
@@ -101,10 +102,10 @@ public class GameManager : MonoBehaviour
         TutorialOn();
 
     }
-    public void OnMouseEnter2()
-    {
-        questOutline.enabled = true;
-    }
+    //public void OnMouseEnter2()
+    //{
+    //    questOutline.enabled = true;
+    //}
     public void InventoryOpen()
     {
         
@@ -338,6 +339,12 @@ public class GameManager : MonoBehaviour
     {
         Application.Quit();
     }
+    //플레이어의 카메라 제어용 매서드
+    public bool IsAnyUIActive()
+    {
+        return shop.activeSelf || inventory.activeSelf || optionPanel.activeSelf || menu.activeSelf || shopMenu.activeSelf || dungeonPanel.activeSelf || guidePanel.activeSelf || questPanel.activeSelf;
+    }
+
 }
 
 

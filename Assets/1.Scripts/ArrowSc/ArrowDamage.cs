@@ -8,8 +8,8 @@ public class ArrownDamage : MonoBehaviour
 {
 
     [Header("Arrow")]
-    [SerializeField]
-    ArrowDamageScriptable damageScriptable;
+   
+    public ArrowDamageScriptable damageScriptable;
     public AudioClip hitSound; 
     
     Player player;

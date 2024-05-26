@@ -80,6 +80,7 @@ public class Outline : MonoBehaviour {
 
   private bool needsUpdate;
 
+   
   void Awake() {
 
     // Cache renderers

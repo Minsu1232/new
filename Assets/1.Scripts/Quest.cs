@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Unity.VisualScripting;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -83,7 +84,12 @@ public class Quest : MonoBehaviour
     }
 
     private void Update()
-    { 
+    {
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            questPanel.SetActive(false);
+
+        }
         if (questScriptables[0].killed >= 1 && questScriptables[0].isCompleted)
         {             // 퀘스트 클리어 시간을 저장
             if (!isQuestTimerActive)
@@ -102,8 +108,11 @@ public class Quest : MonoBehaviour
             {
                 dailyquestButtonOff[i].gameObject.SetActive(false);
             }
+        
 
         }
+       
+       
         else if (questScriptables[1].isMainClear)
         {
             questScriptables[1].CheckQuestCompletion();
@@ -133,22 +142,40 @@ public class Quest : MonoBehaviour
 
 
     }
-    private void CheckQuestReset()
+    // 일일퀘스트 초기화 시간 관리
+    private void CheckQuestReset() 
     {
         GameData loadedData = LoadGameData();
-        DateTime questClearTime = DateTime.Parse(loadedData.questClearTime);
-        DateTime currentTime = DateTime.Now;
-        // 로그로 현재 시간과 퀘스트 완료 시간 차이 출력
-        Debug.Log("CheckQuestReset called: " + currentTime.ToString());
-        Debug.Log("Time since quest cleared: " + (currentTime - questClearTime).TotalHours + " hours");
-        if ((currentTime - questClearTime).TotalHours >= 24)
+        DateTime questClearTime;
+        if (DateTime.TryParse(loadedData.questClearTime, out questClearTime))
         {
-            questScriptables[0].isCompleted = false;
-            questScriptables[0].killed = 0;
-            questScriptables[0].UpdateQuestDetail();
-            Debug.Log("퀘스트초기화");
-            CancelInvoke("CheckQuestReset"); // 타이머 중단
-            isQuestTimerActive = false;
+            DateTime currentTime = DateTime.Now;
+            // 로그로 현재 시간과 퀘스트 완료 시간 차이 출력
+            Debug.Log("CheckQuestReset called: " + currentTime.ToString());
+            double hoursPassed = (currentTime - questClearTime).TotalHours;
+
+            Debug.Log("Time since quest cleared: " + hoursPassed + " hours");
+
+            if (hoursPassed >= 24) // 24시간이상이 체크되면 일일퀘스트 초기화
+            {
+                questScriptables[0].isCompleted = false;
+                questScriptables[0].killed = 0;// 조건을 되돌린 후
+                questScriptables[0].UpdateQuestDetail();
+                panelText[1].text = "웨어 울프 처치하기   0/1\r\n\r\n보상 : 200냥"; // 퀘스트 패널 초기화
+                completeButton[0].gameObject.SetActive(false);
+                for (int i = 0; i < mainquestButtonOff.Length; i++)
+                {
+                    dailyquestButtonOff[i].gameObject.SetActive(true); // 버튼도 초기화
+                }
+                questText[0].text = questScriptables[0].questDetail;
+                Debug.Log("퀘스트 초기화");
+                CancelInvoke("CheckQuestReset"); // 타이머 중단
+                isQuestTimerActive = false;
+            }
+        }
+        else
+        {
+            Debug.LogError("Invalid quest clear time stored.");
         }
     }
     private void SaveQuestClearTime()
@@ -215,17 +242,17 @@ public class Quest : MonoBehaviour
     }
     public void DailyReward()
     {
-        money.money += questScriptables[0].rewardCoin;
+        MoneyManager.Instance.money.money += questScriptables[0].rewardCoin;
         quest.gameObject.SetActive(false);
     }
     public void MainReward()
     {
-        money.money += questScriptables[1].rewardCoin;
+        MoneyManager.Instance.money.money += questScriptables[1].rewardCoin;
         mainQuest.gameObject.SetActive(false);
     }
     public void TutorialReward()
     {
-        money.money += questScriptables[2].rewardCoin;
+        MoneyManager.Instance.money.money += questScriptables[2].rewardCoin;
         tutorialQuest.gameObject.SetActive(false);
         
         questScriptables[6].isTutorial = true;// 튜토리얼 진행 체크용도
