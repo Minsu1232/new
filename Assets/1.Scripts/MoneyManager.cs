@@ -66,7 +66,15 @@ public class MoneyManager : MonoBehaviour
         Debug.Log("Money updated to: " + newMoneyAmount);
         coinText.text = newMoneyAmount.ToString(); // 총 금액
         getCoinText.gameObject.SetActive(true); 
-        getCoinText.text = $"{changeAmount}전 획득 하였습니다."; // 획득한 금액
+        if(changeAmount > 0)
+        {
+            getCoinText.text = $"{changeAmount}전 획득 하였습니다."; // 획득한 금액
+        }
+        else
+        {
+            getCoinText.text = $"{changeAmount * -1}전 사용 하였습니다."; // 사용한 금액
+        }
+        
           
         
        

@@ -55,7 +55,8 @@ public class NormalMonster : MonoBehaviour, IDamageable
     private Vector3 initialPosition; // 초기위치
     private Vector3 targetPosition;
 
-
+    public float timeToResetTarget = 5f; // 목표 위치를 재설정하기 전까지 기다릴 시간
+    private float timeSinceLastTargetSet = 0f; // 마지막 목표 설정 이후 경과한 시간
     // Start is called before the first frame update
 
     private void Awake()
@@ -104,7 +105,7 @@ public class NormalMonster : MonoBehaviour, IDamageable
     // Update is called once per frame
     void Update()
     {
-       
+        timeSinceLastTargetSet += Time.deltaTime; // 시간 업데이트
         if (!isDie)
         {
             if (gameObject.CompareTag("Animals"))
@@ -157,9 +158,10 @@ public class NormalMonster : MonoBehaviour, IDamageable
     void CheckAndSetNewTargetIfNeeded()
     {
         // 거리안에 없으면 다시 위치 지정
-        if (Vector3.Distance(transform.position, targetPosition) < 1f)
+        if (Vector3.Distance(transform.position, targetPosition) < 1f || timeSinceLastTargetSet >= timeToResetTarget)
         {
             SetNewRandomTarget();
+            timeSinceLastTargetSet = 0f; // 목표를 재설정하고 타이머를 리셋합니다.
         }
     }
     ////////////////////////////////////////

@@ -22,8 +22,8 @@ public class Quest : MonoBehaviour
     public Text[] panelText;
     public List<QuestScriptable> questScriptables = new List<QuestScriptable>();
     public Money money;
-    private bool isQuestTimerActive = false;
-
+    bool isQuestTimerActive = false;
+   public bool isQuestCompleted = false;
     public bool isDaily;
     [System.Serializable]
     public class GameData
@@ -90,11 +90,18 @@ public class Quest : MonoBehaviour
             questPanel.SetActive(false);
 
         }
+        if (questScriptables[0].killed >= 1 && questScriptables[0].isCompleted && !questScriptables[0].isTimeCheck)
+        {
+            SaveQuestClearTime(); // 퀘스트 완료 시간을 저장
+            questScriptables[0].isTimeCheck = true;
+        }
+            
         if (questScriptables[0].killed >= 1 && questScriptables[0].isCompleted)
-        {             // 퀘스트 클리어 시간을 저장
+        {
+            
             if (!isQuestTimerActive)
             {
-                SaveQuestClearTime(); // 퀘스트 완료 시간을 저장
+               
                 InvokeRepeating("CheckQuestReset", 0, 60.0f);  // 즉시 시작하고, 60초 간격으로 반복
                 
                 isQuestTimerActive = true;
@@ -113,7 +120,7 @@ public class Quest : MonoBehaviour
         }
        
        
-        else if (questScriptables[1].isMainClear)
+        if (questScriptables[1].isMainClear)
         {
             questScriptables[1].CheckQuestCompletion();
             questText[1].text = questScriptables[1].questDetail;
@@ -158,6 +165,7 @@ public class Quest : MonoBehaviour
 
             if (hoursPassed >= 24) // 24시간이상이 체크되면 일일퀘스트 초기화
             {
+                questScriptables[0].isTimeCheck = false;
                 questScriptables[0].isCompleted = false;
                 questScriptables[0].killed = 0;// 조건을 되돌린 후
                 questScriptables[0].UpdateQuestDetail();
@@ -185,6 +193,7 @@ public class Quest : MonoBehaviour
             questClearTime = DateTime.Now.ToString()
         };
         SaveGameData(data);
+        Debug.Log(data);
     }
     void SetupQuestChain()
     {

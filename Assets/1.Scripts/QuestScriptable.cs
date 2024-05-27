@@ -17,6 +17,7 @@ public class QuestScriptable : ScriptableObject
     public int rewardCoin;
     public bool isPrologue;
     public bool isGuide;
+    public bool isTimeCheck; // 일일퀘스트 시간 세이브 용도
 
     public GameObject clearZone;
     public QuestScriptable nextQuest;
@@ -92,6 +93,7 @@ public class QuestScriptable : ScriptableObject
         if (questName == "DailyQuest" && killed >= 1) // 예시로 '1'을 필요로 하는 조건 설정
         {
             isCompleted = true;
+            
             questDetail = "웨어 울프 처치하기 " + killed + "/1 (완료)";  // UI 업데이트 호출
            
         }

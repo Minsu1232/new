@@ -13,16 +13,16 @@ MonoBehaviour:
   m_Name: GuideQuest
   m_EditorClassIdentifier: 
   killed: 0
-  questName: GuideQuest4
-  questDetail: "\uBCF4\uC168\uB4EF\uC774 \uC2A4\uD0EF 1\uB2F9 \uB808\uBCA8\uC774
-    \uC624\uB985\uB2C8\uB2E4. \n \uC2A4\uD0EF\uC744 10\uD68C \uC62C\uB9AC\uBA74,
-    \uBE44\uC6A9\uB3C4 \uC99D\uAC00\uD569\uB2C8\uB2E4. \n \uC774\uC81C \uD5C8\uC218\uC544\uBE44\uB97C
-    \uCC98\uCE58 \uD6C4 \uC138\uC0C1\uC73C\uB85C \uB098\uC544\uAC00\uC138\uC694."
+  questName: GuideQuest
+  questDetail: "\uC774\uC81C \uBC16\uC73C\uB85C \uB098\uAC00\uC2DC\uB294 \uAD70\uC694,
+    \n \uB098\uAC00\uAE30 \uC804 \uD655\uC778 \uD574\uC57C \uD560 \uC77C\uC774 \uC788\uC2B5\uB2C8\uB2E4
+    \n \uC900\uBE44\uAC00 \uB410\uB2E4\uBA74 \uC800\uB97C \uD074\uB9AD\uD574 \uC8FC\uC138\uC694."
   isCompleted: 0
   isMainClear: 0
   isTutorial: 0
   rewardCoin: 200
   isPrologue: 0
-  isGuide: 1
+  isGuide: 0
+  isTimeCheck: 0
   clearZone: {fileID: 0}
-  nextQuest: {fileID: 11400000, guid: fe3d734af648ac64f86411828524d235, type: 2}
+  nextQuest: {fileID: 11400000, guid: fae1b09a5073bbb45ba29607118cb869, type: 2}

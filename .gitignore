@@ -70,3 +70,5 @@ crashlytics-build.properties
 # Temporary auto-generated Android Assets
 /[Aa]ssets/[Ss]treamingAssets/aa.meta
 /[Aa]ssets/[Ss]treamingAssets/aa/*
+Assets/UnityTechnologies/EffectExamples/Shared/Fonts/Diphylleia-Regular SDF2.asset.meta
+Assets/UnityTechnologies/EffectExamples/Shared/Fonts/Diphylleia-Regular SDF3.asset.meta

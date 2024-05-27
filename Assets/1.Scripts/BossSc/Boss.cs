@@ -64,7 +64,7 @@ public class Boss : MonoBehaviour, IDamageable
     public bool isGimmickEnd;
     public bool firstGroggy;
     public bool isDestruction;
-
+    
     public Animator animator;
     AudioSource audioSource;
 
@@ -76,6 +76,7 @@ public class Boss : MonoBehaviour, IDamageable
 
     private void OnEnable()
     {
+       
         counterColor[0].SetColor("_EmissionColor", Color.black); // 색 초기화
         counterColor[1].SetColor("_EmissionColor", Color.black);
         initialHealth = bossScriptable.health;
@@ -107,6 +108,7 @@ public class Boss : MonoBehaviour, IDamageable
         //시작 ui
         hp.text = $"{initialHealth}/{initialHealth}";
         hpBar.fillAmount = remainHealth / initialHealth;
+       
 
     }
 
@@ -532,15 +534,7 @@ public class Boss : MonoBehaviour, IDamageable
         }
        
     }
-    private void OnTriggerEnter(Collider other)
-    {
-        // 기믹 시작 할때부터 부셔짐
-        if (other.gameObject.tag == "GimmickWalls" && !isgimmick)
-        {
-            Destroy(other.gameObject);
-            gimmickCount--;
-        }
-    }
+ 
     // 애니메이션 이벤트 
     void Hit()
     {

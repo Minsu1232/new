@@ -179,7 +179,7 @@ public class Inventory : MonoBehaviour
                     Money money = ScriptableObject.CreateInstance<Money>();
                     item.money = money;
                     item.price = itemData.price;
-                    money.money = itemData.moneyAmount; // 코인번들의 머니스크립터블 할당을 위해 함께 할당
+                    //money.money = itemData.moneyAmount; // 코인번들의 머니스크립터블 할당을 위해 함께 할당
                 }
                 
                 
@@ -187,15 +187,15 @@ public class Inventory : MonoBehaviour
                 items.Add(item);
                 if (item.possess == 0)
                 {
-                    RemoveItem(item);
+                    RemoveItem(item); // 0이되면 리스트에서 삭제
                 }
                 Debug.Log("Inventory Loaded successfully at " + Application.persistentDataPath + "/inventory.json");
                 // UI 업데이트 로직
                 if (itemData.imageIndex != -1 && itemData.imageIndex < inventorySlotImage.Length)
                 {
-                    inventorySlotImage[itemData.imageIndex].sprite = item.icon;
-                    inventory[itemData.imageIndex].text = item.possess.ToString();
-                    inventory[itemData.imageIndex].gameObject.SetActive(true);
+                    inventorySlotImage[itemData.imageIndex].sprite = item.icon; // 저장된 리스트의 아이을 인벤토리에 할당
+                    inventory[itemData.imageIndex].text = item.possess.ToString(); // 갯수 할당
+                    inventory[itemData.imageIndex].gameObject.SetActive(true); // 0이상이니 텍스트 킴
                     UpdateUI(item);
                 }
               
@@ -255,9 +255,9 @@ public class Inventory : MonoBehaviour
             newItem.effectAmount = item.effectAmount;
             newItem.money = item.money;
             newItem.possess = 0; 
-
+            // 배열 삭제 후 새롭게 추가되면 포션스와 맞지 않기때문에 재할당
             // 포션 배열 업데이트
-            if (newItem.itemName == "HP") // 할당되어야 q가 발동 이유를 잘 모르겠음.
+            if (newItem.itemName == "HP") 
             {
                 potions[0] = newItem;
             }
@@ -298,15 +298,15 @@ public class Inventory : MonoBehaviour
             // 슬릇에 따른 파티클효과
             if (selectedSlot == 0)
             {
-                if (potionRemain.text != "0")
+                if (potions[0].possess > 0 )
                 {
-                    healingEffect[0].SetActive(true);
+                    healingEffect[1].SetActive(true);
                 }
 
             }
             else
             {
-                if (potionRemain.text != "0")
+                if (potions[1].possess > 0)
                 {
                     healingEffect[0].SetActive(true);
                 }
@@ -326,10 +326,10 @@ public class Inventory : MonoBehaviour
 
     public void SwitchSlot()
     {
-        selectedSlot = (selectedSlot + 1) % 2; // 슬롯 전환 로직
-        UpdateUI(potions[selectedSlot]);
+        selectedSlot = (selectedSlot + 1) % 2; // 슬롯 전환 로직        
         UpdatePotionImage(); // 이미지 업데이트
-       
+        UpdateUI(potions[selectedSlot]);
+
     }
 
     public void UsePotion()

@@ -623,6 +623,8 @@ public class Player : MonoBehaviour
         {
             if (Input.GetMouseButtonDown(0) && isLockOn == true)
             {
+                ArrownDamage arrowDamage = skillArrow[0].GetComponent<ArrownDamage>(); // 캐릭터 상태창 아래 화살의 상태 이미지 업데이트
+                arrowStateImage.sprite = arrowDamage.damageScriptable.arrowStateIcon;
                 isReadyToShoot = false;  // 발사 준비 상태를 false로 설정하여 추가 발사를 막습니다.
                 bowAnimation.ArrowShot();
                 isSkill = false; // 스킬화살 장전시엔 다른 스킬 사용 불가용
@@ -915,8 +917,8 @@ public class Player : MonoBehaviour
             maxHP.text = playerState.health.ToString();
             playerState.level++;
             nowLevel.text = playerState.level.ToString();
-            money.money -= cost;
-            Inventory.instance.money.text = money.money.ToString();
+            MoneyManager.Instance.money.money -= cost;
+            //Inventory.instance.money.text = money.money.ToString();
             hp.text = $"{remainHealth}/{playerState.health}";
             playerState.hpUpgradeCount++; // 업그레이드 횟수 증가
         }
@@ -934,8 +936,8 @@ public class Player : MonoBehaviour
             maxMP.text = playerState.mp.ToString();
             playerState.level++;
             nowLevel.text = playerState.level.ToString();
-            money.money -= cost;
-            Inventory.instance.money.text = money.money.ToString();
+            MoneyManager.Instance.money.money -= cost;
+            //Inventory.instance.money.text = money.money.ToString();
             playerState.mpUpgradeCount++; // 업그레이드 횟수 증가
         }
     }
@@ -950,8 +952,8 @@ public class Player : MonoBehaviour
             maxStr.text = playerState.str.ToString();
             playerState.level++;
             nowLevel.text = playerState.level.ToString();
-            money.money -= cost;
-            Inventory.instance.money.text = money.money.ToString();
+            MoneyManager.Instance.money.money -= cost;
+            //Inventory.instance.money.text = money.money.ToString();
             playerState.strUpgradeCount++; // 업그레이드 횟수 증가
         }
 
@@ -968,8 +970,8 @@ public class Player : MonoBehaviour
             playerState.level++;
             nowLevel.text = playerState.level.ToString();
             UpdateSpeed();
-            money.money -= cost;
-            Inventory.instance.money.text = money.money.ToString();
+            MoneyManager.Instance.money.money -= cost;
+            //Inventory.instance.money.text = money.money.ToString();
             playerState.dexUpgradeCount++; // 업그레이드 횟수 증가
         }
 
