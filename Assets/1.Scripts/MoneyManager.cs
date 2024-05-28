@@ -14,6 +14,7 @@ public class MoneyManager : MonoBehaviour
     private string savePath;
     public Text coinText;
     public TextMeshProUGUI getCoinText;
+    public TextMeshProUGUI currenCoinText;
     Coroutine coroutine;
 
     void Awake()
@@ -49,6 +50,7 @@ public class MoneyManager : MonoBehaviour
             JsonUtility.FromJsonOverwrite(json, money);
             Debug.Log("Money loaded from JSON: " + json);
             Inventory.instance.moneyData = money;
+            currenCoinText.text = money.money.ToString();// 상단 ui 금액 초기화
         }
         else
         {
@@ -65,10 +67,12 @@ public class MoneyManager : MonoBehaviour
         coroutine = StartCoroutine(GetCoinTextOff()); // 새 코루틴 시작
         Debug.Log("Money updated to: " + newMoneyAmount);
         coinText.text = newMoneyAmount.ToString(); // 총 금액
+        currenCoinText.text = newMoneyAmount.ToString(); // 상단 ui 금액
         getCoinText.gameObject.SetActive(true); 
         if(changeAmount > 0)
         {
             getCoinText.text = $"{changeAmount}전 획득 하였습니다."; // 획득한 금액
+            
         }
         else
         {

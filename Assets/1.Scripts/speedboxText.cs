@@ -8,8 +8,10 @@ public class speedboxText : MonoBehaviour
 {
     public RectTransform balloonImageRectTransform; // 말풍선 이미지의 RectTransform
     public TextMeshProUGUI balloonText; // 말풍선의 텍스트 컴포넌트
+    public GameObject textImage;
+    public GameObject questImage;
     public string fullText; // 전체 표시할 텍스트
-    private float delay = 0.1f; // 글자가 나타나는 딜레이 시간 (초)
+    private float delay = 0.05f; // 글자가 나타나는 딜레이 시간 (초)
     public bool isGuideStart;
     private Coroutine currentCoroutine; //진행중인 코루틴 할당
 
@@ -66,8 +68,19 @@ public class speedboxText : MonoBehaviour
     {
         if (!isGuideStart) // 첫 가이드의 시작은 npc 클릭
         {
+            //questScriptable.isGuide = true;
+            if (!textImage.activeSelf)
+            {
+                textImage.gameObject.SetActive(true);
+                questImage.gameObject.SetActive(false);
+                isGuideStart = true;
+            }
+            
+        }
+        else 
+        {
             questScriptable.isGuide = true;
-            isGuideStart = true;
+            isGuideStart = false;
         }
         
     }

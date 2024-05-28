@@ -25,4 +25,4 @@ MonoBehaviour:
   isGuide: 0
   isTimeCheck: 0
   clearZone: {fileID: 0}
-  nextQuest: {fileID: 11400000, guid: 3df9079494bc6bd4b992764cfb3bd252, type: 2}
+  nextQuest: {fileID: 11400000, guid: fae1b09a5073bbb45ba29607118cb869, type: 2}

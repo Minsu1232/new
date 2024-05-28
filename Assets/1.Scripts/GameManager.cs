@@ -13,6 +13,10 @@ public class GameManager : MonoBehaviour
    
     public static GameManager Instance { get; private set; }  // 싱글턴 인스턴스
 
+   public DataManager dataManager;
+   //public  Inventory inventorySave;
+   //public MoneyManager moneyManager;
+
     [Header("Player UI")]
     public Player player;
     public Image[] image;
@@ -22,7 +26,7 @@ public class GameManager : MonoBehaviour
     
 
     [Header("Game UI")]
-    public GameObject menu;
+    
     public GameObject shopMenu;
     public GameObject shop;
     public GameObject dungeonPanel;
@@ -32,13 +36,20 @@ public class GameManager : MonoBehaviour
     public GameObject guidePanel;
     public GameObject optionPanel;
     public GameObject questPanel;
+    public GameObject goHomePanel;
+    public GameObject savePanel;
+    public TextMeshProUGUI nowtime;
+    
     //public Outline questOutline;
     //public Outline shopOutline;
 
-
+    private float timeToUpdate = 1f; // 시간을 1초마다 갱신
+    private float timer = 0f; // 시간 누적
+    private string lastDisplayedMinute;
     [Header("Transform")]
     public Transform bossStart;
     public Transform questStart;
+    public Transform home;
 
     public bool isPrologue = false; // 이미 봤다면 프롤로그가 나오지 않게
     public bool isShop;
@@ -56,6 +67,9 @@ public class GameManager : MonoBehaviour
         {
             Instance = this;
             DontDestroyOnLoad(gameObject);  // 씬이 변경되어도 파괴되지 않도록 설정
+            dataManager = DataManager.Instance; // DataManager 싱글톤 인스턴스를 참조
+            //inventorySave = Inventory.instance; // Inventory 싱글톤 인스턴스를 참조
+            //moneyManager = MoneyManager.Instance; // moneymanager 참조
         }
         else
         {
@@ -76,8 +90,9 @@ public class GameManager : MonoBehaviour
         {
             Destroy(tutorial2startzone);
         }
-
-        isPrologue = false; // 테스트
+        lastDisplayedMinute = DateTime.Now.ToString("HH:mm");
+        UpdateTimeDisplay(); // 초기 시간 설정
+        
     }
 
     // Update is called once per frame
@@ -87,7 +102,7 @@ public class GameManager : MonoBehaviour
         if (UnityEngine.Input.GetKeyDown(KeyCode.Escape))
         {
             shop.SetActive(false);
-            menu.SetActive(false);
+            
             shopMenu.SetActive(false); 
             dungeonPanel.SetActive(false);
             status.SetActive(false);
@@ -100,7 +115,65 @@ public class GameManager : MonoBehaviour
         StatusOpen();
         InventoryOpen();
         TutorialOn();
+        string currentMinute = DateTime.Now.ToString("HH:mm");
+        if (currentMinute != lastDisplayedMinute)
+        {
+            UpdateTimeDisplay();
+            lastDisplayedMinute = currentMinute;
+        }
 
+    }
+    // 데이터 저장을 한번에 하는 매서드 (버튼 할당용)
+    public void SaveAll()
+    {
+        if (dataManager != null)
+        {
+            dataManager.PlayerSaveGameData();
+            dataManager.PrologueSaveGameData();
+            dataManager.TutorialSaveGameData();
+            dataManager.MainSaveGameData();
+            dataManager.DailySaveGameData();
+            Inventory.instance.SaveInventory();
+            MoneyManager.Instance.SaveMoney();
+        }
+        else
+        {
+            Debug.LogError("DataManager instance is not found.");
+        }
+
+        //if (inventorySave != null)
+        //{
+        //    inventorySave.SaveInventory();
+        //}
+        //else
+        //{
+        //    Debug.LogError("Inventory instance is not found.");
+        //}
+        //if(moneyManager != null)
+        //{
+        //    moneyManager.SaveMoney();
+        //}
+        //else
+        //{
+        //    Debug.LogError("MoneyManager instance is not found.");
+        //}
+        Debug.Log("All data saved");
+        savePanel.SetActive(false);
+    }
+    public void SavePanelOn()
+    {
+        savePanel.SetActive(true);
+    }
+    public void SavePaenlOff()
+    {
+        savePanel.SetActive(false);
+    }
+    void UpdateTimeDisplay()
+    {
+        if (nowtime != null)
+        {
+            nowtime.text = DateTime.Now.ToString("HH:mm");  
+        }
     }
     //public void OnMouseEnter2()
     //{
@@ -134,6 +207,18 @@ public class GameManager : MonoBehaviour
     public void OptionPanelOff()
     {
         optionPanel.SetActive(false);
+    }
+    public void GoHomePanelOpen()
+    {
+        goHomePanel.SetActive(true);
+    }
+    public void GoHomePanelOff()
+    {
+        goHomePanel.SetActive(false);
+    }
+    public void GoHomeAgree()
+    {
+        player.transform.position = home.transform.position;
     }
     public void StatusOpen()
     {
@@ -183,18 +268,7 @@ public class GameManager : MonoBehaviour
     {
         status.gameObject.SetActive(false);
     }
-    public void MenuOpen()
-    {
-        if (!menu.activeSelf)
-        {
-            menu.SetActive(true);
-        }
-        else
-        {
-            menu.SetActive(false);
-        }
 
-    }
     public void ShopOpen()
     {
 
@@ -206,6 +280,10 @@ public class GameManager : MonoBehaviour
         {
             isShop = true;
         }
+    }
+    public void ShopOpenButton()
+    {
+        shop.SetActive(true);
     }
     public void ShopExit()
     {
@@ -342,7 +420,9 @@ public class GameManager : MonoBehaviour
     //플레이어의 카메라 제어용 매서드
     public bool IsAnyUIActive()
     {
-        return shop.activeSelf || inventory.activeSelf || optionPanel.activeSelf || menu.activeSelf || shopMenu.activeSelf || dungeonPanel.activeSelf || guidePanel.activeSelf || questPanel.activeSelf;
+        Debug.Log($"Shop active: {shop.activeSelf}, Inventory active: {inventory.activeSelf}, Option Panel active: {optionPanel.activeSelf},  Shop Menu active: {shopMenu.activeSelf}, Dungeon Panel active: {dungeonPanel.activeSelf}, Guide Panel active: {guidePanel.activeSelf}, Quest Panel active: {questPanel.activeSelf}");
+        return shop.activeSelf || inventory.activeSelf || optionPanel.activeSelf ||  shopMenu.activeSelf || dungeonPanel.activeSelf || guidePanel.activeSelf || questPanel.activeSelf;
+
     }
 
 }

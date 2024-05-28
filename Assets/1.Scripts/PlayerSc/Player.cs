@@ -59,6 +59,8 @@ public class Player : MonoBehaviour
     public Image mpBar;
     public TextMeshProUGUI hp;
     public TextMeshProUGUI mana;
+    public TextMeshProUGUI panelText;
+    public GameObject Statuspanel;
 
 
 
@@ -906,76 +908,129 @@ public class Player : MonoBehaviour
         return (int)(playerState.baseUpgradeCost * Mathf.Pow(1.3f, upgradeCount / 10));
     }
     // 플레이어 스테이터스 버튼 관리 매서드
-    public void MaxHpUpButton()
-    {
+    //public void MaxHpUpButton()
+    //{
  
-        int cost = CalculateUpgradeCost(playerState.hpUpgradeCount);
-        if (money.money >= cost)
+    //    int cost = CalculateUpgradeCost(playerState.hpUpgradeCount);
+    //    if (money.money >= cost)
+    //    {
+    //        IsGuideStatusUp();
+    //        playerState.health += 15;
+    //        initialHealth = playerState.health;            
+    //        maxHP.text = playerState.health.ToString();
+    //        playerState.level++;
+    //        nowLevel.text = playerState.level.ToString();
+    //        MoneyManager.Instance.money.money -= cost;
+    //        //Inventory.instance.money.text = money.money.ToString();
+    //        hp.text = $"{remainHealth}/{playerState.health}";
+    //        playerState.hpUpgradeCount++; // 업그레이드 횟수 증가
+    //    }
+
+
+    //}
+    //public void HpStatusPanel()
+    //{
+    //    Statuspanel.SetActive(true);
+    //    panelText.text = "선택한 능력치가(Hp)(이)가 맞습니까?";
+    //}
+    //public void MpStatusPanel()
+    //{
+    //    Statuspanel.SetActive(true);
+    //    panelText.text = "선택한 능력치가(Mp)(이)가 맞습니까?";
+    //}
+    //public void StrStatusPanel()
+    //{
+    //    Statuspanel.SetActive(true);
+    //    panelText.text = "선택한 능력치가(Str)(이)가 맞습니까?";
+    //}
+    //public void DexStatusPanel()
+    //{
+    //    Statuspanel.SetActive(true);
+    //    panelText.text = "선택한 능력치가(Dex)(이)가 맞습니까?";
+    //}
+    //public void MaxMpUpButton()
+    //{
+    //    int cost = CalculateUpgradeCost(playerState.mpUpgradeCount);
+    //    if (money.money >= cost)
+    //    {
+    //        IsGuideStatusUp();
+    //        playerState.mp += 1;
+    //        mp = playerState.mp;
+    //        maxMP.text = playerState.mp.ToString();
+    //        playerState.level++;
+    //        nowLevel.text = playerState.level.ToString();
+    //        MoneyManager.Instance.money.money -= cost;
+    //        //Inventory.instance.money.text = money.money.ToString();
+    //        playerState.mpUpgradeCount++; // 업그레이드 횟수 증가
+    //    }
+    //}
+    //public void MaxStrUpButton()
+    //{//str관련 데미지 로직은 ArrowDamage스크립트에서 관리
+    //    int cost = CalculateUpgradeCost(playerState.strUpgradeCount);
+    //    if (money.money >= cost)
+    //    {
+    //        IsGuideStatusUp();
+    //        playerState.str += 1;
+    //        str = playerState.str;
+    //        maxStr.text = playerState.str.ToString();
+    //        playerState.level++;
+    //        nowLevel.text = playerState.level.ToString();
+    //        MoneyManager.Instance.money.money -= cost;
+    //        //Inventory.instance.money.text = money.money.ToString();
+    //        playerState.strUpgradeCount++; // 업그레이드 횟수 증가
+    //    }
+
+    //}
+    //public void MaxDexUpButton()
+    //{
+    //    int cost = CalculateUpgradeCost(playerState.dexUpgradeCount);
+    //    if (money.money >= cost)
+    //    {
+    //        IsGuideStatusUp();
+    //        playerState.dex += 1;
+    //        dex = playerState.dex;
+    //        maxDex.text = playerState.dex.ToString();
+    //        playerState.level++;
+    //        nowLevel.text = playerState.level.ToString();
+    //        UpdateSpeed();
+    //        MoneyManager.Instance.money.money -= cost;
+    //        //Inventory.instance.money.text = money.money.ToString();
+    //        playerState.dexUpgradeCount++; // 업그레이드 횟수 증가
+    //    }
+
+    //}
+    public void UpgradeStat(ref int stat, ref int upgradeCount, Text statText, string statName)
+    {
+        int cost = CalculateUpgradeCost(upgradeCount); 
+        if (money.money >= cost) // 비용이 돈보다 적으면
         {
-            IsGuideStatusUp();
-            playerState.health += 15;
-            initialHealth = playerState.health;            
-            maxHP.text = playerState.health.ToString();
+            IsGuideStatusUp(); // 가이드 완료
+            stat += 1; // 해당 스탯 증가
+            statText.text = stat.ToString();
             playerState.level++;
             nowLevel.text = playerState.level.ToString();
             MoneyManager.Instance.money.money -= cost;
-            //Inventory.instance.money.text = money.money.ToString();
-            hp.text = $"{remainHealth}/{playerState.health}";
-            playerState.hpUpgradeCount++; // 업그레이드 횟수 증가
+            upgradeCount++;
         }
-
-
+    }
+    public void MaxHpUpButton()
+    {
+        UpgradeStat(ref playerState.health, ref playerState.hpUpgradeCount, maxMP, "Hp");
     }
     public void MaxMpUpButton()
     {
-        int cost = CalculateUpgradeCost(playerState.mpUpgradeCount);
-        if (money.money >= cost)
-        {
-            IsGuideStatusUp();
-            playerState.mp += 1;
-            mp = playerState.mp;
-            maxMP.text = playerState.mp.ToString();
-            playerState.level++;
-            nowLevel.text = playerState.level.ToString();
-            MoneyManager.Instance.money.money -= cost;
-            //Inventory.instance.money.text = money.money.ToString();
-            playerState.mpUpgradeCount++; // 업그레이드 횟수 증가
-        }
+        UpgradeStat(ref playerState.mp, ref playerState.mpUpgradeCount, maxMP, "Mp");
     }
-    public void MaxStrUpButton()
-    {//str관련 데미지 로직은 ArrowDamage스크립트에서 관리
-        int cost = CalculateUpgradeCost(playerState.strUpgradeCount);
-        if (money.money >= cost)
-        {
-            IsGuideStatusUp();
-            playerState.str += 1;
-            str = playerState.str;
-            maxStr.text = playerState.str.ToString();
-            playerState.level++;
-            nowLevel.text = playerState.level.ToString();
-            MoneyManager.Instance.money.money -= cost;
-            //Inventory.instance.money.text = money.money.ToString();
-            playerState.strUpgradeCount++; // 업그레이드 횟수 증가
-        }
 
+    public void MaxStrUpButton()
+    {
+        UpgradeStat(ref playerState.str, ref playerState.strUpgradeCount, maxStr, "Str");
     }
+
     public void MaxDexUpButton()
     {
-        int cost = CalculateUpgradeCost(playerState.dexUpgradeCount);
-        if (money.money >= cost)
-        {
-            IsGuideStatusUp();
-            playerState.dex += 1;
-            dex = playerState.dex;
-            maxDex.text = playerState.dex.ToString();
-            playerState.level++;
-            nowLevel.text = playerState.level.ToString();
-            UpdateSpeed();
-            MoneyManager.Instance.money.money -= cost;
-            //Inventory.instance.money.text = money.money.ToString();
-            playerState.dexUpgradeCount++; // 업그레이드 횟수 증가
-        }
-
+        UpgradeStat(ref playerState.dex, ref playerState.dexUpgradeCount, maxDex, "Dex");
+        UpdateSpeed();
     }
     private void UpdateSpeed()
     {
@@ -987,9 +1042,41 @@ public class Player : MonoBehaviour
         runSpeed = playerState.runSpeed; // 게임 내에서 사용할 실제 값 업데이트
        
     }
+    public void ShowStatusPanel(string stat)
+    {
+        Statuspanel.SetActive(true);
+        panelText.text = $"선택한 능력치가({stat})(이)가 맞습니까?";
+        currentStat = stat;  // 현재 선택한 스탯을 저장
+    }
+
+    private string currentStat;  // 현재 선택한 스탯을 저장하는 변수
+
+    public void AgreeUpgrade()
+    {
+        switch (currentStat)
+        {
+            case "Hp":
+                MaxHpUpButton();
+                break;
+            case "Mp":
+                MaxMpUpButton();
+                break;
+            case "Str":
+                MaxStrUpButton();
+                break;
+            case "Dex":
+                MaxDexUpButton();
+                break;
+        }
+        Statuspanel.SetActive(false);  // 패널 닫기
+    }
+    public void DisAgreeeUpgrade()
+    {
+        Statuspanel.SetActive(false);
+    }
     void IsGuide() // 스킬가이드 클리어 트리거
     {
-        if(isGuide == false && guideMan.isGuideStart)
+        if(isGuide == false && !guideMan.isGuideStart)
         {
             isGuide = true;
             questScriptable.isGuide = true;
