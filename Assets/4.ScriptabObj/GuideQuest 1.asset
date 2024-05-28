@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: GuideQuest 1
   m_EditorClassIdentifier: 
   killed: 0
-  questName: GuideQuest1
+  questName: GuideQuest
   questDetail: "\uBA3C\uC800 \uC870\uC900 \uBC0F \uBC1C\uC0AC \uC785\uB2C8\uB2E4.
     \n \uC55E\uC5D0 \uBCF4\uC774\uB294 \uD5C8\uC218\uC544\uBE44\uC5D0 \uB9C8\uC6B0\uC2A4\uB97C
     \uC6B0\uD074\uB9AD \uC73C\uB85C \uC870\uC900 \n \uC88C\uD074\uB9AD\uC73C\uB85C
@@ -24,5 +24,6 @@ MonoBehaviour:
   rewardCoin: 200
   isPrologue: 0
   isGuide: 0
+  isTimeCheck: 0
   clearZone: {fileID: 0}
   nextQuest: {fileID: 11400000, guid: 3df9079494bc6bd4b992764cfb3bd252, type: 2}

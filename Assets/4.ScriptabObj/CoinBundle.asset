@@ -13,10 +13,13 @@ MonoBehaviour:
   m_Name: CoinBundle
   m_EditorClassIdentifier: 
   itemName: CoinBundle
-  potionType: 
+  itemRealName: "\uB3D9\uC804\uAFB8\uB7EC\uBBF8"
+  potionType: "\uC18C\uBAA8\uD488"
   effectAmount: 0
   possess: 1
-  icon: {fileID: 21300000, guid: a7610de486e40bc4097b57a059ff1ef6, type: 3}
+  icon: {fileID: 21300000, guid: ac613d637b5b7814d924d408de0371e6, type: 3}
   money: {fileID: 11400000, guid: 834d1a09373e7c64e92935b8724ba322, type: 2}
   price: 0
   saveItems: {fileID: 11400000}
+  description: "\uC0AC\uC6A9\uC2DC \uB79C\uB364\uD55C \uC591\uC758 \uC7AC\uD654\uB97C
+    \uD68D\uB4DD \uD569\uB2C8\uB2E4."

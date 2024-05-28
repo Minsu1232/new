@@ -1,6 +1,7 @@
 
 using System.Collections;
 using System.Diagnostics;
+using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Experimental.GlobalIllumination;
@@ -53,11 +54,11 @@ public class Player : MonoBehaviour
     public Text maxMP;
     public Text maxStr;
     public Text maxDex;
-    public Text nowLevel;
+    public TextMeshProUGUI nowLevel;
     public Image hpBar;
     public Image mpBar;
-    public Text hp;
-    public Text mana;
+    public TextMeshProUGUI hp;
+    public TextMeshProUGUI mana;
 
 
 

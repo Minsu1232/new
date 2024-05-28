@@ -13,10 +13,12 @@ MonoBehaviour:
   m_Name: MP
   m_EditorClassIdentifier: 
   itemName: MP
-  potionType: MP
+  itemRealName: "\uAE30\uB825\uD68C\uBCF5\uBB3C\uC57D"
+  potionType: "\uD3EC\uC158"
   effectAmount: 20
   possess: 0
   icon: {fileID: 21300000, guid: 6592b916f86b19e428db6f6847c7b6dd, type: 3}
   money: {fileID: 11400000, guid: 834d1a09373e7c64e92935b8724ba322, type: 2}
   price: 500
   saveItems: {fileID: 11400000}
+  description: "\uC0AC\uC6A9\uC2DC 20\uB9CC\uD07C\uC758 \uAE30\uB825\uC744 \uD68C\uBCF5\uD569\uB2C8\uB2E4."

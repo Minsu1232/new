@@ -39,6 +39,9 @@ public class Inventory : MonoBehaviour
         public int moneyAmount; // Money 스크립터블의 화폐 수량 저장
         public int effectAmount;
         public int price;
+        public string realName;
+        public string description;
+        public string potionType;
 
     }
     void Awake()
@@ -108,7 +111,7 @@ public class Inventory : MonoBehaviour
             dataToSave.Add(new ItemData()
             {
 
-
+                // 추가되는 아이템의 내용은 여기에 추가
                 itemName = item.itemName != null ? item.itemName : "Unknown Item", // 기본값으로 "Unknown Item" 설정
                 possess = item.possess, // possess는 int이므로 null 체크가 필요 없습니다.
                 spriteName = item.icon != null ? item.icon.name : "DefaultIcon", // 기본값으로 "DefaultIcon" 설정
@@ -117,6 +120,9 @@ public class Inventory : MonoBehaviour
                 moneyAmount = item.money != null ? item.money.money : 0, // 기본값으로 0 설정
                 effectAmount = item.effectAmount,
                 price = item.price,
+                realName = item.itemRealName,
+                description = item.description,
+                potionType = item.potionType
                 
 
 
@@ -147,7 +153,7 @@ public class Inventory : MonoBehaviour
             List<Item> loadedItems = new List<Item>();
             foreach (var itemData in savedData.Data)
             {
-               
+                // 추가되는 아이템의 내용은 여기에 추가
                 Item item = ScriptableObject.CreateInstance<Item>();
                 
                 item.itemName = itemData.itemName;
@@ -155,6 +161,9 @@ public class Inventory : MonoBehaviour
                 item.icon = Resources.Load<Sprite>(itemData.spriteName);
                 item.effectAmount = itemData.effectAmount;
                 item.price = itemData.price;
+                item.itemRealName = itemData.realName;
+                item.description = itemData.description;
+                item.potionType = itemData.potionType;
 
                 if (item.itemName == "HP")
                 {
@@ -248,13 +257,16 @@ public class Inventory : MonoBehaviour
             }
         }
         else
-        {// potions에 할당할 스크립터블 오브젝트 생성
+        {// potions와 새로운 items리스트에 할당할 스크립터블 오브젝트 생성
             Item newItem = ScriptableObject.CreateInstance<Item>();
             newItem.itemName = item.itemName;
             newItem.icon = item.icon;
             newItem.effectAmount = item.effectAmount;
             newItem.money = item.money;
-            newItem.possess = 0; 
+            newItem.possess = 0;
+            newItem.description = item.description;
+            newItem.itemRealName = item.itemRealName;
+            newItem.potionType = item.potionType;
             // 배열 삭제 후 새롭게 추가되면 포션스와 맞지 않기때문에 재할당
             // 포션 배열 업데이트
             if (newItem.itemName == "HP") 

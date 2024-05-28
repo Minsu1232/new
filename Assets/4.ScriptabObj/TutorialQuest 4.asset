@@ -18,9 +18,10 @@ MonoBehaviour:
     \uD30C\uC545\uD574\uB77C"
   isCompleted: 0
   isMainClear: 0
-  isTutorial: 1
+  isTutorial: 0
   rewardCoin: 800
   isPrologue: 0
   isGuide: 0
+  isTimeCheck: 0
   clearZone: {fileID: 0}
   nextQuest: {fileID: 0}

@@ -6,7 +6,8 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "Item", menuName = "Inventory/Item")]
 public class Item : ScriptableObject, IItem
 {
-    public string itemName; // 이름
+    public string itemName; // 아이템 고유이름
+    public string itemRealName; // 아이템 표기용 이름
     public string potionType; // 타입
     public int effectAmount; // 회복량
     public int possess; // 소지량
@@ -14,7 +15,10 @@ public class Item : ScriptableObject, IItem
     public Money money;
     public int price;
     public Item saveItems;
+    public string description;
     
+
+
 
     public void Use(Player player, string name) // Player 객체는 이 메서드를 호출할 때 전달됩니다.
     {
