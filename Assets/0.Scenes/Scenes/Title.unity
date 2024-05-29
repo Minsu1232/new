@@ -26260,8 +26260,10 @@ MonoBehaviour:
   mpBar: {fileID: 0}
   hp: {fileID: 0}
   mana: {fileID: 0}
+  panelText: {fileID: 0}
+  Statuspanel: {fileID: 0}
   skillArrow:
-  - {fileID: 2584533411165882970, guid: c722a3eb6752f0b458ee5e125e65554d, type: 3}
+  - {fileID: 1552796404646652, guid: a59e07b0a3fbb5f47a2bf69f506c9a1a, type: 3}
   - {fileID: 8560169066674803092, guid: a114e0b09045321408f76294ab200fb3, type: 3}
   - {fileID: 7072054694567191787, guid: bdbbaacb929280e4385e8fcd6b78cf41, type: 3}
   - {fileID: 1729421868439798505, guid: 6ce03172c3bc3b44688cbc0eb6fdf0fb, type: 3}
@@ -58665,6 +58667,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   volumeSlider: {fileID: 855092765292826818}
   audioSource: {fileID: 3876637111999351570}
+  soundVolum: {fileID: 0}
 --- !u!1 &3886096845064018153
 GameObject:
   m_ObjectHideFlags: 0

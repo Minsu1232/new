@@ -34,7 +34,11 @@ public class ArrownDamage : MonoBehaviour
         rb = GetComponent<Rigidbody>();
         //꺼진 콜라이더 다시 킴 화살 박힐때 데미지 들어가는거 방지
         collider = GetComponent<Collider>();
-        collider.enabled = true;
+        if(collider != null)
+        {
+            collider.enabled = true;
+        }
+        
 
 
     }
@@ -86,17 +90,17 @@ public class ArrownDamage : MonoBehaviour
             if(damageScriptable.name == "Arrow") 
             {
                 damageable.TakeDamage(damage, neutralizeValu, destructionValu, false);
-                audioSource.PlayOneShot(hitSound, 0.3f);
+                //audioSource.PlayOneShot(hitSound, 0.3f);
             }
             else if(damageScriptable.name == "PoisonArrow")
             {
-                audioSource.PlayOneShot(hitSound, 0.5f);
+                //audioSource.PlayOneShot(hitSound, 0.5f);
                 damageable.TakeDamage(damage, neutralizeValu,destructionValu,true);
             }
             // 그 외 화살은 있음
             else if(damageScriptable.name == "FireArrow")
             {
-                audioSource.PlayOneShot(hitSound, 0.1f);
+                //audioSource.PlayOneShot(hitSound, 0.1f);
                 damageable.TakeDamage(damage, neutralizeValu, destructionValu, true);
                 
             }
@@ -105,7 +109,7 @@ public class ArrownDamage : MonoBehaviour
                 damageable.TakeDamage(damage, neutralizeValu, destructionValu, true);
             }
             
-            StartCoroutine(DotDamage(damageable, damageScriptable.duration, damageScriptable.damagePerSecond));
+            //StartCoroutine(DotDamage(damageable, damageScriptable.duration, damageScriptable.damagePerSecond));
             StickArrow(other);
         }
         

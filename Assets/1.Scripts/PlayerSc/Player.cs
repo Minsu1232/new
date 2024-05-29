@@ -48,6 +48,8 @@ public class Player : MonoBehaviour
     public AudioClip runSound;
     public AudioClip counterSkillSound;
     public AudioClip petSummons;
+    public GameObject buffEffect;
+
 
     [Header("Player Status")]
     public Text maxHP;
@@ -83,7 +85,7 @@ public class Player : MonoBehaviour
     Text[] coolText;
     public int skillComand;
     public PetManager pet;
-    
+    public GameObject wings;
 
 
     // 컴포넌트
@@ -229,7 +231,15 @@ public class Player : MonoBehaviour
             Recovery(); // 자연 회복 매서드
             Stamina();
         }
-
+        if (skillComand == 3 && isLockOn) // 골드화살과 락온일때만 트루
+        {
+            wings.gameObject.SetActive(true);
+        }
+        else if(!isLockOn&&wings.activeSelf) // 켜저있으면 펄스
+        {
+            
+            wings.gameObject.SetActive(false);
+        }
 
     }
     IEnumerator InitializePlayer()
@@ -462,7 +472,7 @@ public class Player : MonoBehaviour
             //버프 (10초간 힘 3 증가)
             mp -= 15;
             isSkill = true;
-
+            
             audioSource.PlayOneShot(buffSound);
             StartCoroutine(SkillCool(20, 0, 4));
             skillArrow[4].gameObject.SetActive(true);
@@ -626,6 +636,9 @@ public class Player : MonoBehaviour
         {
             if (Input.GetMouseButtonDown(0) && isLockOn == true)
             {
+             
+                    
+                
                 ArrownDamage arrowDamage = skillArrow[0].GetComponent<ArrownDamage>(); // 캐릭터 상태창 아래 화살의 상태 이미지 업데이트
                 arrowStateImage.sprite = arrowDamage.damageScriptable.arrowStateIcon;
                 isReadyToShoot = false;  // 발사 준비 상태를 false로 설정하여 추가 발사를 막습니다.
@@ -641,12 +654,13 @@ public class Player : MonoBehaviour
                 Quaternion baseRotation = Quaternion.LookRotation(directionToTarget);
 
                 // 추가적인 X축 90도 회전
-                Quaternion additionalRotation = Quaternion.Euler(90, 0, 0);
+                Quaternion additionalRotation = Quaternion.Euler(0, 0, 0);
 
                 // 최종 회전 계산
                 Quaternion finalRotation = baseRotation * additionalRotation;
 
                 // 화살 인스턴스 생성 시 최종 회전 적용
+               
                 GameObject arrowInstance = Instantiate(skillArrow[skillComand], ShotPointer.transform.position, finalRotation);
 
                 Destroy(arrowInstance, 6f); // 6초뒤 화살 사라짐
@@ -687,6 +701,8 @@ public class Player : MonoBehaviour
             character.rotation = Quaternion.Slerp(character.rotation, targetRotation, Time.deltaTime * 10);  // 부드럽게 회전
             character.transform.rotation = Quaternion.identity;
 
+           
+
         }
 
 
@@ -705,8 +721,9 @@ public class Player : MonoBehaviour
     IEnumerator BuffTime()
     {
         str += 3;
-
+        buffEffect.SetActive(true);
         yield return new WaitForSeconds(10f);
+        buffEffect.SetActive(false);
         str -= 3;
 
     }
