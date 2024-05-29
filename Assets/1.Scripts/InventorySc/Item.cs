@@ -16,55 +16,54 @@ public class Item : ScriptableObject, IItem
     public int price;
     public Item saveItems;
     public string description;
-    
 
 
 
-    public void Use(Player player, string name) // Player 객체는 이 메서드를 호출할 때 전달됩니다.
+
+    public void Use(Player player, string name) // Player 객체는 이 메서드를 호출할 때 전달됩니다. 아이템 사용 효과
+                                                // 현재 아이템 추가 매우 용이
     {
-        if(possess > 0)
+        if (possess <= 0)
         {
-            if (name == "HP")
-            {
-                player = player.GetComponent<Player>();
-                possess--;
+            return;
+        }
+
+        player = player.GetComponent<Player>();
+        possess--;
+
+        switch (name)
+        {
+            case "HP":
                 int newHealth = player.remainHealth + effectAmount;
                 player.remainHealth = Mathf.Min(newHealth, player.playerState.health); // 포션이 최대 HP를 넘기게 차지 않음
                 player.hp.text = $"{player.remainHealth}/{player.playerState.health}";
                 player.hpBar.fillAmount = (float)player.remainHealth / player.playerState.health;
                 Debug.Log("HP Potion used. " + effectAmount + " Health restored.");
-            }
-            else if (name == "MP")
-            {
-                player = player.GetComponent<Player>();
-                possess--;
+                break;
+
+            case "MP":
                 int newMp = player.mp + effectAmount;
                 player.mp = Mathf.Min(newMp, player.playerState.mp); // 포션이 최대 HP를 넘기게 차지 않음
                 player.mana.text = $"{player.mp}/{player.playerState.mp}";
                 player.mpBar.fillAmount = (float)player.mp / player.playerState.mp;
                 Debug.Log("MP Potion used. " + effectAmount + " Mana restored.");
-            }
-            if (name == "CoinBundle")
-            {               
+                break;
+
+            case "CoinBundle":
                 int baseRandom = Random.Range(1, 10); // 1부터 9까지 랜덤한 정수 생성
                 int price = baseRandom * 100; // 생성된 수에 100을 곱하여 100의 단위로 만듦
                 MoneyManager.Instance.money.money += price;
-                possess--;
                 Debug.Log(price + "획득");
+                break;
 
-            }
+            case "GradeItem":
+            case "GradeItem2":
+                break;
 
-        }       
-    }
-    
-    public void MoneyBundleUse()
-    {
-        if(possess > 0)
-        {
-            
-          
         }
-    }
 
-    
+
+
+
+    }
 }

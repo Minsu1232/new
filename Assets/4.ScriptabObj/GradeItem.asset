@@ -10,11 +10,15 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 3ee7d5010552acc449ffa275deaddf98, type: 3}
-  m_Name: Unready 1
+  m_Name: GradeItem
   m_EditorClassIdentifier: 
-  potionName: "\uC900\uBE44\uC911"
-  potionType: 
+  itemName: GradeItem
+  itemRealName: "\uD558\uAE09 \uC601\uD63C \uACB0\uC815"
+  potionType: "\uAC15\uD654 \uC7AC\uB8CC"
   effectAmount: 0
   possess: 0
-  icon: {fileID: 21300000, guid: 9596db59a17a82f45b736a01b3f29a98, type: 3}
-  price: 0
+  icon: {fileID: 21300000, guid: a01beb9580399d540b18447efd7cf270, type: 3}
+  money: {fileID: 11400000, guid: 834d1a09373e7c64e92935b8724ba322, type: 2}
+  price: 100
+  saveItems: {fileID: 0}
+  description: "\uC5B4\uB514\uC5D0 \uC4F8\uC9C0 \uBAA8\uB974\uACA0\uAD70"

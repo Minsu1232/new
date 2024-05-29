@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -10,7 +11,7 @@ public class Shop : MonoBehaviour
     public Money playerMoney;    
     public Item[] itemsForSale;
     public Image[] itemImages; // 상점 UI에 9개의 이미지 슬롯
-    public Text[] itemName;
+    public  TextMeshProUGUI[] itemName;
     public Text[] itemPrice;
     public Text moneyText;
     Text remainPotion;
@@ -78,8 +79,9 @@ public class Shop : MonoBehaviour
         {
             if (i < itemsForSale.Length)
             {
-                itemName[i].text = itemsForSale[i].itemName; // 아이템 이름
+                itemName[i].text = itemsForSale[i].itemRealName; // 아이템 이름
                 itemPrice[i].text = itemsForSale[i].price.ToString(); // 아이템 가격
+                
                 itemImages[i].sprite = itemsForSale[i].icon; // 아이템 이미지아이콘
                 itemImages[i].gameObject.SetActive(true); // 판매 아이템 활성화
             }

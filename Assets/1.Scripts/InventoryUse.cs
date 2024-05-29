@@ -23,6 +23,8 @@ public class InventoryUse : MonoBehaviour, IPointerClickHandler, IPointerEnterHa
     public TextMeshProUGUI itemNameText;
     public Image itemImage;
 
+    public Image inventoryImage;
+
     string inventoryDataPath;
     private void OnEnable()
     {
@@ -40,6 +42,10 @@ public class InventoryUse : MonoBehaviour, IPointerClickHandler, IPointerEnterHa
         if (Input.mousePosition != null && item != null)
         {
             tooltipPanel.transform.position = Input.mousePosition + new Vector3(150, 200, 0); // 마우스 위치에 따라 툴팁 위치 조정
+        }
+        if(inventoryImage.sprite != null)
+        { Color color = new Color(1, 1, 1, 1);
+            inventoryImage.color = color;
         }
         
     }
