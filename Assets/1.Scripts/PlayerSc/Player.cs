@@ -674,6 +674,7 @@ public class Player : MonoBehaviour
                 {
                     isGuideShot = true;
                     questScriptable.isGuide = true;
+                    guideMan.isGuideStartToSkill = true;
                 }
             }
         }
@@ -1093,11 +1094,12 @@ public class Player : MonoBehaviour
     }
     void IsGuide() // 스킬가이드 클리어 트리거
     {
-        if(isGuide == false && !guideMan.isGuideStart)
+        if(isGuide == false && guideMan.isGuideStartToSkill)
         {
             isGuide = true;
             questScriptable.isGuide = true;
             
+
         }
     }
     void IsGuideStatusUp() // 스킬가이드 클리어 트리거

@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 
 public class PlayerRespawn : MonoBehaviour
@@ -7,12 +8,14 @@ public class PlayerRespawn : MonoBehaviour
     public Transform respawn;
     public GameObject loading;
     public GameObject skillBar;
+    public GameObject menuBar;
+    public GameObject playerinfoBar;
     //public GameObject[] quest;
     
     // Start is called before the first frame update
     void Start()
     {
-        
+    
     }
 
     // Update is called once per frame
@@ -45,7 +48,8 @@ public class PlayerRespawn : MonoBehaviour
         //List<GameObject> deactivatedQuests = new List<GameObject>();
         //deactivatedQuests.Clear();
         skillBar.SetActive(false);
-
+        menuBar.SetActive(false);
+        playerinfoBar.SetActive(false);
         //for (int i = 0; i < quest.Length; i++)
         //{
         //    if (quest[i].activeSelf)
@@ -58,7 +62,8 @@ public class PlayerRespawn : MonoBehaviour
         yield return new WaitForSeconds(3f);
 
         skillBar.SetActive(true);
-
+        menuBar.SetActive(true);
+        playerinfoBar.SetActive(true);
         //for (int i = 0; i < deactivatedQuests.Count; i++)
         //{
         //    deactivatedQuests[i].SetActive(true); // ÄÑÁü

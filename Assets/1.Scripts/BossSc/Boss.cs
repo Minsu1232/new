@@ -293,6 +293,7 @@ public class Boss : MonoBehaviour, IDamageable
             animator.SetTrigger("Die");
             isDie = true;
             navMeshAgent.enabled = false;
+            bossUI.gameObject.SetActive(false);
             StartCoroutine(DeactivateAfterDelay()); //3초뒤false ( 갈때마다 호출을위해 파괴 x )
         }
     }
@@ -355,6 +356,14 @@ public class Boss : MonoBehaviour, IDamageable
 
 
 
+    }
+    private void OnTriggerEnter(Collider other)
+    {
+        if (!isgimmick && other.gameObject.CompareTag("GimmickWalls"))
+        {
+           other.gameObject.SetActive(false);
+            gimmickCount--;
+        }
     }
 
     // 기믹의 시작 조건인 매서드

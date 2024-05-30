@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -9,7 +10,8 @@ public class Loading : MonoBehaviour
     float timeElapsed = 0;
     float lerpDuration = 3;
     public CanvasGroup panelCanvasGroup;
-    public GameObject image;
+    public GameObject image;    
+    public TextMeshProUGUI progressText;
 
     private void OnEnable()
     {// Loading 재활용
@@ -23,7 +25,15 @@ public class Loading : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-
+        int a = Random.Range(0, 2);
+        if (a == 0)
+        {
+            progressText.text = "Tip 몬스터 외에 조준이 된다면 파괴가 가능합니다.";
+        }
+        else
+        {
+            progressText.text = "Tip 메인퀘스트가 힘들다면 필드에서 성장해보세요.";
+        }
     }
 
     // Update is called once per frame

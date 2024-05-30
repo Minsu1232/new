@@ -13,7 +13,8 @@ public class speedboxText : MonoBehaviour
     public string fullText; // 전체 표시할 텍스트
     private float delay = 0.05f; // 글자가 나타나는 딜레이 시간 (초)
     public bool isGuideStart;
-    private Coroutine currentCoroutine; //진행중인 코루틴 할당
+    public bool isGuideStartToSkill;
+    Coroutine currentCoroutine; //진행중인 코루틴 할당
 
     public QuestScriptable questScriptable;
 

@@ -8,27 +8,40 @@ using UnityEngine.UI;
 public class LoadingMainScene : MonoBehaviour
 {
     public Image progressBar;
-    public Text progressText;
+    public TextMeshProUGUI progressText;
 
     void Start()
     {
+        // 랜덤한 팁 문구 출력
+        int a = Random.Range(0, 2);
+        if(a == 0)
+        {
+            progressText.text = "Tip 몬스터 외에 조준이 된다면 파괴가 가능합니다.";
+        }
+        else
+        {
+            progressText.text = "Tip 메인퀘스트가 힘들다면 필드에서 성장해보세요.";
+        }
         // 코루틴을 시작하여 비동기적으로 메인 씬을 로드합니다.
         StartCoroutine(LoadMainSceneAsync());
     }
 
     IEnumerator LoadMainSceneAsync()
     {
-        // 메인 씬을 비동기적으로 로드합니다.
         AsyncOperation operation = SceneManager.LoadSceneAsync("Village");
+        operation.allowSceneActivation = false; // 씬 전환을 자동으로 하지 않도록 설정
 
-        // 로딩이 완료될 때까지 반복합니다.
+        float targetProgress = 0;
         while (!operation.isDone)
         {
-            // 로딩 진행 상태를 슬라이더와 텍스트에 업데이트합니다.
-            float progress = Mathf.Clamp01(operation.progress / 1f);
-            progressBar.fillAmount = progress;
-           
+            // operation.progress는 0.9에서 멈추지만, 사용자에게는 1로 보이게 합니다.
+            targetProgress = operation.progress < 0.9f ? operation.progress : 1.0f;
+            progressBar.fillAmount = Mathf.Lerp(progressBar.fillAmount, targetProgress, Time.deltaTime * 5); // 5는 보간 속도, 조절 가능
 
+            if (operation.progress >= 0.9f && progressBar.fillAmount >= 0.99f) // progressBar.fillAmount가 거의 1에 가까울 때
+            {
+                operation.allowSceneActivation = true; // 씬 전환 허용
+            }
             yield return null;
         }
     }
