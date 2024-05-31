@@ -14,6 +14,7 @@ public class SoundOption : MonoBehaviour
         // 초기 볼륨을 슬라이더의 값과 동기화
         if (audioSource != null && volumeSlider != null)
             audioSource.volume = volumeSlider.value;
+            OnVolumeChange();
     }
 
     public void OnVolumeChange()

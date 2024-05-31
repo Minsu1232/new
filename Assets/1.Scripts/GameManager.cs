@@ -38,6 +38,7 @@ public class GameManager : MonoBehaviour
     public GameObject questPanel;
     public GameObject goHomePanel;
     public GameObject savePanel;
+    public GameObject quitPanel;
     public TextMeshProUGUI nowtime;
     
     //public Outline questOutline;
@@ -218,7 +219,10 @@ public class GameManager : MonoBehaviour
     }
     public void GoHomeAgree()
     {
+        goHomePanel.SetActive(false);
+        player.controller.enabled = false;
         player.transform.position = home.transform.position;
+        player.controller.enabled = true;
     }
     public void StatusOpen()
     {
@@ -416,6 +420,15 @@ public class GameManager : MonoBehaviour
     public void Quit()
     {
         Application.Quit();
+        Debug.Log("게임 종료");
+    }
+    public void QuitPanelOpen()
+    {
+        quitPanel.SetActive(true);
+    }
+    public void QuitPanelOff()
+    {
+        quitPanel.SetActive(false);
     }
     //플레이어의 카메라 제어용 매서드
     public bool IsAnyUIActive()

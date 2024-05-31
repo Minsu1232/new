@@ -44,19 +44,19 @@ public class QuestScriptable : ScriptableObject
         else if (questName == "TutorialQuest")
         {
             isTutorial = false;
-            questDetail = "폐관수련을 마무리하고 복귀해라 \n\n(체력이 있는 객체 또는 특정 오브젝트에 \n우클릭시 에이밍 되고 좌클릭으로 쏠 수 있습니다.)";
+            questDetail = "폐관수련을 마무리하고 복귀해라.)";
             
         }
         else if (questName == "TutorialQuest1")
         {
             isTutorial = false;
-            questDetail = "돌아온 마을의 분위기를 파악해라 \n\n(상점은 노란색 선이 그려진 작은 \n 건물이고 클릭시 이용 가능 합니다)";
+            questDetail = "돌아온 마을의 분위기를 파악해라 \n\n(각종 편의기능은 상단 \n 메뉴바에서 확인 가능합니다.)";
             
         }
         else if (questName == "TutorialQuest2")
         {
             isTutorial = false;
-            questDetail = "대화중인 상인들의 말을 엿들어라 \n\n(선이 그려진 큰 건물은 \n 퀘스트 수주 건물 입니다.)";
+            questDetail = "대화중인 상인들의 말을 엿들어라 \n\n(중앙 큰 건물은 \n 퀘스트 수주 건물 입니다.)";
             clearZone.SetActive(true);
             
         }

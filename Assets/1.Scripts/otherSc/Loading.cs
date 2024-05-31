@@ -12,6 +12,7 @@ public class Loading : MonoBehaviour
     public CanvasGroup panelCanvasGroup;
     public GameObject image;    
     public TextMeshProUGUI progressText;
+    public GameObject playerhpbar;
 
     private void OnEnable()
     {// Loading 재활용
@@ -20,7 +21,11 @@ public class Loading : MonoBehaviour
         loading.fillAmount = 0; // 로딩 바 초기화
         image.SetActive(true); // 이미지 활성화
         panelCanvasGroup.alpha = 1; // 패널 투명도 초기화
-
+        if(playerhpbar.activeSelf)
+        {
+            playerhpbar.SetActive(false);
+        }
+       
     }
     // Start is called before the first frame update
     void Start()
@@ -73,6 +78,10 @@ public class Loading : MonoBehaviour
 
             if (percentageComplete >= 1)
             {
+                if (!playerhpbar.activeSelf)
+                {
+                    playerhpbar.SetActive(true);
+                }
                 gameObject.SetActive(false); // 페이드아웃 후 게임 오브젝트 비활성화
                 break;
             }

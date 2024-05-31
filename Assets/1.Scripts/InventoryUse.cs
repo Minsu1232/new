@@ -47,6 +47,11 @@ public class InventoryUse : MonoBehaviour, IPointerClickHandler, IPointerEnterHa
         { Color color = new Color(1, 1, 1, 1);
             inventoryImage.color = color;
         }
+        else
+        {
+            Color color = new Color(0, 0, 0, 1);
+            inventoryImage.color = color;
+        }
         
     }
 

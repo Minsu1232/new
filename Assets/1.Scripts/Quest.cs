@@ -25,6 +25,7 @@ public class Quest : MonoBehaviour
     bool isQuestTimerActive = false;
    public bool isQuestCompleted = false;
     public bool isDaily;
+    public Outline outline;
     [System.Serializable]
     public class GameData
     {
@@ -47,7 +48,9 @@ public class Quest : MonoBehaviour
     }
     // Start is called before the first frame update
     void Start()
-    { 
+    {
+        outline = GetComponent<Outline>();
+        outline.enabled = false;
         GameObject particleObject = GameObject.Find("Tutorial2ClearZone");
         questScriptables[4].clearZone = particleObject.gameObject;
         questScriptables[4].clearZone.gameObject.SetActive(false);
@@ -148,6 +151,14 @@ public class Quest : MonoBehaviour
 
 
 
+    }
+    private void OnMouseEnter()
+    {
+        outline.enabled = true;
+    }
+    private void OnMouseExit()
+    {
+        outline.enabled = false; 
     }
     // 일일퀘스트 초기화 시간 관리
     private void CheckQuestReset() 
