@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using TMPro;
 using Unity.VisualScripting;
 using UnityEditor;
 using UnityEngine;
@@ -18,8 +19,8 @@ public class Quest : MonoBehaviour
     public GameObject[] completeButton;
     public GameObject[] mainquestButtonOff;
     public GameObject[] dailyquestButtonOff;
-    public Text[] questText;
-    public Text[] panelText;
+    public TextMeshProUGUI[] questText;
+    public TextMeshProUGUI[] panelText;
     public List<QuestScriptable> questScriptables = new List<QuestScriptable>();
     public Money money;
     bool isQuestTimerActive = false;

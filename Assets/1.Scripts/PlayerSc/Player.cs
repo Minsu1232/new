@@ -49,13 +49,14 @@ public class Player : MonoBehaviour
     public AudioClip counterSkillSound;
     public AudioClip petSummons;
     public GameObject buffEffect;
+    //public GameObject 
 
 
     [Header("Player Status")]
-    public Text maxHP;
-    public Text maxMP;
-    public Text maxStr;
-    public Text maxDex;
+    public TextMeshProUGUI maxHP;
+    public TextMeshProUGUI maxMP;
+    public TextMeshProUGUI maxStr;
+    public TextMeshProUGUI maxDex;
     public TextMeshProUGUI nowLevel;
     public Image hpBar;
     public Image mpBar;
@@ -63,7 +64,8 @@ public class Player : MonoBehaviour
     public TextMeshProUGUI mana;
     public TextMeshProUGUI panelText;
     public GameObject Statuspanel;
-
+    public GameObject diePanel;
+    public GameObject transPanel;
 
 
 
@@ -74,7 +76,7 @@ public class Player : MonoBehaviour
     Transform ShotPointer;
     [SerializeField]
     BowAnimation bowAnimation;
-    public Image arrowStateImage;
+    
     
 
     [Header("Skill Attributes")]
@@ -105,7 +107,7 @@ public class Player : MonoBehaviour
 
     // 애니메이션 및 상태 체크용
     bool isWalk;
-    bool isDie;
+    public bool isDie;
     public bool isLockOn;
     bool isAim;
     public bool isRoll;
@@ -141,7 +143,7 @@ public class Player : MonoBehaviour
             gameObject.transform.rotation = Quaternion.Euler(transform.rotation.x, transform.rotation.y + 180f, transform.rotation.y);
         }
         roll = 1;
-        StopAllCoroutines();
+        //StopAllCoroutines(); 24601일단 코루틴스탑 취소
         // 스크립터블 초기화
         //initialHealth = playerState.health;
         //str = playerState.str;
@@ -166,18 +168,14 @@ public class Player : MonoBehaviour
 
         rb = GetComponent<Rigidbody>();
         animator = GetComponent<Animator>();
+        StartCoroutine(InitializePlayer());
     }
     
     void Start()
     {
         //arrowStateImage.sprite;
-        StartCoroutine(InitializePlayer());
-        isSound = false;        
-        shotCount = 1;
-        hp.text = $"{remainHealth}/{playerState.health}";
-        hpBar.fillAmount = remainHealth / playerState.health;
-        audioSource = GetComponent<AudioSource>();
-        isGuide = false;
+        //StartCoroutine(InitializePlayer());
+       
         
 
     }
@@ -231,6 +229,7 @@ public class Player : MonoBehaviour
             Recovery(); // 자연 회복 매서드
             Stamina();
         }
+       
         if (skillComand == 3 && isLockOn) // 골드화살과 락온일때만 트루
         {
             wings.gameObject.SetActive(true);
@@ -274,8 +273,13 @@ public class Player : MonoBehaviour
 
         isDie = false;
         isWalk = true;
+        isSound = false;
+        shotCount = 1;
+        hp.text = $"{remainHealth}/{playerState.health}";
+        hpBar.fillAmount = remainHealth / playerState.health;
+        audioSource = GetComponent<AudioSource>();
+        isGuide = false;
 
-        
     }
     void DetectObjects()
     {
@@ -476,8 +480,7 @@ public class Player : MonoBehaviour
             audioSource.PlayOneShot(buffSound);
             StartCoroutine(SkillCool(20, 0, 4));
             skillArrow[4].gameObject.SetActive(true);
-            ArrownDamage arrowDamage = skillArrow[0].GetComponent<ArrownDamage>(); // 캐릭터 상태창 아래 화살의 상태 이미지 업데이트
-            arrowStateImage.sprite = arrowDamage.damageScriptable.arrowStateIcon;
+           
             skillComand = 0;
             StartCoroutine(BuffTime());
             IsGuide();
@@ -490,8 +493,7 @@ public class Player : MonoBehaviour
             isSkill = true;
             StartCoroutine(SkillCool(6, 1, 1));
             skillArrow[1].gameObject.SetActive(true);
-            ArrownDamage arrowDamage = skillArrow[1].GetComponent<ArrownDamage>();
-            arrowStateImage.sprite = arrowDamage.damageScriptable.arrowStateIcon;
+          
             skillComand = 1;
             IsGuide();
         }
@@ -502,8 +504,7 @@ public class Player : MonoBehaviour
             isSkill = true;
             StartCoroutine(SkillCool(5, 2, 2));
             skillArrow[2].gameObject.SetActive(true);
-            ArrownDamage arrowDamage = skillArrow[2].GetComponent<ArrownDamage>();
-            arrowStateImage.sprite = arrowDamage.damageScriptable.arrowStateIcon;
+         
             skillComand = 2;
             IsGuide();
         }
@@ -514,8 +515,7 @@ public class Player : MonoBehaviour
             isSkill = true;
             StartCoroutine(SkillCool(10, 3, 3));
             skillArrow[3].gameObject.SetActive(true);
-            ArrownDamage arrowDamage = skillArrow[3].GetComponent<ArrownDamage>();
-            arrowStateImage.sprite = arrowDamage.damageScriptable.arrowStateIcon;
+       
             skillComand = 3;
             IsGuide();
         }
@@ -526,8 +526,7 @@ public class Player : MonoBehaviour
             isSkill = true;
             StartCoroutine(SkillCool(30, 6, 0));
             audioSource.PlayOneShot(petSummons);
-            ArrownDamage arrowDamage = skillArrow[0].GetComponent<ArrownDamage>();
-            arrowStateImage.sprite = arrowDamage.damageScriptable.arrowStateIcon;
+     
             StartCoroutine(PetUsing());
             
             skillComand = 0;
@@ -545,8 +544,7 @@ public class Player : MonoBehaviour
             {                    
                 boss.animator.SetTrigger("Groggy");
             }
-            ArrownDamage arrowDamage = skillArrow[0].GetComponent<ArrownDamage>();
-            arrowStateImage.sprite = arrowDamage.damageScriptable.arrowStateIcon;
+     
             IsGuide();
 
         }
@@ -558,8 +556,7 @@ public class Player : MonoBehaviour
                 // 쿨타임은 3초
                 StartCoroutine(SkillCool(3, 5, 0));
                 audioSource.PlayOneShot(rollingSound);
-                ArrownDamage arrowDamage = skillArrow[0].GetComponent<ArrownDamage>();
-                arrowStateImage.sprite = arrowDamage.damageScriptable.arrowStateIcon;
+     
                 mp -= 5;
                 Roll();
                 IsGuide();
@@ -639,8 +636,8 @@ public class Player : MonoBehaviour
              
                     
                 
-                ArrownDamage arrowDamage = skillArrow[0].GetComponent<ArrownDamage>(); // 캐릭터 상태창 아래 화살의 상태 이미지 업데이트
-                arrowStateImage.sprite = arrowDamage.damageScriptable.arrowStateIcon;
+              
+                
                 isReadyToShoot = false;  // 발사 준비 상태를 false로 설정하여 추가 발사를 막습니다.
                 bowAnimation.ArrowShot();
                 isSkill = false; // 스킬화살 장전시엔 다른 스킬 사용 불가용
@@ -764,7 +761,7 @@ public class Player : MonoBehaviour
         if (remainHealth <= 0)
         {
             Die(); // 체력이 0 이하면 사망 처리
-
+            
         }
 
 
@@ -772,12 +769,26 @@ public class Player : MonoBehaviour
     void Die()
     {
         if (!isDie)
-        {
-            animator.SetTrigger("Die");
+        {   diePanel.SetActive(true);
             isDie = true;
-            Destroy(gameObject, 3f);
+            animator.SetTrigger("Die");
+            StartCoroutine(Dipanel());
+            
+            
         }
 
+    }
+    IEnumerator Dipanel()
+    {
+        // 죽음관련 코루틴
+        diePanel.SetActive(true); // 패널 키고
+         
+        yield return new WaitForSeconds(3f);
+        gameObject.SetActive(false);// 플레이어 잠깐 끈 후 
+        diePanel.SetActive(false); // 패널 끄고
+        transPanel.SetActive(true); // 로딩씬키고
+        gameObject.transform.position =  defaultSpawn.transform.position; // 캐릭터를 스폰위치에 이동후 
+        gameObject.SetActive(true);
     }
     // mpBar 감소 UI
     void Stamina()
@@ -1017,7 +1028,7 @@ public class Player : MonoBehaviour
     //    }
 
     //}
-    public void UpgradeStat(ref int stat, ref int upgradeCount, Text statText, string statName)
+    public void UpgradeStat(ref int stat, ref int upgradeCount, TextMeshProUGUI statText, string statName)
     {
         int cost = CalculateUpgradeCost(upgradeCount); 
         if (money.money >= cost) // 비용이 돈보다 적으면

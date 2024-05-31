@@ -44,7 +44,7 @@ public class QuestScriptable : ScriptableObject
         else if (questName == "TutorialQuest")
         {
             isTutorial = false;
-            questDetail = "폐관수련을 마무리하고 복귀해라.)";
+            questDetail = "폐관수련을 마무리하고 복귀해라.";
             
         }
         else if (questName == "TutorialQuest1")

@@ -433,8 +433,8 @@ public class GameManager : MonoBehaviour
     //플레이어의 카메라 제어용 매서드
     public bool IsAnyUIActive()
     {
-        Debug.Log($"Shop active: {shop.activeSelf}, Inventory active: {inventory.activeSelf}, Option Panel active: {optionPanel.activeSelf},  Shop Menu active: {shopMenu.activeSelf}, Dungeon Panel active: {dungeonPanel.activeSelf}, Guide Panel active: {guidePanel.activeSelf}, Quest Panel active: {questPanel.activeSelf}");
-        return shop.activeSelf || inventory.activeSelf || optionPanel.activeSelf ||  shopMenu.activeSelf || dungeonPanel.activeSelf || guidePanel.activeSelf || questPanel.activeSelf;
+        
+        return shop.activeSelf || inventory.activeSelf || optionPanel.activeSelf ||  shopMenu.activeSelf || dungeonPanel.activeSelf || guidePanel.activeSelf || questPanel.activeSelf || savePanel.activeSelf || questPanel.activeSelf;
 
     }
 
