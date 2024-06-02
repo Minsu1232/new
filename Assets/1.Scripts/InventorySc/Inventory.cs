@@ -1,3 +1,4 @@
+using Steamworks;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -9,12 +10,12 @@ using UnityEngine.UI;
 
 public class Inventory : MonoBehaviour
 {
-  
+
     public static Inventory instance;
 
 
     public Item[] potions = new Item[2]; // 포션스크립터블오브젝트
-    public List<Item> items = new List<Item>(); 
+    public List<Item> items = new List<Item>();
     public Image[] inventorySlotImage;
     public Money moneyData;
     public int selectedSlot = 0;
@@ -30,7 +31,7 @@ public class Inventory : MonoBehaviour
     [System.Serializable]
     public class ItemData
     {
-        
+
         public string itemName;
         public int possess;
         public string spriteName;
@@ -84,12 +85,12 @@ public class Inventory : MonoBehaviour
         public int remainPotion1;
         public int remainPotion1_;
     }
-  
+
     public class Serialization<T>
     {
         public T Data;
     }
-  
+
     public void SaveInventory()
     {
         List<ItemData> dataToSave = new List<ItemData>();
@@ -123,7 +124,8 @@ public class Inventory : MonoBehaviour
                 realName = item.itemRealName,
                 description = item.description,
                 potionType = item.potionType
-                
+
+
 
 
             }); ;
@@ -136,13 +138,82 @@ public class Inventory : MonoBehaviour
             //    potions[1].possess = item.possess;
             //}
         }
-      
+
         string json = JsonUtility.ToJson(new Serialization<List<ItemData>>() { Data = dataToSave }, true);
         System.IO.File.WriteAllText(Application.persistentDataPath + "/inventory.json", json);
         Debug.Log("Inventory saved successfully at " + Application.persistentDataPath + "/inventory.json");
-    
+        // 스팀 클라우드에 저장
+        //byte[] bytes = System.Text.Encoding.UTF8.GetBytes(json);
+        //bool success = SteamRemoteStorage.FileWrite("inventory.json", bytes, bytes.Length);
+        //if (success)
+        //{
+        //    Debug.Log("Inventory saved successfully to Steam Cloud.");
+        //}
+        //else
+        //{
+        //    Debug.LogError("Failed to save inventory to Steam Cloud.");
+        //}
 
     }
+    //public List<Item> LoadInventory()
+    //{
+    //    if (SteamRemoteStorage.FileExists("inventory.json"))
+    //    {
+    //        int fileSize = SteamRemoteStorage.GetFileSize("inventory.json");
+    //        byte[] bytes = new byte[fileSize];
+    //        SteamRemoteStorage.FileRead("inventory.json", bytes, fileSize);
+    //        string json = System.Text.Encoding.UTF8.GetString(bytes);
+
+    //        Serialization<List<ItemData>> savedData = JsonUtility.FromJson<Serialization<List<ItemData>>>(json);
+    //        List<Item> loadedItems = new List<Item>();
+    //        foreach (var itemData in savedData.Data)
+    //        {
+    //            Item item = ScriptableObject.CreateInstance<Item>();
+    //            item.itemName = itemData.itemName;
+    //            item.possess = itemData.possess;
+    //            item.icon = Resources.Load<Sprite>(itemData.spriteName);
+    //            item.effectAmount = itemData.effectAmount;
+    //            item.price = itemData.price;
+    //            item.itemRealName = itemData.realName;
+    //            item.description = itemData.description;
+    //            item.potionType = itemData.potionType;
+
+    //            if (item.itemName == "HP")
+    //            {
+    //                potions[0] = item;
+    //            }
+    //            if (item.itemName == "MP")
+    //            {
+    //                potions[1] = item;
+    //            }
+
+    //            loadedItems.Add(item);
+    //            items.Add(item);
+    //            if (item.possess == 0)
+    //            {
+    //                RemoveItem(item); // 0이 되면 리스트에서 삭제
+    //            }
+
+    //            if (itemData.imageIndex != -1 && itemData.imageIndex < inventorySlotImage.Length)
+    //            {
+    //                inventorySlotImage[itemData.imageIndex].sprite = item.icon;
+    //                inventory[itemData.imageIndex].text = item.possess.ToString();
+    //                inventory[itemData.imageIndex].gameObject.SetActive(true);
+    //                UpdateUI(item);
+    //            }
+
+    //            UpdateUI(item);
+    //        }
+    //        Debug.Log("Inventory loaded successfully from Steam Cloud.");
+    //        return loadedItems;
+    //    }
+    //    else
+    //    {
+    //        Debug.LogWarning("No inventory file found in Steam Cloud.");
+    //        return new List<Item>(); // 파일이 없다면 빈 리스트 반환
+    //    }
+    //}
+    // 20240602 제이슨저장
     public List<Item> LoadInventory()
     {
         string filePath = Application.persistentDataPath + "/inventory.json";
@@ -155,7 +226,7 @@ public class Inventory : MonoBehaviour
             {
                 // 추가되는 아이템의 내용은 여기에 추가
                 Item item = ScriptableObject.CreateInstance<Item>();
-                
+
                 item.itemName = itemData.itemName;
                 item.possess = itemData.possess;
                 item.icon = Resources.Load<Sprite>(itemData.spriteName);
@@ -179,9 +250,9 @@ public class Inventory : MonoBehaviour
                 //    Money money = ScriptableObject.CreateInstance<Money>();
                 //    item.money = money;
                 //    money.money = itemData.moneyAmount; // 저장된 화폐 수량으로 초기화
-                    
+
                 //}
-                if (item.itemName == "HP" ||  item.itemName == "MP")
+                if (item.itemName == "HP" || item.itemName == "MP")
                 {
                     int index = Array.FindIndex(potions, i => i.itemName == item.itemName);
                     item.possess = potions[index].possess;
@@ -190,8 +261,8 @@ public class Inventory : MonoBehaviour
                     item.price = itemData.price;
                     //money.money = itemData.moneyAmount; // 코인번들의 머니스크립터블 할당을 위해 함께 할당
                 }
-                
-                
+
+
                 loadedItems.Add(item);
                 items.Add(item);
                 if (item.possess == 0)
@@ -207,7 +278,7 @@ public class Inventory : MonoBehaviour
                     inventory[itemData.imageIndex].gameObject.SetActive(true); // 0이상이니 텍스트 킴
                     UpdateUI(item);
                 }
-              
+
 
 
                 UpdateUI(item);  // 로드된 아이템에 대해 UI 업데이트
@@ -220,7 +291,7 @@ public class Inventory : MonoBehaviour
     public void AddItem(Item item)
     {
         Item foundItem = items.Find(i => i.itemName == item.itemName);
-      
+
         if (foundItem != null)
         {
             // 포션 배열 업데이트
@@ -247,11 +318,11 @@ public class Inventory : MonoBehaviour
             // 해당 아이템의 슬롯을 찾아 정보를 업데이트
             for (int i = 0; i < inventorySlotImage.Length; i++)
             {//앞칸이 비어있지만 이미 인벤토리에 있는 아이템이면 누적
-                
+
                 if (inventorySlotImage[i].sprite == foundItem.icon)
                 {
                     inventory[i].text = foundItem.possess.ToString();
-                    
+
                     break;
                 }
             }
@@ -269,7 +340,7 @@ public class Inventory : MonoBehaviour
             newItem.potionType = item.potionType;
             // 배열 삭제 후 새롭게 추가되면 포션스와 맞지 않기때문에 재할당
             // 포션 배열 업데이트
-            if (newItem.itemName == "HP") 
+            if (newItem.itemName == "HP")
             {
                 potions[0] = newItem;
             }
@@ -288,14 +359,36 @@ public class Inventory : MonoBehaviour
                     inventorySlotImage[i].sprite = newItem.icon;
                     inventory[i].text = newItem.possess.ToString();
                     inventory[i].gameObject.SetActive(true);
-                   
+
                     break;
                 }
             }
         }
-        
+
+    }
+    public bool HasGradeItems(int requiredItems) // 불러오기용
+    {
+        Item gradeItem = items.Find(item => item.itemName == "GradeItem");
+        return gradeItem != null && gradeItem.possess >= requiredItems;
     }
 
+    public void UseGradeItems(int requiredItems) // 사용용
+    { 
+        Item gradeItem = items.Find(item => item.itemName == "GradeItem");
+        if (gradeItem != null && gradeItem.possess >= requiredItems)
+        {
+            gradeItem.possess -= requiredItems;
+            if (gradeItem.possess == 0)
+            {
+                items.Remove(gradeItem);
+            }
+            Debug.Log($"GradeItem used. Remaining: {gradeItem.possess}");
+        }
+        else
+        {
+            Debug.Log("Not enough GradeItems available.");
+        }
+    }
     void QclickPotion()
     {
 
@@ -310,7 +403,7 @@ public class Inventory : MonoBehaviour
             // 슬릇에 따른 파티클효과
             if (selectedSlot == 0)
             {
-                if (potions[0].possess > 0 )
+                if (potions[0].possess > 0)
                 {
                     healingEffect[1].SetActive(true);
                 }
@@ -326,7 +419,7 @@ public class Inventory : MonoBehaviour
 
 
 
-            
+
 
         }
     }
@@ -350,10 +443,10 @@ public class Inventory : MonoBehaviour
         if (potions[selectedSlot] != null && currentPotion.possess > 0)
         {
             potions[selectedSlot].Use(player, potions[selectedSlot].itemName); // 선택된 포션 사용           
-            
+
             Item index = items.Find(i => i.itemName == currentPotion.itemName);
             potions[selectedSlot].possess = index.possess;
-            
+
             if (index.possess == 0)
             {
                 RemoveItem(index);
@@ -364,7 +457,7 @@ public class Inventory : MonoBehaviour
         {
             Debug.Log("No potion in slot " + (selectedSlot + 1));
         }
-        
+
     }
 
     void UpdatePotionImage()

@@ -12,3 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 118742774ce5a0f4eaa1e473196d3b14, type: 3}
   m_Name: Weapon
   m_EditorClassIdentifier: 
+  bowName: 
+  enhancementLevel: 2
+  baseAttackPower: 3
+  enhancedAttackPower: 5
+  enhancementCost: 0

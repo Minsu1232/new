@@ -14,7 +14,7 @@ public class Shop : MonoBehaviour
     public  TextMeshProUGUI[] itemName;
     public Text[] itemPrice;
     public Text moneyText;
-    Text remainPotion;
+    public BowEnHancementSystem bow;
 
     private void OnEnable() 
     { 
@@ -39,7 +39,7 @@ public class Shop : MonoBehaviour
             //item.possess += 1; // 갯수 증가
             Debug.Log(item.name + " purchased for " + item.price + ". Remaining money: " + playerMoney.money);
             Inventory.instance.AddItem(item);  // 인벤토리에 아이템 추가 로직 추가 예정
-            
+            bow.UpdateUI();
             //Inventory.instance.SaveInventory();
             //for (int i = 0; i < Inventory.instance.inventorySlotImage.Length; i++)
             //{

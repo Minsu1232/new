@@ -4724,6 +4724,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   damageScriptable: {fileID: 11400000, guid: 4453ca84e7bb8b24fa9e1d0f0f6e213b, type: 2}
+  bow: {fileID: 11400000, guid: f2f37d9dc52dfd948b2c783fa5ce8ed8, type: 2}
   hitSound: {fileID: 0}
 --- !u!65 &5427843052503863646
 BoxCollider:

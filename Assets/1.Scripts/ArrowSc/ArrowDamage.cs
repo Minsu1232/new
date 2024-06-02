@@ -10,6 +10,7 @@ public class ArrownDamage : MonoBehaviour
     [Header("Arrow")]
    
     public ArrowDamageScriptable damageScriptable;
+    public Weapon bow;
     public AudioClip hitSound; 
     
     Player player;
@@ -81,7 +82,7 @@ public class ArrownDamage : MonoBehaviour
         IDamageable damageable = other.GetComponent<IDamageable>();
         if (damageable != null)
         {
-            damage = damageScriptable.initialDamage + player.str;
+            damage = damageScriptable.initialDamage + player.str + bow.baseAttackPower + bow.enhancedAttackPower; // 캐릭터 데미지 계산 공식
             neutralizeValu = damageScriptable.neutralizeValue;
             destructionValu = damageScriptable.destructionValue;
             Debug.Log("닿았다");

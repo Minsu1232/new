@@ -1,9 +1,11 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using TMPro;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.Playables;
 using UnityEngine.UI;
 using UnityEngine.Windows;
 using Vitals;
@@ -39,8 +41,11 @@ public class GameManager : MonoBehaviour
     public GameObject goHomePanel;
     public GameObject savePanel;
     public GameObject quitPanel;
+    public GameObject gradegradePanel;
+    public GameObject gradePanel;
     public TextMeshProUGUI nowtime;
-    
+    public BowEnHancementSystem bowManager;
+    public Weapon weapon;
     //public Outline questOutline;
     //public Outline shopOutline;
 
@@ -62,6 +67,12 @@ public class GameManager : MonoBehaviour
     private bool isFadingIn = false; // 페이드 인 상태 관리
 
     public GameObject tutorial2startzone;
+
+    string bowEnHancementPath;
+    private void OnEnable()
+    {
+        BowLoadGameData();
+    }
     private void Awake()
     {
         if (Instance == null)
@@ -80,7 +91,7 @@ public class GameManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-
+        bowEnHancementPath = Path.Combine(Application.persistentDataPath, "bow.json");
 
         if (!tutorial.isTutorial)
         {
@@ -92,8 +103,9 @@ public class GameManager : MonoBehaviour
             Destroy(tutorial2startzone);
         }
         lastDisplayedMinute = DateTime.Now.ToString("HH:mm");
-        UpdateTimeDisplay(); // 초기 시간 설정
-        
+        UpdateTimeDisplay(); // 초기 시간 설정        
+        BowLoadGameData();
+        bowManager.UpdateUI();
     }
 
     // Update is called once per frame
@@ -102,14 +114,19 @@ public class GameManager : MonoBehaviour
         // esc로 끌수 있음
         if (UnityEngine.Input.GetKeyDown(KeyCode.Escape))
         {
-            shop.SetActive(false);
-            
+            shop.SetActive(false);            
             shopMenu.SetActive(false); 
             dungeonPanel.SetActive(false);
             status.SetActive(false);
             inventory.SetActive(false);
             guidePanel.SetActive(false);
             optionPanel.SetActive(false);
+            questPanel.SetActive(false);
+            goHomePanel.SetActive(false);
+            savePanel.SetActive(false);
+            questPanel.SetActive(false);
+            gradegradePanel.SetActive(false);
+            gradePanel.SetActive(false);
             isShop = false;
 
         }
@@ -124,6 +141,27 @@ public class GameManager : MonoBehaviour
         }
 
     }
+    public void BowSaveGameData() // 무기스탯 저장
+    {
+        string json = JsonUtility.ToJson(weapon, true);
+        System.IO.File.WriteAllText(bowEnHancementPath, json);
+        Debug.Log("Game data saved to " + bowEnHancementPath);
+    }
+    public void BowLoadGameData()
+    {
+        if (System.IO.File.Exists(bowEnHancementPath))
+        {
+            string json = System.IO.File.ReadAllText(bowEnHancementPath);
+            JsonUtility.FromJsonOverwrite(json, weapon);
+            Debug.Log("Game data loaded from " + bowEnHancementPath);
+            
+        }
+        //else
+        //{
+        //    Debug.Log("No save file found, loading default settings.");
+        //    playerState = CreateInstance<PlayerState>(); // 초기 설정 로드 또는 새 인스턴스 생성
+        //}
+    }
     // 데이터 저장을 한번에 하는 매서드 (버튼 할당용)
     public void SaveAll()
     {
@@ -136,6 +174,7 @@ public class GameManager : MonoBehaviour
             dataManager.DailySaveGameData();
             Inventory.instance.SaveInventory();
             MoneyManager.Instance.SaveMoney();
+            BowSaveGameData();
         }
         else
         {
@@ -160,6 +199,14 @@ public class GameManager : MonoBehaviour
         //}
         Debug.Log("All data saved");
         savePanel.SetActive(false);
+    }
+    public void GradePanelOn()
+    {
+        gradePanel.SetActive(true);
+    }
+    public void GradePanelOff()
+    {
+        gradePanel.SetActive(false);
     }
     public void SavePanelOn()
     {
@@ -433,9 +480,23 @@ public class GameManager : MonoBehaviour
     //플레이어의 카메라 제어용 매서드
     public bool IsAnyUIActive()
     {
-        
-        return shop.activeSelf || inventory.activeSelf || optionPanel.activeSelf ||  shopMenu.activeSelf || dungeonPanel.activeSelf || guidePanel.activeSelf || questPanel.activeSelf || savePanel.activeSelf || questPanel.activeSelf;
+        Debug.Log("Status Panel is " + (status.activeSelf ? "active." : "inactive."));
+        Debug.Log("Go Home Panel is " + (goHomePanel.activeSelf ? "active." : "inactive."));
+        Debug.Log("Grade Grade Panel is " + (gradegradePanel.activeSelf ? "active." : "inactive."));
+        Debug.Log("Shop Panel is " + (shop.activeSelf ? "active." : "inactive."));
+        Debug.Log("Inventory Panel is " + (inventory.activeSelf ? "active." : "inactive."));
+        Debug.Log("Option Panel is " + (optionPanel.activeSelf ? "active." : "inactive."));
+        Debug.Log("Shop Menu Panel is " + (shopMenu.activeSelf ? "active." : "inactive."));
+        Debug.Log("Dungeon Panel is " + (dungeonPanel.activeSelf ? "active." : "inactive."));
+        Debug.Log("Guide Panel is " + (guidePanel.activeSelf ? "active." : "inactive."));
+        Debug.Log("Quest Panel is " + (questPanel.activeSelf ? "active." : "inactive."));
+        Debug.Log("Save Panel is " + (savePanel.activeSelf ? "active." : "inactive."));
+        return status.activeSelf || goHomePanel.activeSelf || gradegradePanel.activeSelf || shop.activeSelf || inventory.activeSelf || optionPanel.activeSelf || shopMenu.activeSelf || dungeonPanel.activeSelf || guidePanel.activeSelf || questPanel.activeSelf || savePanel.activeSelf;
 
+    }
+    private void OnApplicationQuit()
+    {
+        BowSaveGameData();
     }
 
 }

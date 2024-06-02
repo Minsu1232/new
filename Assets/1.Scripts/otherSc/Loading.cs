@@ -13,6 +13,7 @@ public class Loading : MonoBehaviour
     public GameObject image;    
     public TextMeshProUGUI progressText;
     public GameObject playerhpbar;
+    public GameObject skillBar;
 
     private void OnEnable()
     {// Loading 재활용
@@ -24,6 +25,7 @@ public class Loading : MonoBehaviour
         if(playerhpbar.activeSelf)
         {
             playerhpbar.SetActive(false);
+            skillBar.SetActive(false);
         }
        
     }
@@ -33,7 +35,7 @@ public class Loading : MonoBehaviour
         int a = Random.Range(0, 2);
         if (a == 0)
         {
-            progressText.text = "Tip 몬스터 외에 조준이 된다면 파괴가 가능합니다.";
+            progressText.text = "Tip 메인퀘스트 위치에는 파괴가 가능한 오브젝트가 있습니다.";
         }
         else
         {
@@ -81,6 +83,7 @@ public class Loading : MonoBehaviour
                 if (!playerhpbar.activeSelf)
                 {
                     playerhpbar.SetActive(true);
+                    skillBar.SetActive(true);
                 }
                 gameObject.SetActive(false); // 페이드아웃 후 게임 오브젝트 비활성화
                 break;

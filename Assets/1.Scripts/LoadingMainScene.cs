@@ -16,7 +16,7 @@ public class LoadingMainScene : MonoBehaviour
         int a = Random.Range(0, 2);
         if(a == 0)
         {
-            progressText.text = "Tip 몬스터 외에 조준이 된다면 파괴가 가능합니다.";
+            progressText.text = "Tip 메인퀘스트 위치에는 파괴가 가능한 오브젝트가 있습니다.";
         }
         else
         {

@@ -1,13 +1,14 @@
 using Cinemachine;
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class CameraMove : MonoBehaviour
 {
     public CinemachineDollyCart dollyCart;
-    public Text storyText;
+    public TextMeshProUGUI storyText;
     public float speed = 0.7f;
     public Camera mainCamera;
     public Player player;
@@ -25,7 +26,7 @@ public class CameraMove : MonoBehaviour
         if (Mathf.Abs(dollyCart.m_Position - 8f) < tolerance)
         {
             storyText.gameObject.SetActive(true);
-            storyText.text = "저 아저씨가 기대고 있는 건물이 상점인가 ?";
+            storyText.text = "저 아저씨는 여전히 기대고있네";
         }
         else if (Mathf.Abs(dollyCart.m_Position - 25f) < tolerance)
         {
@@ -38,7 +39,7 @@ public class CameraMove : MonoBehaviour
         }
         else if (Mathf.Abs(dollyCart.m_Position - 70f) < tolerance)
         {
-            storyText.text = "그새 또 무슨일이 일어났군 \n 가까이 가서 들어보자";
+            storyText.text = "그새 또 무슨 일이 일어났군 \n 가까이 가서 들어보자";
         }
         // dollyCart가 최대 거리에 도달했는지 확인
         if (dollyCart.m_Position >= dollyCart.m_Path.PathLength)

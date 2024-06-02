@@ -56,7 +56,7 @@ public class Item : ScriptableObject, IItem
                 Debug.Log(price + "È¹µæ");
                 break;
 
-            case "GradeItem":
+            
             case "GradeItem2":
                 break;
 

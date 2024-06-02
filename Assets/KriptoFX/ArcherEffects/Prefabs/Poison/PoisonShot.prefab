@@ -9687,6 +9687,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   damageScriptable: {fileID: 11400000, guid: 894f4f2a2ef57244cb579f0756cc9f8a, type: 2}
+  bow: {fileID: 11400000, guid: f2f37d9dc52dfd948b2c783fa5ce8ed8, type: 2}
   hitSound: {fileID: 0}
 --- !u!1 &1753439827423894
 GameObject:
