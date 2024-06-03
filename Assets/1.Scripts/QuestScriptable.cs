@@ -44,7 +44,7 @@ public class QuestScriptable : ScriptableObject
         else if (questName == "TutorialQuest")
         {
             isTutorial = false;
-            questDetail = "폐관수련을 마무리하고 복귀해라.";
+            questDetail = "폐관수련을 마무리하고 복귀해라. \n\n (영혼 결정은 무기 강화에 \n 사용됩니다.)";
             
         }
         else if (questName == "TutorialQuest1")
@@ -85,7 +85,7 @@ public class QuestScriptable : ScriptableObject
         }
         else if (questName == "GuideQuest4")
         {
-            questDetail = "보셨듯이 스탯 1당 레벨이 오릅니다. \n 스탯을 10회 올리면, 비용도 증가합니다. \n 이제 허수아비를 처치 후 세상으로 나아가세요.";
+            questDetail = "보셨듯이 스탯 1당 레벨이 오릅니다. \n 스탯을 10회 올리면, 비용도 증가합니다. \n 이제 허수아비를 처치 후 세상으로 나아가세요. \n (퀘스트 건물 옆 npc는 강화를 담당합니다.)";
         }
     }
     public void CheckQuestCompletion() // 완료 조건이 될시 완료되거나 다음으로 넘아감

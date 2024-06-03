@@ -83,7 +83,7 @@ public class Quest : MonoBehaviour
         }
         else if (questScriptables[1].isMainClear) 
         {
-            panelText[0].text = "완료 한 임무입니다";
+            panelText[0].text = "완료 한 임무입니다. \n 다음 임무 : ??? (예정)";
         }
     }
 
@@ -129,7 +129,7 @@ public class Quest : MonoBehaviour
             questScriptables[1].CheckQuestCompletion();
             questText[1].text = questScriptables[1].questDetail;
             completeButton[1].gameObject.SetActive(true);
-            panelText[0].text = "완료 한 임무입니다"; // 챕터1 메인 퀘스트 완료표시
+            panelText[0].text = "완료 한 임무입니다. \n 다음 임무 : ??? (예정)"; // 챕터1 메인 퀘스트 완료표시
             for(int i = 0; i < mainquestButtonOff.Length; i++)
             {
                 mainquestButtonOff[i].gameObject.SetActive(false);

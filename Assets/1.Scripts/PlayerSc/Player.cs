@@ -769,7 +769,9 @@ public class Player : MonoBehaviour
     void Die()
     {
         if (!isDie)
-        {   diePanel.SetActive(true);
+        {
+         
+            diePanel.SetActive(true);
             isDie = true;
             animator.SetTrigger("Die");
             StartCoroutine(Dipanel());
@@ -784,6 +786,10 @@ public class Player : MonoBehaviour
         diePanel.SetActive(true); // 패널 키고
          
         yield return new WaitForSeconds(3f);
+        if (boss.gameObject.activeSelf)
+        {
+            boss.gameObject.SetActive(false);
+        }
         gameObject.SetActive(false);// 플레이어 잠깐 끈 후 
         diePanel.SetActive(false); // 패널 끄고
         transPanel.SetActive(true); // 로딩씬키고

@@ -26,7 +26,11 @@ public class BossSpawnStartArea : MonoBehaviour
     {
         if(other.gameObject.tag == "Player")
         {
-            boss.gameObject.SetActive(true);
+            if (!boss.activeSelf)
+            {
+                boss.gameObject.SetActive(true);
+            }
+            
             bossUI.gameObject.SetActive(true); 
         }
         StartCoroutine(torchesOn());

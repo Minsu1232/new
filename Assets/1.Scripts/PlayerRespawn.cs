@@ -69,5 +69,6 @@ public class PlayerRespawn : MonoBehaviour
         //    deactivatedQuests[i].SetActive(true); // ÄÑÁü
         //    deactivatedQuests.Clear();
         //}
+        gameObject.SetActive(false);
     }
 }

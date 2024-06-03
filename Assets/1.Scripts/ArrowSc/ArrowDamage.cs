@@ -58,13 +58,14 @@ public class ArrownDamage : MonoBehaviour
     //Update is called once per frame
     void OnTriggerEnter(Collider other)
     {
+        Debug.Log($"Collision with: {other.gameObject.name}, Tag: {other.gameObject.tag}, Layer: {LayerMask.LayerToName(other.gameObject.layer)}");
         shouldPlayAnimation = true;
-        
-        
-        //if (other.gameObject.tag == "PouderKeg")
-        //{
-        //    Destroy(other.gameObject);
-        //}
+
+
+        if (other.gameObject.tag == "PouderKeg")
+        {
+            Destroy(other.gameObject);
+        }
         if (other.gameObject.tag == "BossRoom")
         {
             // 던전 내 구조물에도 화살이 박히게끔
@@ -144,8 +145,22 @@ public class ArrownDamage : MonoBehaviour
         // Rigidbody를 비활성화하여 물리적 움직임을 멈춥니다.
         rb.isKinematic = true;
 
+        Vector3 particlePosition = transform.position;
+        // FireArrow일 때 Z 값을 -1로 조정
+        if (damageScriptable.name == "FireArrow")
+        {if(collision.gameObject.tag == "Boss")
+            {
+             particlePosition.z += 5.0f;
+            }
+            else
+            {
+                particlePosition.z += 2;
+            }
+            
+        }
         // 파티클 시스템의 인스턴스를 생성하고, 부모를 몬스터로 설정합니다.
-        ParticleSystem particleInstance = Instantiate(damageScriptable.particleEffect, transform.position, Quaternion.identity, collision.transform);
+        ParticleSystem particleInstance = Instantiate(damageScriptable.particleEffect, particlePosition, Quaternion.identity, collision.transform);
+        particleInstance.Play();
         particleInstance.Play();
         if(damageScriptable.particleEffectSecond != null) // 두개의 파티클 효과 제어
         {

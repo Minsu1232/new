@@ -480,17 +480,7 @@ public class GameManager : MonoBehaviour
     //플레이어의 카메라 제어용 매서드
     public bool IsAnyUIActive()
     {
-        Debug.Log("Status Panel is " + (status.activeSelf ? "active." : "inactive."));
-        Debug.Log("Go Home Panel is " + (goHomePanel.activeSelf ? "active." : "inactive."));
-        Debug.Log("Grade Grade Panel is " + (gradegradePanel.activeSelf ? "active." : "inactive."));
-        Debug.Log("Shop Panel is " + (shop.activeSelf ? "active." : "inactive."));
-        Debug.Log("Inventory Panel is " + (inventory.activeSelf ? "active." : "inactive."));
-        Debug.Log("Option Panel is " + (optionPanel.activeSelf ? "active." : "inactive."));
-        Debug.Log("Shop Menu Panel is " + (shopMenu.activeSelf ? "active." : "inactive."));
-        Debug.Log("Dungeon Panel is " + (dungeonPanel.activeSelf ? "active." : "inactive."));
-        Debug.Log("Guide Panel is " + (guidePanel.activeSelf ? "active." : "inactive."));
-        Debug.Log("Quest Panel is " + (questPanel.activeSelf ? "active." : "inactive."));
-        Debug.Log("Save Panel is " + (savePanel.activeSelf ? "active." : "inactive."));
+        
         return status.activeSelf || goHomePanel.activeSelf || gradegradePanel.activeSelf || shop.activeSelf || inventory.activeSelf || optionPanel.activeSelf || shopMenu.activeSelf || dungeonPanel.activeSelf || guidePanel.activeSelf || questPanel.activeSelf || savePanel.activeSelf;
 
     }

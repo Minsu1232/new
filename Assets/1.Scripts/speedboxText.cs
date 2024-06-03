@@ -27,6 +27,7 @@ public class speedboxText : MonoBehaviour
         isGuideStart = false;
          fullText = questScriptable.questDetail;
         //StartCoroutine(ShowTextOneByOne(fullText));
+        balloonText.margin = new Vector4(70, 120, 70, 120); // 좌, 상, 우, 하 여백
         currentCoroutine = StartCoroutine(ShowTextOneByOne(fullText)); //진행중인 코루틴 할당
     }
     public void Update()
@@ -49,20 +50,20 @@ public class speedboxText : MonoBehaviour
     {
         balloonText.text = ""; // 초기 텍스트를 비웁니다.
         
-        foreach (char letter in completeText)
-        {
-            balloonText.text += letter; // 하나의 글자를 추가합니다.
+        //foreach (char letter in completeText)
+        //{
+            balloonText.text += fullText = questScriptable.questDetail; // 텍스트 바로 표기
             UpdateBalloonSize(); // 말풍선 크기를 업데이트합니다.
-            yield return new WaitForSeconds(delay); // 다음 글자가 나타나기 전 딜레이
+            yield return new WaitForSeconds(0.001f); // 다음 글자가 나타나기 전 딜레이
         
-        }
+        //}
     }
 
     // 말풍선 크기를 업데이트하는 함수
     private void UpdateBalloonSize()
     {
         // 텍스트 내용에 맞게 말풍선 크기 조절
-        Vector2 newSize = new Vector2(balloonText.preferredWidth, balloonText.preferredHeight);
+        Vector2 newSize = new Vector2(balloonText.preferredWidth + 100, balloonText.preferredHeight + 100); // 여백 추가
         balloonImageRectTransform.sizeDelta = newSize;
     }
     private void OnMouseDown()

@@ -33,7 +33,7 @@ public class PouderKeg : MonoBehaviour
     //}
     private void OnTriggerEnter(Collider other)
     {
-        if(other.gameObject.name == "FireArrow(Clone)")
+        if(other.gameObject.name == "FireShot(Clone)")
         {
             if (objEffect != null)
             {

@@ -21,11 +21,13 @@ public class Boss : MonoBehaviour, IDamageable
     public int destructionValue; // 시작 파괴 수치    
     public int walkSpeed;
     public int runSpeed;
-
+    public Transform startPosition;
     [Header("Boss Attributes")]
     
     public NavMeshAgent navMeshAgent;
     public GameObject[] gimmickWalls;
+    public GameObject gimmick50;
+    public Transform gimmick50Transform;
     public Transform gimmickStartPosition;
     public int gimmickCount; // 0이 되면 파훼    
     public ParticleSystem[] secondpahseParticle;
@@ -72,26 +74,27 @@ public class Boss : MonoBehaviour, IDamageable
 
     private Coroutine damageCoroutine; //기믹의 달리기 데미지 주기를 위한 변수
 
+    private Vector3[] initialGimmickWallPositions; // 기믹 월의 초기 위치 저장 변수
     // Start is called before the first frame update
 
     private void OnEnable()
     {
-       
+
+        
         counterColor[0].SetColor("_EmissionColor", Color.black); // 색 초기화
         counterColor[1].SetColor("_EmissionColor", Color.black);
-        initialHealth = bossScriptable.health;
-        damage = bossScriptable.damage;
-        walkSpeed = bossScriptable.walkSpeed;
-        neutralizeValue = bossScriptable.neutralizeValue;
-        destructionValue = bossScriptable.destructionValue;
+        secondpahseParticle[0].gameObject.SetActive(false);
+        secondpahseParticle[1].gameObject.SetActive(false);
+        initialHealth = bossScriptable.health; // 보스 체력
+        damage = bossScriptable.damage; // 보스 데미지
+        walkSpeed = bossScriptable.walkSpeed; // 보스 속도
+        neutralizeValue = bossScriptable.neutralizeValue; // 무력화 수치
+        destructionValue = bossScriptable.destructionValue; // 파괴 수치
         runSpeed = bossScriptable.runSpeed;
         // 남은 value 체크용
         remainHealth = initialHealth;
         remainNeutralizeVlaue = neutralizeValue;
-      
-    }
-    void Start()
-    {
+        //보스 재도전시 재사용
         isSecondPhaseStart = false;
         isSecondPhase = false;
         isGettingHit = false;
@@ -108,8 +111,39 @@ public class Boss : MonoBehaviour, IDamageable
         //시작 ui
         hp.text = $"{initialHealth}/{initialHealth}";
         hpBar.fillAmount = remainHealth / initialHealth;
-       
+        gameObject.transform.position = startPosition.position;
 
+        // 기믹 월의 초기 위치로 재설정
+        ResetGimmickWalls();
+        if (!gimmick50.activeSelf)
+        {
+            gimmick50.transform.position = gimmick50Transform.position;
+            gimmick50.SetActive(true);
+        }
+    }
+    void Start()
+    {
+        Transform gimmick = gimmick50.transform;
+        gimmick50Transform = gimmick;
+        isSecondPhaseStart = false;
+        isSecondPhase = false;
+        isGettingHit = false;
+        isDie = false;
+        isGroggy = false;
+        isGimmickEnd = false;
+        firstGroggy = false;
+        isDestruction = false;
+        gimmickCount = 4;
+        
+        audioSource = GetComponent<AudioSource>();
+        animator = GetComponent<Animator>();
+        navMeshAgent.speed = walkSpeed;
+        //시작 ui
+        hp.text = $"{initialHealth}/{initialHealth}";
+        hpBar.fillAmount = remainHealth / initialHealth;
+        gameObject.transform.position = startPosition.position;
+
+        SaveInitialGimmickWallPositions();
     }
 
     // Update is called once per frame
@@ -146,7 +180,12 @@ public class Boss : MonoBehaviour, IDamageable
             }
             GimmicDamage();
             GimmicEnd();
-
+            if (player.isDie)
+            {
+             
+                    gimmick50.SetActive(false);
+                
+            }
 
 
 
@@ -294,6 +333,7 @@ public class Boss : MonoBehaviour, IDamageable
             isDie = true;
             navMeshAgent.enabled = false;
             bossUI.gameObject.SetActive(false);
+            gimmick50.gameObject.SetActive(false);
             StartCoroutine(DeactivateAfterDelay()); //3초뒤false ( 갈때마다 호출을위해 파괴 x )
         }
     }
@@ -377,11 +417,12 @@ public class Boss : MonoBehaviour, IDamageable
                 navMeshAgent.enabled = false;
                 animator.SetTrigger("Rage");
                 isgimmick = true;
+                StartCoroutine(MovePillar(gimmick50, 8f, 1f)); // 1초 동안 8로 이동
                 // 각 pillar에 대해 MovePillar 코루틴 시작
-                foreach (GameObject gimmickWall in gimmickWalls)
-                {
-                    StartCoroutine(MovePillar(gimmickWall, 8f, 1f)); // 1초 동안 8로 이동
-                }
+                //foreach (GameObject gimmickWall in gimmickWalls)
+                //{
+                   
+                //}
                 isGimmicked = true;
                 StartCoroutine(Gimmicking());
             }
@@ -413,9 +454,11 @@ public class Boss : MonoBehaviour, IDamageable
     {
         if (gimmickCount == 0)
         {
+
             if (!isGimmickEnd)
             {
                 isGimmickEnd = true;
+                gimmick50.SetActive(false);
                 StartCoroutine(GimmickEndCorutine());
             }
 
@@ -570,5 +613,31 @@ public class Boss : MonoBehaviour, IDamageable
     void RazeSound()
     {
         audioSource.PlayOneShot(razeSound);
+    }
+    // 기믹 월의 초기 위치 저장 메서드
+    void SaveInitialGimmickWallPositions()
+    {
+        initialGimmickWallPositions = new Vector3[gimmickWalls.Length];
+        for (int i = 0; i < gimmickWalls.Length; i++)
+        {
+            initialGimmickWallPositions[i] = gimmickWalls[i].transform.position;
+        }
+    }
+    // 기믹 월의 위치를 초기 위치로 재설정하는 메서드
+    void ResetGimmickWalls()
+    {
+        for (int i = 0; i < gimmickWalls.Length; i++)
+        {
+            gimmickWalls[i].transform.position = initialGimmickWallPositions[i];
+            gimmickWalls[i].SetActive(true); // 기믹 월 활성화
+        }
+    }
+    private void OnDisable()
+    {
+        if (bossUI.activeSelf)
+        {
+            bossUI.gameObject.SetActive(false); // 보스가 꺼질땐 ui 제거
+        }
+        
     }
 }
