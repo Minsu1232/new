@@ -27,10 +27,15 @@ public class Scenemanager : MonoBehaviour
         }
         else
         {
-            loadSCene.SetActive(true);// 프롤로그를 이미 봤다면 메인을씬로딩을 바로 로드
+            //loadSCene.SetActive(true);// 프롤로그를 이미 봤다면 메인을씬로딩을 바로 로드
+            SceneManager.LoadScene("TestScene");
         }
       
             
        
+    }
+    public void TestScene()
+    {
+        SceneManager.LoadScene("TestScene");
     }
 }

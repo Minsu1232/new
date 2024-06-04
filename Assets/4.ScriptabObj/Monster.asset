@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Monster
   m_EditorClassIdentifier: 
   MonsterName: 
-  health: 80
+  health: 200
   damage: 15
   dropMoney: 125
   walkSpeed: 4

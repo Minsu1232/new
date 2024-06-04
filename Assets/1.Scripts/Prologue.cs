@@ -88,7 +88,8 @@ public class Prologue : MonoBehaviour
             }
             textObjects[i].gameObject.SetActive(false);
         }
-        mainLoading.gameObject.SetActive(true);
+        //mainLoading.gameObject.SetActive(true);
+        SceneManager.LoadScene("TestScene");
         Debug.Log("Prologue Ended");
     }
 }

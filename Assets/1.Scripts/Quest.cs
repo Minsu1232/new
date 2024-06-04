@@ -79,11 +79,11 @@ public class Quest : MonoBehaviour
             {
                 dailyquestButtonOff[i].gameObject.SetActive(false);
             }
-            panelText[1].text = "자정이 지난 후 초기화 됩니다";
+            panelText[1].text = "클리어 기준 24시간이 지난 후 초기화 됩니다";
         }
         else if (questScriptables[1].isMainClear) 
         {
-            panelText[0].text = "완료 한 임무입니다. \n 다음 임무 : ??? (예정)";
+            panelText[0].text = "완료 한 임무입니다. \n다음 임무 : ??? (예정)";
         }
     }
 
@@ -114,7 +114,7 @@ public class Quest : MonoBehaviour
             questScriptables[0].CheckQuestCompletion();
             questText[0].text = questScriptables[0].questDetail;
             completeButton[0].gameObject.SetActive(true);
-            panelText[1].text = "자정이 지난 후 초기화 됩니다";
+            panelText[1].text = "클리어 기준 24시간이 지난 후 초기화 됩니다";
             for (int i = 0; i < mainquestButtonOff.Length; i++)
             {
                 dailyquestButtonOff[i].gameObject.SetActive(false);
@@ -129,7 +129,7 @@ public class Quest : MonoBehaviour
             questScriptables[1].CheckQuestCompletion();
             questText[1].text = questScriptables[1].questDetail;
             completeButton[1].gameObject.SetActive(true);
-            panelText[0].text = "완료 한 임무입니다. \n 다음 임무 : ??? (예정)"; // 챕터1 메인 퀘스트 완료표시
+            panelText[0].text = "완료 한 임무입니다. \n다음 임무 : ??? (예정)"; // 챕터1 메인 퀘스트 완료표시
             for(int i = 0; i < mainquestButtonOff.Length; i++)
             {
                 mainquestButtonOff[i].gameObject.SetActive(false);

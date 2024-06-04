@@ -23,7 +23,7 @@ public class Boss : MonoBehaviour, IDamageable
     public int runSpeed;
     public Transform startPosition;
     [Header("Boss Attributes")]
-    
+
     public NavMeshAgent navMeshAgent;
     public GameObject[] gimmickWalls;
     public GameObject gimmick50;
@@ -51,7 +51,7 @@ public class Boss : MonoBehaviour, IDamageable
 
     [Header("Player Attributes")]
     public Player player;
-    
+
 
     [Header("Check Attributes")]
     public bool isgimmick; // 업데이트문 제약 조건    
@@ -66,7 +66,7 @@ public class Boss : MonoBehaviour, IDamageable
     public bool isGimmickEnd;
     public bool firstGroggy;
     public bool isDestruction;
-    
+
     public Animator animator;
     AudioSource audioSource;
 
@@ -80,11 +80,17 @@ public class Boss : MonoBehaviour, IDamageable
     private void OnEnable()
     {
 
-        
+
         counterColor[0].SetColor("_EmissionColor", Color.black); // 색 초기화
         counterColor[1].SetColor("_EmissionColor", Color.black);
-        secondpahseParticle[0].gameObject.SetActive(false);
-        secondpahseParticle[1].gameObject.SetActive(false);
+        if (secondpahseParticle[0].gameObject.activeSelf)
+        {
+            secondpahseParticle[0].gameObject.SetActive(false);
+
+
+        }
+
+
         initialHealth = bossScriptable.health; // 보스 체력
         damage = bossScriptable.damage; // 보스 데미지
         walkSpeed = bossScriptable.walkSpeed; // 보스 속도
@@ -101,8 +107,11 @@ public class Boss : MonoBehaviour, IDamageable
         isDie = false;
         isGroggy = false;
         isGimmickEnd = false;
+        isGimmicked = false;
+        isgimmick = false;
         firstGroggy = false;
         isDestruction = false;
+        isKill = false;
         gimmickCount = 4;
 
         audioSource = GetComponent<AudioSource>();
@@ -113,8 +122,13 @@ public class Boss : MonoBehaviour, IDamageable
         hpBar.fillAmount = remainHealth / initialHealth;
         gameObject.transform.position = startPosition.position;
 
+
         // 기믹 월의 초기 위치로 재설정
-        ResetGimmickWalls();
+        if (initialGimmickWallPositions != null)
+        {
+            ResetGimmickWalls();
+        }
+
         if (!gimmick50.activeSelf)
         {
             gimmick50.transform.position = gimmick50Transform.position;
@@ -134,7 +148,7 @@ public class Boss : MonoBehaviour, IDamageable
         firstGroggy = false;
         isDestruction = false;
         gimmickCount = 4;
-        
+
         audioSource = GetComponent<AudioSource>();
         animator = GetComponent<Animator>();
         navMeshAgent.speed = walkSpeed;
@@ -164,12 +178,12 @@ public class Boss : MonoBehaviour, IDamageable
             {
                 Groggy();
                 MonsterMove();
-                Attack();                
+                Attack();
                 Gimmick();
 
             }
-            // 체력이 30% 이하이고 두 번째 단계가 아직 시작되지 않았다면,
-            if (remainHealth <= 90 && !isSecondPhaseStart)
+            // 체력이 100 이하이고 두 번째 단계가 아직 시작되지 않았다면,
+            if (remainHealth <= 100 && !isSecondPhaseStart)
             {
                 SecondPhaseStart();
                 // 2페이즈엔 데미지가 +10, 속도는 Run
@@ -182,9 +196,9 @@ public class Boss : MonoBehaviour, IDamageable
             GimmicEnd();
             if (player.isDie)
             {
-             
-                    gimmick50.SetActive(false);
-                
+
+                gimmick50.SetActive(false);
+
             }
 
 
@@ -198,7 +212,7 @@ public class Boss : MonoBehaviour, IDamageable
     /// 몬스터의 피격 함수 ArrowDamage에서 호출.
     ///F </summary>
     /// <param name="damage"></param>
-    public void TakeDamage(int damage, int neutralizeValu,int destruction, bool shouldTriggerHitAnimation = true)
+    public void TakeDamage(int damage, int neutralizeValu, int destruction, bool shouldTriggerHitAnimation = true)
     {
         // 남은 체력이 0보다 크면 데미지 적용
         if (remainHealth > 0)
@@ -206,10 +220,10 @@ public class Boss : MonoBehaviour, IDamageable
             remainHealth -= damage;
         }
         // 남은 무력화 게이지가 0보다 크면 무력화데미지 적용
-        
-        
-         remainNeutralizeVlaue -= neutralizeValu;
-        
+
+
+        remainNeutralizeVlaue -= neutralizeValu;
+
 
         // health값이 음수가 되지 않게 제어
         remainHealth = Mathf.Clamp(remainHealth, 0, initialHealth);
@@ -238,7 +252,7 @@ public class Boss : MonoBehaviour, IDamageable
             navMeshAgent.enabled = true;
             navMeshAgent.SetDestination(player.transform.position);
             animator.SetBool("Move", true);
-            
+
         }
 
 
@@ -261,7 +275,7 @@ public class Boss : MonoBehaviour, IDamageable
                     {
                         int randomIndex = UnityEngine.Random.Range(0, 3);  // 0, 1, 또는 2
                         animator.SetInteger("AttackInt", randomIndex);
-                        
+
                     }
 
                     animator.SetBool("Attack", true);
@@ -300,22 +314,22 @@ public class Boss : MonoBehaviour, IDamageable
 
         counterColor[0].SetColor("_EmissionColor", intenseColor);
         counterColor[1].SetColor("_EmissionColor", intenseColor);
-        
+
     }
     void CounterColorEnd()
     {
         counterColor[0].SetColor("_EmissionColor", Color.black);
         counterColor[1].SetColor("_EmissionColor", Color.black);
     }
-    
+
     void Destruction()
     {
-        if(destructionValue <= 0)
+        if (destructionValue <= 0)
         {
             isDestruction = true;
             destructionImage.gameObject.SetActive(true);
             player.str += 2;
-            
+
         }
     }
     private void Die()
@@ -361,7 +375,7 @@ public class Boss : MonoBehaviour, IDamageable
         animator.SetBool("Gethit", false);
         isGettingHit = false;  // 피격 상태 해제
     }
-  
+
     // 그로기 관련 매서드
     void Groggy()
     {
@@ -370,10 +384,10 @@ public class Boss : MonoBehaviour, IDamageable
             StartCoroutine(GroggyTime());
         }
     }
-   
+
     IEnumerator GroggyTime()
     {
-        
+
         if (!isGroggy)
         {
             animator.SetTrigger("Groggy");
@@ -384,15 +398,15 @@ public class Boss : MonoBehaviour, IDamageable
 
         yield return new WaitForSeconds(8f); // 피격 애니메이션 재생 시간 동안 대기
         firstGroggy = true;
-        if(isGroggy)
+        if (isGroggy)
         {
             remainNeutralizeVlaue = neutralizeValue;
         }
         isGroggy = false;  // 피격 상태 해제
         animator.SetBool("IsGroggy", false);
         navMeshAgent.speed = walkSpeed;  // 속도 복원        
-       
-        
+
+
 
 
 
@@ -401,7 +415,7 @@ public class Boss : MonoBehaviour, IDamageable
     {
         if (!isgimmick && other.gameObject.CompareTag("GimmickWalls"))
         {
-           other.gameObject.SetActive(false);
+            other.gameObject.SetActive(false);
             gimmickCount--;
         }
     }
@@ -417,12 +431,12 @@ public class Boss : MonoBehaviour, IDamageable
                 navMeshAgent.enabled = false;
                 animator.SetTrigger("Rage");
                 isgimmick = true;
-                StartCoroutine(MovePillar(gimmick50, 8f, 1f)); // 1초 동안 8로 이동
-                // 각 pillar에 대해 MovePillar 코루틴 시작
-                //foreach (GameObject gimmickWall in gimmickWalls)
-                //{
-                   
-                //}
+                 // 1초 동안 8로 이동
+                                                               // 각 pillar에 대해 MovePillar 코루틴 시작
+                foreach (GameObject gimmickWall in gimmickWalls)
+                {
+                    StartCoroutine(MovePillar(gimmickWall, 8f, 1f));
+                }
                 isGimmicked = true;
                 StartCoroutine(Gimmicking());
             }
@@ -557,15 +571,15 @@ public class Boss : MonoBehaviour, IDamageable
         animator.SetBool("GimmickRun", false);
         animator.SetBool("IsGroggy", true);
         yield return new WaitForSeconds(5f);
-        navMeshAgent.speed = walkSpeed; // 다시 원래 속도로 돌아감 현잰 왜인지 모르겠으나 안돌아감
+        navMeshAgent.speed = 5f; // 다시 원래 속도로 돌아감 현잰 왜인지 모르겠으나 안돌아감
         animator.SetBool("IsGroggy", false);
     }
     void SpawnItem()
     {
         Vector3 spawnPosition = new Vector3(transform.position.x, transform.position.y + 3, transform.position.z);
         GameObject item = Instantiate(dropItem, spawnPosition, Quaternion.identity);
-        Rigidbody rb = item.GetComponent<Rigidbody>();       
-        
+        Rigidbody rb = item.GetComponent<Rigidbody>();
+
 
         // 아이템을 공중으로 솟구치게 하는 힘
         Vector3 upForce = new Vector3(0, 1, 0);
@@ -584,13 +598,13 @@ public class Boss : MonoBehaviour, IDamageable
             yield return new WaitForSeconds(0.5f);
             rb.isKinematic = true;
         }
-       
+
     }
- 
+
     // 애니메이션 이벤트 
     void Hit()
     {
-        
+
         if (!isSecondPhaseStart)
         {
             player.TakeDamage(damage);
@@ -603,8 +617,8 @@ public class Boss : MonoBehaviour, IDamageable
         {// 2페이즈엔 데미지가 +10
             player.TakeDamage(damage + 10);
         }
-        
-        
+
+
     }
     void AttackSound()
     {
@@ -629,7 +643,8 @@ public class Boss : MonoBehaviour, IDamageable
         for (int i = 0; i < gimmickWalls.Length; i++)
         {
             gimmickWalls[i].transform.position = initialGimmickWallPositions[i];
-            gimmickWalls[i].SetActive(true); // 기믹 월 활성화
+            gimmickWalls[i].SetActive(true); // 기믹 월 활성화            
+
         }
     }
     private void OnDisable()
@@ -638,6 +653,6 @@ public class Boss : MonoBehaviour, IDamageable
         {
             bossUI.gameObject.SetActive(false); // 보스가 꺼질땐 ui 제거
         }
-        
+
     }
 }

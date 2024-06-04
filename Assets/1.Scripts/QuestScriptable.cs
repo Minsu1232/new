@@ -63,7 +63,7 @@ public class QuestScriptable : ScriptableObject
         else if (questName == "TutorialQuest3")
         {// 승지방은 조선시대 왕명의 출납 등의 업무를 담당하던 곳
             isTutorial = false;
-            questDetail = "중앙에 있는 승지방에가 소문을 파악해라 \n\n(퀘스트류는 노란포탈을 통해 \n 클리어가 가능하며 필드사냥터는\n 상시로 이용 가능합니다)";
+            questDetail =  "\n중앙에 있는 승지방에가 소문을 파악해라 \n\n(퀘스트류는 노란포탈을 통해 \n 클리어가 가능하며 필드사냥터는\n 상시로 이용 가능합니다)";
             rewardCoin = 800; // 최초 튜토리얼 진행안내의 마지막
         }
 

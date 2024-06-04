@@ -5,7 +5,13 @@ using UnityEngine;
 public class GimmickWall : MonoBehaviour
 {
     public ParticleSystem[] particles;
-   
+
+    private void OnEnable()
+    {
+        
+        particles[0].Stop();
+        particles[1].gameObject.SetActive(false);
+    }
     // Start is called before the first frame update
     void Start()
     {

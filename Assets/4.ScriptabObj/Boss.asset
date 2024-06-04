@@ -13,8 +13,8 @@ MonoBehaviour:
   m_Name: Boss
   m_EditorClassIdentifier: 
   MonsterName: "\"\uBD88\uAC00\uC0B4\""
-  health: 300
-  damage: 30
+  health: 400
+  damage: 25
   walkSpeed: 6
   runSpeed: 8
   neutralizeValue: 150

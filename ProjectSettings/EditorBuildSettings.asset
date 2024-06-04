@@ -12,6 +12,9 @@ EditorBuildSettings:
     path: Assets/0.Scenes/Scenes/Prologue.unity
     guid: c1ed233e10c97104ba2817af591592f7
   - enabled: 1
+    path: Assets/0.Scenes/Scenes/TestScene.unity
+    guid: 2bb5a587526d79249a188d4778826b72
+  - enabled: 1
     path: Assets/0.Scenes/Scenes/Village.unity
     guid: 9fc0d4010bbf28b4594072e72b8655ab
   m_configObjects: {}
