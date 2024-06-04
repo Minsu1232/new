@@ -378,6 +378,7 @@ public class Inventory : MonoBehaviour
         if (gradeItem != null && gradeItem.possess >= requiredItems)
         {
             gradeItem.possess -= requiredItems;
+            UpdateUI(gradeItem);
             if (gradeItem.possess == 0)
             {
                 items.Remove(gradeItem);

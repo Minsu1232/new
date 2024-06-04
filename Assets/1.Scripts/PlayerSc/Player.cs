@@ -49,7 +49,7 @@ public class Player : MonoBehaviour
     public AudioClip counterSkillSound;
     public AudioClip petSummons;
     public GameObject buffEffect;
-    //public GameObject 
+    public bool lockon;
 
 
     [Header("Player Status")]
@@ -182,7 +182,14 @@ public class Player : MonoBehaviour
 
     void Update()
     {
-
+        if(Input.GetKey(KeyCode.LeftAlt)) // 마우스를 편하게 돌리기위해
+        {
+        lockon = true;
+        }
+        else if (Input.GetKeyUp(KeyCode.LeftAlt))
+        {
+        lockon = false;
+        }
         if (!isDie)
         {
             if (isRoll)
@@ -208,7 +215,7 @@ public class Player : MonoBehaviour
 
 
             }
-            if (!GameManager.Instance.IsAnyUIActive())
+            if (!GameManager.Instance.IsAnyUIActive() && !lockon)
             {
                 if (!isLockOn)
                 {
@@ -519,7 +526,7 @@ public class Player : MonoBehaviour
             skillComand = 3;
             IsGuide();
         }
-        else if (mp>= 15 && isLockOn == false && isSkill == false && Input.GetKeyDown(KeyCode.Alpha5))
+        else if (mp>= 15 && isLockOn == false && isSkill == false && cool[6] == false &&  Input.GetKeyDown(KeyCode.Alpha5))
         {
             //기본화살
             mp -= 15;
@@ -1040,7 +1047,15 @@ public class Player : MonoBehaviour
         if (money.money >= cost) // 비용이 돈보다 적으면
         {
             IsGuideStatusUp(); // 가이드 완료
-            stat += 1; // 해당 스탯 증가
+            if(statText.name == "maxHP")
+            {
+                stat += 15;
+            }
+            else
+            {
+                stat += 1; // 해당 스탯 증가
+            }
+            
             statText.text = stat.ToString();
             playerState.level++;
             nowLevel.text = playerState.level.ToString();
@@ -1050,7 +1065,10 @@ public class Player : MonoBehaviour
     }
     public void MaxHpUpButton()
     {
-        UpgradeStat(ref playerState.health, ref playerState.hpUpgradeCount, maxMP, "Hp");
+        UpgradeStat(ref playerState.health, ref playerState.hpUpgradeCount, maxHP, "Hp");
+        hp.text = $"{remainHealth}/{playerState.health}";
+        hpBar.fillAmount = (float)remainHealth / playerState.health;
+
     }
     public void MaxMpUpButton()
     {
@@ -1070,10 +1088,10 @@ public class Player : MonoBehaviour
     private void UpdateSpeed()
     {
         // playerState 오브젝트를 사용하여 이동 속도 업데이트
-        playerState.walkSpeed += 0.1f;  // dex 1당 워크 스피드 0.1 증가
+        playerState.walkSpeed += 0.3f;  // dex 1당 워크 스피드 0.1 증가
         walkSpeed = playerState.walkSpeed; // 게임 내에서 사용할 실제 값 업데이트
 
-        playerState.runSpeed += 0.1f;   // dex 1당 런 스피드 0.1 증가
+        playerState.runSpeed += 0.3f;   // dex 1당 런 스피드 0.1 증가
         runSpeed = playerState.runSpeed; // 게임 내에서 사용할 실제 값 업데이트
        
     }

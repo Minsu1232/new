@@ -81,7 +81,7 @@ public class QuestScriptable : ScriptableObject
         }
         else if (questName == "GuideQuest3")
         {
-            questDetail = "좋습니다. 왼쪽 상단에 보시면 현재 화살의 \n 상태를 나타냅니다. 나머지 스킬은 \n 우측상단 가이드창에서 확인 가능합니다. \n 다음은 E를 눌러 스탯을 올려보세요.";
+            questDetail = "좋습니다.  나머지 스킬과 조작법의 설명은 \n 좌측상단 메뉴바의 가이드창에서 확인 가능합니다. \n 다음은 E를 눌러 스탯을 올려보세요.";
         }
         else if (questName == "GuideQuest4")
         {
